@@ -12,12 +12,31 @@
 
     <style name="MyFloatingLabel" parent="TextAppearance.AppCompat">
         <!-- Hint color and label color in FALSE state -->
-        <item name="android:textColorHint">@color/primary</item>
+        <item name="android:textColorHint">#EEEEEE</item>
         <item name="android:textSize">18sp</item>
         <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
-        <item name="colorAccent">@color/accent</item>
-        <item name="colorControlNormal">@color/primary</item>
-        <item name="colorControlActivated">@color/primary_dark</item>
+
+        <item name="colorControlNormal">#EEEEEE</item>
+        <item name="colorControlActivated">#FFFFFF</item>
+    </style>
+
+
+    <style name="FabStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/spacing_large</item>
+        <item name="android:src">@mipmap/ic_launcher</item>
+        <item name="borderWidth">0dp</item>
+        <item name="elevation">6dp</item>
+        <item name="pressedTranslationZ">12dp</item>
+        <item name="rippleColor">@android:color/white</item>
+    </style>
+
+    <style name="LoginBtn">
+        <item name="android:background">@color/primary_dark</item>
+        <item name="elevation">6dp</item>
+        <item name="pressedTranslationZ">12dp</item>
+        <item name="rippleColor">@android:color/white</item>
     </style>
 
 

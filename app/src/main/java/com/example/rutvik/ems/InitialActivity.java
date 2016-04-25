@@ -15,7 +15,7 @@ import java.util.zip.Inflater;
 
 public class InitialActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Toolbar toolbar;
+    //Toolbar toolbar;
 
     Button btnLogin;
 
@@ -24,11 +24,11 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
 
-        toolbar.setTitle("EMS");
+        //toolbar.setTitle("EMS");
 
         btnLogin=(Button) findViewById(R.id.btn_login);
 
