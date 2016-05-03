@@ -12,6 +12,12 @@
         <color name="icons">#FFFFFF</color>
         <color name="divider">#B6B6B6</color>
 
+        <color name="followUpButton">#5cb85c</color>
+        <color name="followUpButtonPressed">#4B944B</color>
+
+        <color name="viewButton">#E0E0E0</color>
+        <color name="viewButtonPressed">#B0B0B0</color>
+
 
 
 </resources>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_notificationItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="4dp"
+        android:layout_margin="5dp"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2"
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="20-4-2016"
+                    android:layout_weight="1"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:layout_height="wrap_content"
+
+                    android:text="Rutvik Mehta"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Discussions"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+            <TextView
+                android:id="@+id/tv_discussionsContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Discussions Discussions Discussions Discussions Discussions Discussions Discussions"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="right"
+                android:orientation="horizontal">
+
+                <Button
+                    android:background="@drawable/btn_follow_up"
+                    android:text="+F"
+                    android:elevation="2dp"
+                    android:textSize="16sp"
+                    android:textColor="#FFFFFF"
+                    android:gravity="center"
+                    android:layout_marginRight="7dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"/>
+
+                <Button
+                    android:background="@drawable/btn_view"
+                    android:text="V"
+                    android:elevation="2dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/primary_text"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

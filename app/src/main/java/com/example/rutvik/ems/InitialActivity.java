@@ -1,6 +1,7 @@
 package com.example.rutvik.ems;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.zip.Inflater;
 
@@ -31,6 +33,12 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
         //toolbar.setTitle("EMS");
 
         btnLogin=(Button) findViewById(R.id.btn_login);
+
+        TextView tv=(TextView) findViewById(R.id.tv_emsTitle);
+
+        Typeface font=Typeface.createFromAsset(getAssets(),"fonts/carrois_gothic.ttf");
+
+        tv.setTypeface(font);
 
         btnLogin.setOnClickListener(this);
 

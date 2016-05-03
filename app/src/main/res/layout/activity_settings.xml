@@ -11,7 +11,13 @@
         layout="@layout/toolbar" />
 
 
-    <LinearLayout
+   <android.support.v7.widget.RecyclerView
+       android:id="@+id/rv_notification"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"/>
+
+
+<!--    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -50,7 +56,7 @@
             android:text="@string/txt_hostURLHelp"
             android:textSize="16sp" />
 
-    </LinearLayout>
+    </LinearLayout>-->
 
 
 </LinearLayout>

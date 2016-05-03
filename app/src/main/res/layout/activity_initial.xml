@@ -3,31 +3,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-
     android:background="@color/primary"
+
+    android:orientation="vertical"
     tools:context="com.example.rutvik.ems.InitialActivity">
-
-
-
-
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center"
         android:paddingLeft="10dp"
+        android:weightSum="3"
         android:paddingRight="10dp">
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/tv_emsTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="EMS"
+                android:textColor="#FFFFFF"
+                android:textSize="80sp" />
 
+        </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="vertical">
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/input_layout_url"
@@ -100,25 +113,39 @@
             </android.support.design.widget.TextInputLayout>
 
 
-        </LinearLayout>
-
-
-
-
             <Button
-                android:layout_marginTop="30dp"
-                style="@style/LoginBtn"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
                 android:id="@+id/btn_login"
+                style="@style/LoginBtn"
                 android:layout_width="fill_parent"
                 android:layout_height="50dp"
-                android:textStyle="bold"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="30dp"
                 android:text="@string/txt_login"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
 
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="5dp"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:text="By Tap &amp; Type. All rights reserved."/>
+        </FrameLayout>
 
     </LinearLayout>
+
+
+
 
 
 </LinearLayout>
