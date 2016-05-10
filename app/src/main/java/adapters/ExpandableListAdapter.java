@@ -127,7 +127,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             followUpsViewHolder = (FollowUpsViewHolder) convertView.getTag();
         }
 
-        followUpsViewHolder.tvTitle.setText(followUp.getFollowUpDate());
+        followUpsViewHolder.tvTitle.setText(followUp.getFollowUpDate().toString());
         followUpsViewHolder.tvName.setText(followUp.getName());
         followUpsViewHolder.tvdiscussionsContent.setText(followUp.getDiscussion());
 

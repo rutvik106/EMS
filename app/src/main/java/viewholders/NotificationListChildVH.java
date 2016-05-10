@@ -40,7 +40,7 @@ public class NotificationListChildVH extends RecyclerView.ViewHolder {
 
 
     public static void bind(NotificationListChildVH viewHolder, FollowUp followUp) {
-        viewHolder.tvTitle.setText(followUp.getFollowUpDate());
+        viewHolder.tvTitle.setText(followUp.getFollowUpDate().toString());
         viewHolder.tvName.setText(followUp.getName());
         viewHolder.tvDiscussionsContent.setText(followUp.getDiscussion());
         if(followUp.isRender()){

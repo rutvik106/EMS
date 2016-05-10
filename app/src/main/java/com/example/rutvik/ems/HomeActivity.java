@@ -1,6 +1,7 @@
 package com.example.rutvik.ems;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -18,18 +19,27 @@ import android.view.MotionEvent;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import adapters.ExpandableListAdapter;
 import adapters.HomeGridAdapter;
 import adapters.NotificationListAdapter;
+import extras.AppUtils;
+import extras.Log;
+import extras.PostServiceHandler;
 import models.FollowUp;
 import models.GridItem;
 import models.NotificationHeader;
@@ -53,13 +63,17 @@ public class HomeActivity extends AppCompatActivity {
     boolean isShow = false;
     int scrollRange = -1;
 
-    List<NotificationHeader> modelList;
+    List<NotificationHeader> modelList=new LinkedList<>();
 
     RecyclerView rv;
 
     RecyclerView.LayoutManager lm;
 
     NotificationListAdapter adapter;
+
+    LinkedList<FollowUp> followUpArray = new LinkedList<FollowUp>();
+
+    public static final String TAG=AppUtils.APP_TAG+HomeActivity.class.getSimpleName();
 
     @SuppressWarnings("ConstantConditions")
     @Override
@@ -155,7 +169,11 @@ public class HomeActivity extends AppCompatActivity {
 
         rv.setLayoutManager(lm);
 
-        prepareData();
+
+
+        //prepareData();
+
+        new getFollowUpAsync().execute("http://192.168.1.109/ems/webservice/webservice.php?method=get_follow_up&id=29");
 
 
     }
@@ -236,6 +254,52 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+
+    private List preapareModelList(List<FollowUp> followUpList) {
+        Log.i(TAG,"PREPARING MODEL LIST");
+        Log.i(TAG,"FOLLOW UP LIST SIZE: "+followUpList.size());
+        HashMap<Date, ArrayList<FollowUp>> dates = new HashMap<>();
+        for (FollowUp followUp : followUpList) {
+            if (dates.get(followUp.getFollowUpDate()) == null) {
+                ArrayList<FollowUp> f = new ArrayList<>();
+                f.add(followUp);
+                dates.put(followUp.getFollowUpDate(), f);
+            } else {
+                dates.get(followUp.getFollowUpDate()).add(followUp);
+            }
+        }
+        Set<Map.Entry<Date, ArrayList<FollowUp>>> set = dates.entrySet();
+        Iterator<Map.Entry<Date, ArrayList<FollowUp>>> entry = set.iterator();
+
+        while (entry.hasNext()) {
+            Map.Entry<Date, ArrayList<FollowUp>> singleEntry = entry.next();
+
+            modelList.add(new NotificationHeader(dateToNotificationLabel(singleEntry.getKey()), singleEntry.getValue()));
+
+        }
+
+        return modelList;
+    }
+
+    private String dateToNotificationLabel(Date d) {
+        Date today = Calendar.getInstance().getTime();
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE, 1);
+        Date tomorrow = c.getTime();
+
+        if (d == today) {
+            return "Today";
+        } else if (d == tomorrow) {
+            return "Tomorrow";
+        }
+        else{
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(d);
+            return d.toString();
+        }
+    }
+
+
     void prepareData() {
 
         final String data = "{\"follow_up\":{ \"id\":\"1\", \"follow_up_date\":\"14-4-2016\", \"discussion\":\"yoyo\", \"name\":\"jeet patel\", \"product\":\"ems\", \"extra_details\":\"extra long\", \"phone\":\"9824243009\", \"handle_by\":\"sanket jasani\" } }";
@@ -249,18 +313,18 @@ public class HomeActivity extends AppCompatActivity {
             final JSONObject obj = new JSONObject(data).getJSONObject("follow_up");
 
             List<FollowUp> f1 = new LinkedList<>();
-            f1.add(new FollowUp(obj, "Today"));
-            f1.add(new FollowUp(obj, "Today"));
-            f1.add(new FollowUp(obj, "Today"));
-            f1.add(new FollowUp(obj, "Today"));
+            f1.add(new FollowUp(obj));
+            f1.add(new FollowUp(obj));
+            f1.add(new FollowUp(obj));
+            f1.add(new FollowUp(obj));
 
             modelList.add(new NotificationHeader("Today", f1));
 
             List<FollowUp> f2 = new LinkedList<>();
-            f2.add(new FollowUp(obj, "Tomorrow"));
-            f2.add(new FollowUp(obj, "Tomorrow"));
-            f2.add(new FollowUp(obj, "Tomorrow"));
-            f2.add(new FollowUp(obj, "Tomorrow"));
+            f2.add(new FollowUp(obj));
+            f2.add(new FollowUp(obj));
+            f2.add(new FollowUp(obj));
+            f2.add(new FollowUp(obj));
 
             modelList.add(new NotificationHeader("Tomorrow", f2));
 
@@ -273,6 +337,53 @@ public class HomeActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+
+    private class getFollowUpAsync extends AsyncTask<String, Void, Void> {
+
+        String response = "";
+
+        @Override
+        protected Void doInBackground(String... params) {
+
+
+            try {
+                response = new PostServiceHandler(AppUtils.APP_TAG, 3, 2000).doGet(params[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Log.i(TAG,"RESPONSE: "+response);
+            if (!response.isEmpty()) {
+                Log.i(TAG,"RESPONSE NOT EMPTY");
+                try {
+                    Log.i(TAG,"PARSING JSON");
+                    JSONArray arr = new JSONArray(response);
+                    Log.i(TAG,"JSON ARRAY LENGTH: "+arr.length());
+                    for (int i = 0; i < arr.length(); i++) {
+                        followUpArray.add(new FollowUp(arr.getJSONObject(i)));
+                    }
+
+
+
+                    adapter = new NotificationListAdapter(HomeActivity.this, preapareModelList(followUpArray));
+
+                    rv.setAdapter(adapter);
+
+                    Toast.makeText(HomeActivity.this,"Model Size: "+modelList.size(),Toast.LENGTH_SHORT).show();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(HomeActivity.this, "parsing error", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 
 

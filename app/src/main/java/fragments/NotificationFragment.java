@@ -69,12 +69,12 @@ public class NotificationFragment extends Fragment {
             modelList.add("Tomorrow");
 
             List<FollowUp> today = new ArrayList<>();
-            today.add(new FollowUp(obj, "Today"));
-            today.add(new FollowUp(obj, "Today"));
+            today.add(new FollowUp(obj));
+            today.add(new FollowUp(obj));
 
             List<FollowUp> tomorrow = new ArrayList<>();
-            tomorrow.add(new FollowUp(obj, "Tomorrow"));
-            tomorrow.add(new FollowUp(obj, "Tomorrow"));
+            tomorrow.add(new FollowUp(obj));
+            tomorrow.add(new FollowUp(obj));
 
             modelListMap = new HashMap<>();
             modelListMap.put(modelList.get(0), today);

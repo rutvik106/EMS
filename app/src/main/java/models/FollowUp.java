@@ -3,6 +3,11 @@ package models;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import component.NotificationListItemComp;
 import extras.AppUtils;
 import extras.Log;
@@ -34,7 +39,7 @@ public class FollowUp implements NotificationListItemComp {
         return id;
     }
 
-    public String getFollowUpDate() {
+    public Date getFollowUpDate() {
         return followUpDate;
     }
 
@@ -62,19 +67,51 @@ public class FollowUp implements NotificationListItemComp {
         return handledBy;
     }
 
-    String id, followUpDate, discussion, name, product, extraDetails, phone, handledBy;
+    String id;
 
-    public FollowUp(JSONObject obj, String key) throws JSONException {
-        Log.i(TAG, "date: " + obj.getString("follow_up_date"));
-        this.key=key;
-        id = obj.getString("id");
-        followUpDate = obj.getString("follow_up_date");
-        discussion = obj.getString("discussion");
-        name = obj.getString("name");
-        product = obj.getString("product");
-        extraDetails = obj.getString("extra_details");
-        phone = obj.getString("phone");
-        handledBy = obj.getString("handle_by");
+    public void setFollowUpDate(String followUpDate) {
+        Log.i(TAG,"FOLLOW UP DATE: "+followUpDate);
+        String[] data=followUpDate.split("#");
+        Log.i(TAG,"DATA 0: "+data[0]);
+        Log.i(TAG,"DATA 1: "+data[1]);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            this.followUpDate = simpleDateFormat.parse(data[0].trim());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        handledBy=data[1].trim();
+
+    }
+
+    Date followUpDate;
+    String discussion;
+    String name;
+    String product;
+    String extraDetails;
+    String phone;
+    String handledBy;
+
+    public FollowUp(JSONObject obj) throws JSONException {
+        Log.i(TAG, "date: " + obj.getString("next_follow_up_date"));
+
+        id = obj.getString("enquiry_form_id");
+        setFollowUpDate(obj.getString("next_follow_up_date"));
+        try {
+            discussion = obj.getString("discussion");
+        }
+        catch (JSONException e){
+            discussion="N/A";
+        }
+        name = obj.getString("customer_name");
+        product = obj.getString("sub_cat_name");
+        try {
+            extraDetails = obj.getString("extra_details");
+        }
+        catch (JSONException e){
+            extraDetails="N/A";
+        }
+        phone = obj.getString("contact_no");
     }
 
     @Override
