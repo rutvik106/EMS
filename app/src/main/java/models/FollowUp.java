@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import component.NotificationListItemComp;
 import extras.AppUtils;
@@ -39,7 +40,7 @@ public class FollowUp implements NotificationListItemComp {
         return id;
     }
 
-    public Date getFollowUpDate() {
+    public String getFollowUpDate() {
         return followUpDate;
     }
 
@@ -74,17 +75,16 @@ public class FollowUp implements NotificationListItemComp {
         String[] data=followUpDate.split("#");
         Log.i(TAG,"DATA 0: "+data[0]);
         Log.i(TAG,"DATA 1: "+data[1]);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
         try {
-            this.followUpDate = simpleDateFormat.parse(data[0].trim());
+            this.followUpDate = simpleDateFormat.format(simpleDateFormat.parse(data[0].trim()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
         handledBy=data[1].trim();
-
     }
 
-    Date followUpDate;
+    String followUpDate;
     String discussion;
     String name;
     String product;

@@ -9,4 +9,11 @@
         android:icon="@mipmap/ic_account_circle_white_48dp"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/action_refresh"
+        android:orderInCategory="100"
+        android:title="@string/txt_refresh"
+        android:icon="@mipmap/ic_sync_white_48dp"
+        app:showAsAction="always" />
+
 </menu>

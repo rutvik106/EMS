@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <android.support.v7.widget.CardView
         android:id="@+id/cv_notificationItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="4dp"
         android:layout_margin="5dp"
+        app:cardElevation="4dp"
         app:cardUseCompatPadding="true">
 
         <LinearLayout
@@ -22,40 +22,154 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="2"
                 android:layout_marginBottom="5dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:text="Follow Up Date: "
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="20-4-2016"
                     android:layout_weight="1"
+                    android:text="20-4-2016"
                     android:textAppearance="@style/TextAppearance.AppCompat.Headline"
                     android:textSize="14sp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+
+                    android:text="Name: "
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_name"
                     android:layout_width="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
                     android:layout_height="wrap_content"
-
-                    android:text="Rutvik Mehta"/>
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:text="Rutvik Mehta" />
 
             </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Phone: "
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_customerContact"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="+91-9824143009"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Handled By: "
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_handledBy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sanket Jasani"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+
+            </LinearLayout>
+
+
+            <TextView
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Product"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_productName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:ellipsize="marquee"
+                android:maxHeight="50dp"
+                android:text="Products ProductsProductsProductsProductsProducts Products ProductsProducts Discussions Discussions Discussions Discussions Discussions Discussions"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Discussions"
+                android:text="Extra Details"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_extraDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:ellipsize="marquee"
+                android:maxHeight="50dp"
+                android:text="Discussions Discussions Discussions Discussions Discussions Discussions Discussions"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Discussion"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textStyle="bold" />
+
 
             <TextView
                 android:id="@+id/tv_discussionsContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:maxHeight="50dp"
                 android:text="Discussions Discussions Discussions Discussions Discussions Discussions Discussions"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
@@ -67,33 +181,36 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:background="@drawable/btn_follow_up"
-                    android:text="+F"
-                    android:elevation="2dp"
-                    android:textSize="16sp"
-                    android:textColor="#FFFFFF"
-                    android:gravity="center"
-                    android:layout_marginRight="7dp"
-                    android:layout_gravity="center_vertical"
+                    android:id="@+id/btn_takeFollowUp"
                     android:layout_width="40dp"
-                    android:layout_height="40dp"/>
+                    android:layout_height="40dp"
+                    android:hint="Take Follow Up"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="7dp"
+                    android:background="@drawable/btn_follow_up"
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:text="+F"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
 
                 <Button
-                    android:background="@drawable/btn_view"
-                    android:text="V"
-                    android:elevation="2dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/primary_text"
-                    android:gravity="center"
-                    android:layout_gravity="center_vertical"
+                    android:id="@+id/btn_viewFollowUpDetails"
                     android:layout_width="40dp"
-                    android:layout_height="40dp"/>
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/btn_view"
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:text="V"
+                    android:hint="View Details"
+                    android:textColor="@color/primary_text"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
 
         </LinearLayout>
-
 
 
     </android.support.v7.widget.CardView>

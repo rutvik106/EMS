@@ -30,6 +30,7 @@
                 app:layout_collapseMode="parallax" />
 
 
+
         </android.support.design.widget.CollapsingToolbarLayout>
 
         <include
@@ -37,6 +38,8 @@
             layout="@layout/toolbar" />
 
     </android.support.design.widget.AppBarLayout>
+
+
 
 
     <android.support.v4.widget.NestedScrollView
@@ -47,10 +50,11 @@
 
         >
 
+
         <LinearLayout
-            android:background="@color/primary"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/primary"
             android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -62,6 +66,7 @@
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax" />
+
 
         </LinearLayout>
 
