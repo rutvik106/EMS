@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.rutvik.ems.ActivityAddNewCustomer;
+import com.example.rutvik.ems.ActivityAddNewInquiry;
 import com.example.rutvik.ems.R;
 import com.example.rutvik.ems.TakeFollowUp;
 
@@ -35,7 +37,10 @@ public class GridItemVH extends RecyclerView.ViewHolder implements View.OnClickL
         switch (getAdapterPosition())
         {
             case 0:
-                context.startActivity(new Intent(context, TakeFollowUp.class));
+                context.startActivity(new Intent(context, ActivityAddNewInquiry.class));
+                break;
+            case 2:
+                context.startActivity(new Intent(context, ActivityAddNewCustomer.class));
                 break;
         }
     }

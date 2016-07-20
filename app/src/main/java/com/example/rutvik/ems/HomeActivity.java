@@ -18,7 +18,9 @@ import android.transition.Slide;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ExpandableListView;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -55,6 +57,7 @@ public class HomeActivity extends AppCompatActivity
 
     private static final String EXTRA_IMAGE = "com.antonioleiva.materializeyourapp.extraImage";
     private static final String EXTRA_TITLE = "com.antonioleiva.materializeyourapp.extraTitle";
+
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
     private GridLayoutManager gridLayoutManager;
@@ -82,6 +85,8 @@ public class HomeActivity extends AppCompatActivity
 
     public static final String TAG = AppUtils.APP_TAG + HomeActivity.class.getSimpleName();
 
+    FrameLayout flNoNotifications;
+
     @SuppressWarnings("ConstantConditions")
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -101,6 +106,7 @@ public class HomeActivity extends AppCompatActivity
 
         elvNotificationsListView = (ExpandableListView) findViewById(R.id.elv_notificationList);
 
+        flNoNotifications = (FrameLayout) findViewById(R.id.frame_noNotifications);
 
 
         /*elvNotificationsListView.setFocusable(false);*/
@@ -135,26 +141,24 @@ public class HomeActivity extends AppCompatActivity
         //ollapsingToolbarLayout.setTitle("EMS");
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
 
-       /** final ImageView image = (ImageView) findViewById(R.id.image);
-        Picasso.with(this).load(getIntent().getStringExtra(EXTRA_IMAGE)).into(image, new Callback() {
-            @Override
-            public void onSuccess() {
-                Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
-                Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-                    public void onGenerated(Palette palette) {
-                        applyPalette(palette);
-                    }
-                });
-            }
+        /** final ImageView image = (ImageView) findViewById(R.id.image);
+         Picasso.with(this).load(getIntent().getStringExtra(EXTRA_IMAGE)).into(image, new Callback() {
+        @Override public void onSuccess() {
+        Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
+        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+        public void onGenerated(Palette palette) {
+        applyPalette(palette);
+        }
+        });
+        }
 
-            @Override
-            public void onError() {
+        @Override public void onError() {
 
-            }
+        }
         });
 
-        TextView title = (TextView) findViewById(R.id.title);
-        title.setText(itemTitle);*/
+         TextView title = (TextView) findViewById(R.id.title);
+         title.setText(itemTitle);*/
 
         List<GridItem> gridItemList = new ArrayList<>();
         gridItemList.add(new GridItem("Add New Inquiry", R.mipmap.ic_add_circle_white_48dp));
@@ -168,7 +172,7 @@ public class HomeActivity extends AppCompatActivity
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        HomeGridAdapter homeGridAdapter = new HomeGridAdapter(this,gridItemList);
+        HomeGridAdapter homeGridAdapter = new HomeGridAdapter(this, gridItemList);
         recyclerView.setAdapter(homeGridAdapter);
 
 
@@ -228,16 +232,13 @@ public class HomeActivity extends AppCompatActivity
             @Override
             protected Void doInBackground(Void... params)
             {
-
-
                 try
                 {
-                    response = new PostServiceHandler(AppUtils.APP_TAG, 3, 2000).doGet("http://192.168.1.105/ems/webservice/webservice.php?method=get_follow_up&id=29");
+                    response = new PostServiceHandler(AppUtils.APP_TAG, 3, 2000).doGet("http://192.168.1.134/ems/webservice/webservice.php?method=get_follow_up&id=29");
                 } catch (IOException e)
                 {
                     e.printStackTrace();
                 }
-
                 return null;
             }
 
@@ -263,6 +264,14 @@ public class HomeActivity extends AppCompatActivity
                         adapter = new NotificationListAdapter(HomeActivity.this, preapareModelList(followUpArray));
 
                         rv.setAdapter(adapter);
+
+                        if (adapter.getItemCount() < 1)
+                        {
+                            flNoNotifications.setVisibility(View.VISIBLE);
+                        } else
+                        {
+                            flNoNotifications.setVisibility(View.GONE);
+                        }
 
                         Toast.makeText(HomeActivity.this, "Model Size: " + modelList.size(), Toast.LENGTH_SHORT).show();
 

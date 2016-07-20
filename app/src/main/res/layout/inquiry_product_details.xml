@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/ll_inquiryProductDetailsRoot"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true">
+
+
+        <AutoCompleteTextView
+            android:id="@+id/act_products"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Product"
+            android:inputType="textNoSuggestions"
+            android:textSize="16sp" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3"
+        android:padding="3dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="MRP"/>
+
+        <EditText
+            android:id="@+id/et_inquiryProductPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="0"/>
+
+        <Spinner
+            android:id="@+id/spin_productPricePer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true">
+
+
+        <EditText
+            android:id="@+id/et_inquiryProductQuantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Quantity"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_productAttributes"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <View
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_height="1dp"
+            android:background="#000000"
+            android:layout_width="match_parent" />
+
+
+    </LinearLayout>
+
+
+    <View
+        android:layout_height="2dp"
+        android:background="@color/primary"
+        android:layout_marginBottom="4dp"
+        android:layout_width="match_parent" />
+
+    <!--<Button
+        android:id="@+id/btn_addAnotherProduct"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        android:layout_gravity="right"
+        android:textColor="#ffffff"
+        android:text="+ Add Another Product"/>-->
+
+</LinearLayout>
