@@ -15,6 +15,9 @@ import android.widget.TextView;
 import com.example.rutvik.ems.App;
 import com.example.rutvik.ems.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +58,7 @@ public class AppendableTextBox extends LinearLayout
 
         this.context = context;
 
-        View v = LayoutInflater.from(context).inflate(R.layout.appendable_text_box, null, false);
+        View v = LayoutInflater.from(context).inflate(R.layout.appendable_text_box, this, false);
 
         llRootLayout = (LinearLayout) v.findViewById(R.id.ll_appendableLayout);
 
@@ -82,18 +85,21 @@ public class AppendableTextBox extends LinearLayout
 
     }
 
-    public List getValues()
+    public String getValues()
     {
         Log.i(TAG, "COLLECTING VALUES FOR APPENDABLE TEXT BOX");
-        List<String> values = new ArrayList<>();
-        Log.i(TAG,"ROOT TEXT VALUE: "+tvRootTextView.getText());
-        values.add(tvRootTextView.getText().toString());
+        JSONArray values = new JSONArray();
+
+        Log.i(TAG, "ROOT TEXT VALUE: " + tvRootTextView.getText());
+        values.put(tvRootTextView.getText().toString());
         for (AppendedTextBox t : appendedTextBoxList)
         {
-            Log.i(TAG,"APPENDED TEXT BOX VALUE: "+t.getText());
-            values.add(t.getText());
+            Log.i(TAG, "APPENDED TEXT BOX VALUE: " + t.getText());
+            values.put(t.getText());
         }
-        return values;
+        return values.toString();
+
+
     }
 
     class AppendedTextBox

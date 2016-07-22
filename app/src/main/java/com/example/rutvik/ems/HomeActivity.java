@@ -3,8 +3,10 @@ package com.example.rutvik.ems;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewCompat;
@@ -28,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,6 +57,7 @@ import models.NotificationHeader;
 
 public class HomeActivity extends AppCompatActivity
 {
+
 
     private static final String EXTRA_IMAGE = "com.antonioleiva.materializeyourapp.extraImage";
     private static final String EXTRA_TITLE = "com.antonioleiva.materializeyourapp.extraTitle";
@@ -203,6 +207,13 @@ public class HomeActivity extends AppCompatActivity
 
     void getFollowUpAsync()
     {
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+
+        final String host = sp.getString("host", "http://127.0.0.1/");
+
+        final String sessionId = ((App) getApplication()).getUser().getSession_id();
+
         new AsyncTask<Void, Void, Void>()
         {
 
@@ -232,13 +243,24 @@ public class HomeActivity extends AppCompatActivity
             @Override
             protected Void doInBackground(Void... params)
             {
-                try
-                {
-                    response = new PostServiceHandler(AppUtils.APP_TAG, 3, 2000).doGet("http://192.168.1.134/ems/webservice/webservice.php?method=get_follow_up&id=29");
-                } catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
+
+                Map<String, String> postParams = new HashMap<>();
+                postParams.put("method", "get_follow_up");
+                postParams.put("session_id", sessionId);
+
+                new PostServiceHandler(AppUtils.APP_TAG, 2, 2000)
+                        .doPostRequest(host + AppUtils.URL_WEBSERVICE, postParams, new PostServiceHandler.ResponseCallback()
+                        {
+                            @Override
+                            public void response(int status, String r)
+                            {
+                                if (status == HttpURLConnection.HTTP_OK)
+                                {
+                                    response = r;
+                                }
+                            }
+                        });
+
                 return null;
             }
 
@@ -295,43 +317,44 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
-
-    /*void prepareData() {
-
-        final String data = "{\"follow_up\":{ \"id\":\"1\", \"follow_up_date\":\"14-4-2016\", \"discussion\":\"yoyo\", \"name\":\"jeet patel\", \"product\":\"ems\", \"extra_details\":\"extra long\", \"phone\":\"9824243009\", \"handle_by\":\"sanket jasani\" } }";
-
-
-        try {
-            final JSONObject obj = new JSONObject(data).getJSONObject("follow_up");
-
-            modelList = new ArrayList<>();
-            modelList.add("Today");
-            modelList.add("Tomorrow");
-
-            List<FollowUp> today = new ArrayList<>();
-            today.add(new FollowUp(obj, "Today"));
-            today.add(new FollowUp(obj, "Today"));
-
-            List<FollowUp> tomorrow = new ArrayList<>();
-            tomorrow.add(new FollowUp(obj, "Tomorrow"));
-            tomorrow.add(new FollowUp(obj, "Tomorrow"));
-
-            modelListMap = new HashMap<>();
-            modelListMap.put(modelList.get(0), today);
-            modelListMap.put(modelList.get(1), tomorrow);
-
-            expandableListAdapter = new ExpandableListAdapter(this, modelList, modelListMap);
-            elvNotificationsListView.setAdapter(expandableListAdapter);
-
-            for (int i = 0; i < expandableListAdapter.getGroupCount(); i++) {
-                elvNotificationsListView.expandGroup(i);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "error parsing json", Toast.LENGTH_SHORT).show();
-        }
-    }*/
+    /**
+     * void prepareData() {
+     * <p>
+     * final String data = "{\"follow_up\":{ \"id\":\"1\", \"follow_up_date\":\"14-4-2016\", \"discussion\":\"yoyo\", \"name\":\"jeet patel\", \"product\":\"ems\", \"extra_details\":\"extra long\", \"phone\":\"9824243009\", \"handle_by\":\"sanket jasani\" } }";
+     * <p>
+     * <p>
+     * try {
+     * final JSONObject obj = new JSONObject(data).getJSONObject("follow_up");
+     * <p>
+     * modelList = new ArrayList<>();
+     * modelList.add("Today");
+     * modelList.add("Tomorrow");
+     * <p>
+     * List<FollowUp> today = new ArrayList<>();
+     * today.add(new FollowUp(obj, "Today"));
+     * today.add(new FollowUp(obj, "Today"));
+     * <p>
+     * List<FollowUp> tomorrow = new ArrayList<>();
+     * tomorrow.add(new FollowUp(obj, "Tomorrow"));
+     * tomorrow.add(new FollowUp(obj, "Tomorrow"));
+     * <p>
+     * modelListMap = new HashMap<>();
+     * modelListMap.put(modelList.get(0), today);
+     * modelListMap.put(modelList.get(1), tomorrow);
+     * <p>
+     * expandableListAdapter = new ExpandableListAdapter(this, modelList, modelListMap);
+     * elvNotificationsListView.setAdapter(expandableListAdapter);
+     * <p>
+     * for (int i = 0; i < expandableListAdapter.getGroupCount(); i++) {
+     * elvNotificationsListView.expandGroup(i);
+     * }
+     * <p>
+     * } catch (Exception e) {
+     * e.printStackTrace();
+     * Toast.makeText(this, "error parsing json", Toast.LENGTH_SHORT).show();
+     * }
+     * }
+     */
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)

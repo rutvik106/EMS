@@ -15,15 +15,21 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:layout_marginRight="5dp"
+            style="@style/MyFloatingLabel"
             android:layout_weight="1">
 
             <EditText
                 android:id="@+id/tv_appendableTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
                 android:inputType="text"
-                android:singleLine="true"
                 android:textColor="#888888"/>
 
         </android.support.design.widget.TextInputLayout>

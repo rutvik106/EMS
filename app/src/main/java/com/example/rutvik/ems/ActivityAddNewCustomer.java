@@ -8,10 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import org.json.JSONException;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -22,6 +26,7 @@ import extras.AppUtils;
 import extras.Log;
 import extras.PostServiceHandler;
 import fragments.SimpleFormFragment;
+import jsonobject.Response;
 
 public class ActivityAddNewCustomer extends AppCompatActivity
 {
@@ -35,11 +40,15 @@ public class ActivityAddNewCustomer extends AppCompatActivity
 
     LinearLayout fragSimpleForm;
 
+    App app;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_customer);
+
+        app = (App) getApplication();
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -135,6 +144,16 @@ public class ActivityAddNewCustomer extends AppCompatActivity
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        if (item.getItemId() == android.R.id.home)
+        {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     class OnAddCustomer implements View.OnClickListener
     {
         @Override
@@ -143,9 +162,14 @@ public class ActivityAddNewCustomer extends AppCompatActivity
 
             final Map postParams = new HashMap();
 
+            postParams.put("method", "add_customer");
+
+            postParams.put("session_id", app.getUser().getSession_id());
+
             for (int i = 0; i < customerDetailsAdapter.getItemCount(); i++)
             {
                 Log.i(TAG, "DATA: " + customerDetailsAdapter.getComponentListMap().get(Long.valueOf(i)).getRowItem().getValue());
+
 
                 postParams.put(customerDetailsAdapter.getComponentListMap().get(Long.valueOf(i)).getRowItem().getName(),
                         customerDetailsAdapter.getComponentListMap().get(Long.valueOf(i)).getRowItem().getValue());
@@ -155,24 +179,56 @@ public class ActivityAddNewCustomer extends AppCompatActivity
             new AsyncTask<Void, Void, Void>()
             {
 
+                String response = "";
+
+                Response jsonResponse;
+
                 @Override
                 protected Void doInBackground(Void... voids)
                 {
 
                     new PostServiceHandler(TAG, 2, 2000)
-                            .doPostRequest("http://192.168.0.100/ems/admin/directCustomer/index.php?action=add",
+                            .doPostRequest(app.getHost() + AppUtils.URL_WEBSERVICE,
                                     postParams,
                                     new PostServiceHandler.ResponseCallback()
                                     {
                                         @Override
-                                        public void response(int status, String response)
+                                        public void response(int status, String r)
                                         {
-                                            Log.i(TAG, "HTTP STATUS: " + status);
-                                            Log.i(TAG, "HTTP RESPONSE: " + response);
+                                            response = r;
                                         }
                                     });
 
                     return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void aVoid)
+                {
+                    try
+                    {
+                        jsonResponse = new Response(response);
+                        if (jsonResponse.isStatusOk())
+                        {
+                            Toast.makeText(ActivityAddNewCustomer.this,
+                                    jsonResponse.getMessage(),
+                                    Toast.LENGTH_SHORT)
+                                    .show();
+                            ActivityAddNewCustomer.this.finish();
+                        }else {
+                            Toast.makeText(ActivityAddNewCustomer.this,
+                                    jsonResponse.getMessage(),
+                                    Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    } catch (JSONException e)
+                    {
+                        Log.i(TAG,e.getMessage());
+                        Toast.makeText(ActivityAddNewCustomer.this,
+                                "Something went wrong, Please try again later",
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
                 }
             }.execute();
 
