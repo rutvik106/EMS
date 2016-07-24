@@ -1,8 +1,10 @@
 package com.example.rutvik.ems;
 
 import android.app.Application;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import extras.AppUtils;
 import extras.Log;
@@ -36,6 +38,14 @@ public class App extends Application
 
     public User getUser()
     {
+        if(user.getSession_id().isEmpty() || user.getSession_id()==null)
+        {
+            Toast.makeText(this,"Your Session was expired",Toast.LENGTH_LONG).show();
+            Intent i = new Intent(this, InitialActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            return null;
+        }
         return user;
     }
 

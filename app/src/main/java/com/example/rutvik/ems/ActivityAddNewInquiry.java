@@ -2,6 +2,7 @@ package com.example.rutvik.ems;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -11,12 +12,15 @@ import android.text.InputType;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import ComponentFactory.AppendableTextBox;
 import adapters.SimpleFormAdapter;
 import extras.AppUtils;
 import extras.Log;
@@ -40,11 +44,15 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 
     LinearLayout fragSimpleForm;
 
+    App app;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_inquiry);
+
+        app = (App) getApplication();
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -54,6 +62,9 @@ public class ActivityAddNewInquiry extends AppCompatActivity
             getSupportActionBar().setTitle("Add New Inquiry");
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+            upArrow.setColorFilter(getResources().getColor(R.color.mdtp_white), PorterDuff.Mode.SRC_ATOP);
+            getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
 
         fragSimpleForm = (LinearLayout) findViewById(R.id.frag_simpleForm);
@@ -71,7 +82,6 @@ public class ActivityAddNewInquiry extends AppCompatActivity
         populateLeadInquiryDetails();
 
 
-
     }
 
     public void setAddEnquiryButton()
@@ -84,7 +94,7 @@ public class ActivityAddNewInquiry extends AppCompatActivity
         addEnquiry.setTextColor(Color.WHITE);
         addEnquiry.getBackground().setColorFilter(0xFFFF9800, PorterDuff.Mode.MULTIPLY);
 
-        fragSimpleForm.addView(addEnquiry,3);
+        fragSimpleForm.addView(addEnquiry, 3);
 
 
         /*<Button
@@ -158,7 +168,7 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 
         simpleFormAdapter.addTextBox("Customer Name*", "c_name", ++i, InputType.TYPE_CLASS_TEXT, true, "");
 
-        simpleFormAdapter.addAppendableTextBox("Contact No*", "", ++i);
+        simpleFormAdapter.addAppendableTextBox("Contact No*", "", ++i, app.getHost() + AppUtils.URL_EXACT_CONTACT_NO, new AppendableTextBoxUrlListener());
 
         simpleFormAdapter.addTextBox("Email Address", "c_name", ++i, InputType.TYPE_CLASS_TEXT, true, "");
 
@@ -256,9 +266,22 @@ public class ActivityAddNewInquiry extends AppCompatActivity
             {
                 setAddEnquiryButton();
             }
-        },10);
+        }, 10);
 
 
+    }
+
+    class AppendableTextBoxUrlListener implements AppendableTextBox.OnUrlTriggered
+    {
+
+
+        @Override
+        public void urlTriggered(EditText etContact, TextView tvDuplicateErrorMsg, String response)
+        {
+            etContact.setTextColor(Color.RED);
+            final String msg="Contact already exist for id "+response;
+            tvDuplicateErrorMsg.setText(msg);
+        }
     }
 
 }

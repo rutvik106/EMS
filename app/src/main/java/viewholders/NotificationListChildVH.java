@@ -86,10 +86,10 @@ public class NotificationListChildVH extends RecyclerView.ViewHolder implements 
     {
         if (view.getId() == R.id.btn_takeFollowUp)
         {
-
             Intent i = new Intent(context, TakeFollowUp.class);
             i.putExtra("follow_up_customer_name",followUp.getName());
             i.putExtra("follow_up_customer_contact",followUp.getPhone());
+            i.putExtra("enquiry_id",followUp.getId());
             context.startActivity(i);
 
         } else if (view.getId() == R.id.btn_viewFollowUpDetails)

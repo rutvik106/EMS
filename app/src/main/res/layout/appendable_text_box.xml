@@ -13,13 +13,13 @@
         android:weightSum="6">
 
         <android.support.design.widget.TextInputLayout
+            style="@style/MyFloatingLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="5dp"
-            style="@style/MyFloatingLabel"
             android:layout_weight="1">
 
             <EditText
@@ -30,7 +30,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:inputType="text"
-                android:textColor="#888888"/>
+                android:textColor="#000000"/>
 
         </android.support.design.widget.TextInputLayout>
 
@@ -46,5 +46,20 @@
 
     </LinearLayout>
 
+    <FrameLayout
+        android:id="@+id/fl_duplicateError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_duplicateErrorMsg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="4dp"
+            android:textColor="@color/accent"
+            android:textSize="16sp"/>
+
+    </FrameLayout>
 
 </LinearLayout>

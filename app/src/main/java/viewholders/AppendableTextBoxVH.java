@@ -3,6 +3,7 @@ package viewholders;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,17 +34,18 @@ public class AppendableTextBoxVH extends RecyclerView.ViewHolder implements RowI
         this.appendableTextBox = appendableTextBox;
     }
 
-    public static AppendableTextBoxVH create(Context context)
+    public static AppendableTextBoxVH create(Context context, AppendableTextBox.OnUrlTriggered listener)
     {
-        AppendableTextBoxVH vh = new AppendableTextBoxVH(new AppendableTextBox(context));
+        AppendableTextBoxVH vh = new AppendableTextBoxVH(new AppendableTextBox(context,listener));
         return vh;
     }
 
     public static void bind(AppendableTextBoxVH vh, Map map, Component component)
     {
         vh.map=map;
-        vh.appendableTextBox.tvRootTextView.setHint(map.get("label").toString());
+        vh.appendableTextBox.etRootTextView.setHint(map.get("label").toString());
         vh.appendableTextBox.setValueName(map.get("name").toString());
+        //vh.appendableTextBox.setTriggerUrl(map.get("trigger_url").toString());
         component.setRowItem(vh);
     }
 
@@ -101,4 +103,5 @@ public class AppendableTextBoxVH extends RecyclerView.ViewHolder implements RowI
     {
         return map.get("name").toString();
     }
+
 }

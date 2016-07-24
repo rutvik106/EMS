@@ -2,6 +2,7 @@ package com.example.rutvik.ems;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +13,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -21,6 +24,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import ComponentFactory.AppendableTextBox;
 import adapters.SimpleFormAdapter;
 import extras.AppUtils;
 import extras.Log;
@@ -58,6 +62,9 @@ public class ActivityAddNewCustomer extends AppCompatActivity
             getSupportActionBar().setTitle("Add New Customer");
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+            upArrow.setColorFilter(getResources().getColor(R.color.mdtp_white), PorterDuff.Mode.SRC_ATOP);
+            getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
 
         fragSimpleForm = (LinearLayout) findViewById(R.id.frag_simpleForm);
@@ -102,7 +109,7 @@ public class ActivityAddNewCustomer extends AppCompatActivity
 
         customerDetailsAdapter.addTextBox("Customer Name*", "customer_name", ++i, InputType.TYPE_CLASS_TEXT, true, "");
 
-        customerDetailsAdapter.addAppendableTextBox("Contact No*", "mobile_no", ++i);
+        customerDetailsAdapter.addAppendableTextBox("Contact No*", "mobile_no", ++i, app.getHost() + AppUtils.URL_EXACT_CONTACT_NO, new ActivityAddNewCustomer.AppendableTextBoxUrlListener());
 
         customerDetailsAdapter.addTextBox("Email Address", "email_id", ++i, InputType.TYPE_CLASS_TEXT, true, "");
 
@@ -215,7 +222,8 @@ public class ActivityAddNewCustomer extends AppCompatActivity
                                     Toast.LENGTH_SHORT)
                                     .show();
                             ActivityAddNewCustomer.this.finish();
-                        }else {
+                        } else
+                        {
                             Toast.makeText(ActivityAddNewCustomer.this,
                                     jsonResponse.getMessage(),
                                     Toast.LENGTH_SHORT)
@@ -223,7 +231,7 @@ public class ActivityAddNewCustomer extends AppCompatActivity
                         }
                     } catch (JSONException e)
                     {
-                        Log.i(TAG,e.getMessage());
+                        Log.i(TAG, e.getMessage());
                         Toast.makeText(ActivityAddNewCustomer.this,
                                 "Something went wrong, Please try again later",
                                 Toast.LENGTH_SHORT)
@@ -232,6 +240,19 @@ public class ActivityAddNewCustomer extends AppCompatActivity
                 }
             }.execute();
 
+        }
+    }
+
+    class AppendableTextBoxUrlListener implements AppendableTextBox.OnUrlTriggered
+    {
+
+
+        @Override
+        public void urlTriggered(EditText etContact, TextView tvDuplicateErrorMsg, String response)
+        {
+            etContact.setTextColor(Color.RED);
+            final String msg="Contact already exist for id "+response;
+            tvDuplicateErrorMsg.setText(msg);
         }
     }
 

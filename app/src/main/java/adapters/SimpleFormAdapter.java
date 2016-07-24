@@ -41,6 +41,8 @@ public class SimpleFormAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     final Activity activity;
 
+    AppendableTextBox.OnUrlTriggered urlListener;
+
     public static final String TAG = "STS" + SimpleFormAdapter.class.getSimpleName();
 
     public SimpleFormAdapter(Activity activity)
@@ -123,11 +125,13 @@ public class SimpleFormAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         notifyItemInserted(componentListMap.size());
     }
 
-    public void addAppendableTextBox(String label, String name, long id)
+    public void addAppendableTextBox(String label, String name, long id, String triggerUrl, AppendableTextBox.OnUrlTriggered urlListener)
     {
+        this.urlListener=urlListener;
         Map map = new HashMap();
         map.put("label", label);
         map.put("name", name);
+        map.put("trigger_url", triggerUrl);
         componentListMap.put(id, new Component(map, Component.APPENDABLE_TEXT_BOX, id));
         notifyItemInserted(componentListMap.size());
     }
@@ -181,7 +185,7 @@ public class SimpleFormAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             case Component.APPENDABLE_TEXT_BOX:
                 //Log.i(TAG,"CREATING DEPENDENT SPINNER");
-                return AppendableTextBoxVH.create(context);
+                return AppendableTextBoxVH.create(context,urlListener);
 
             case Component.INQUIRY_PRODUCT_DETAILS:
                 return InquiryProductDetailsVH.create(context);

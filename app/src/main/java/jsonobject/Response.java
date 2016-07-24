@@ -14,7 +14,7 @@ public class Response
 
     public Response(String response) throws JSONException
     {
-        JSONObject obj = new JSONObject(response);
+        JSONObject obj = new JSONObject(response).getJSONObject("response");
         status = obj.getString("status");
         message = obj.getString("message");
     }
