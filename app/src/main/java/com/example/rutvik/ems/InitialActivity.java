@@ -188,6 +188,8 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
                         try
                         {
                             user = new User(response);
+                            SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(InitialActivity.this);
+                            sp.edit().putString("session_id",user.getSession_id()).apply();
                             success = true;
                         } catch (JSONException e)
                         {
