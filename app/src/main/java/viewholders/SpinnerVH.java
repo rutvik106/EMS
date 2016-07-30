@@ -130,7 +130,7 @@ public class SpinnerVH extends RecyclerView.ViewHolder implements RowItem, Adapt
         String id;
         String value;
 
-        SpinnerData(String id, String value)
+        public SpinnerData(String id, String value)
         {
             this.id = id;
             this.value = value;
@@ -158,7 +158,7 @@ public class SpinnerVH extends RecyclerView.ViewHolder implements RowItem, Adapt
 
         private int selection = -1;
 
-        MySpinnerBaseAdapter(Context context)
+        public MySpinnerBaseAdapter(Context context)
         {
             Log.i(TAG, "Creating base adapter for spinner");
             this.context = context;

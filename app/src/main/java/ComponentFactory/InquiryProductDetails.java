@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,6 +26,7 @@ import org.json.JSONObject;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import adapters.DropdownProductAdapter;
@@ -32,6 +34,7 @@ import extras.AppUtils;
 import extras.Log;
 import extras.PostServiceHandler;
 import jsonobject.DropdownProduct;
+import viewholders.SpinnerVH;
 
 /**
  * Created by rutvik on 09-07-2016 at 04:01 PM.
@@ -57,6 +60,10 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
 
     GetDropdownDataAsync getDropdownDataAsync;
 
+    OnProductSelected onProductSelectedListener;
+
+    PopulateAttributeView populateAttributeView;
+
     public InquiryProductDetails(Context context)
     {
         super(context);
@@ -71,10 +78,17 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
         if (view != null)
         {
             actProduct = (AutoCompleteTextView) view.findViewById(R.id.act_products);
+
             etProductPrice = (EditText) view.findViewById(R.id.et_inquiryProductPrice);
             spinProductPer = (Spinner) view.findViewById(R.id.spin_productPricePer);
             etInquiryProductQuantity = (EditText) view.findViewById(R.id.et_inquiryProductQuantity);
             llProductAttributes = (LinearLayout) view.findViewById(R.id.ll_productAttributes);
+
+            populateAttributeView = new PopulateAttributeView(context, llProductAttributes);
+
+            onProductSelectedListener = new OnProductSelected(context, populateAttributeView);
+
+            actProduct.setOnItemClickListener(onProductSelectedListener);
         }
 
         this.addView(view);
@@ -104,6 +118,8 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
                     url, sessionId, actProduct, adapter);
             getDropdownDataAsync.execute();
         }
+
+
 
 
     }
@@ -143,6 +159,186 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
     }
 
 
+    static class OnProductSelected implements AdapterView.OnItemClickListener
+    {
+        private static final String TAG=AppUtils.APP_TAG+OnProductSelected.class.getSimpleName();
+
+        Context context;
+
+        PopulateAttributeView populateAttributeView;
+
+        public OnProductSelected(Context context, PopulateAttributeView populateAttributeView)
+        {
+            Log.i(TAG,"CREATED ON PRODUCT SELECTED LISTENER");
+            this.context = context;
+            this.populateAttributeView = populateAttributeView;
+        }
+
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+        {
+            Log.i(TAG,"ITEM SELECTED INDEX IS: "+i);
+            DropdownProductAdapter dp = (DropdownProductAdapter) adapterView.getAdapter();
+            new GetAttributeAsync(String.valueOf(dp.getItemId(i)), context, populateAttributeView).execute();
+        }
+    }
+
+
+    static class GetAttributeAsync extends AsyncTask<Void, Void, String>
+    {
+
+        private static final String TAG = AppUtils.APP_TAG + GetAttributeAsync.class.getSimpleName();
+
+        String response;
+
+        String subCatId;
+
+        Context context;
+
+        PopulateAttributeView populateAttributeView;
+
+        public GetAttributeAsync(String subCatId, Context context, PopulateAttributeView populateAttributeView)
+        {
+            this.subCatId = subCatId;
+            this.context = context;
+            this.populateAttributeView = populateAttributeView;
+        }
+
+        @Override
+        protected String doInBackground(Void... voids)
+        {
+            final String host = PreferenceManager.getDefaultSharedPreferences(context).getString("host", "");
+            final String sessionId = PreferenceManager.getDefaultSharedPreferences(context).getString("session_id", "");
+            if (!host.isEmpty() && !sessionId.isEmpty())
+            {
+                final Map<String, String> postParam = new HashMap<>();
+                postParam.put("method", "get_attributes_from_subcat_id");
+                postParam.put("session_id", sessionId);
+                postParam.put("sub_cat_id", subCatId);
+
+                new PostServiceHandler(TAG, 1, 1000).doPostRequest(host + AppUtils.URL_WEBSERVICE, postParam, new PostServiceHandler.ResponseCallback()
+                {
+                    @Override
+                    public void response(int status, String response)
+                    {
+                        GetAttributeAsync.this.response = response;
+                    }
+                });
+            }
+
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String s)
+        {
+            Log.i(TAG, "RESPONSE: " + s);
+            if (!s.isEmpty())
+            {
+                populateAttributeView.populate(s);
+            }
+        }
+    }
+
+    static class PopulateAttributeView
+    {
+        List<SpinnerView> attributeSpinList = new ArrayList<>();
+
+        LinearLayout llProductAttributes;
+
+        Context context;
+
+        public PopulateAttributeView(Context context, LinearLayout llProductAttributes)
+        {
+            this.llProductAttributes = llProductAttributes;
+            this.context = context;
+        }
+
+        public void populate(String response)
+        {
+            Log.i(TAG,"POPULATING ATTRIBUTE VIEW");
+            try
+            {
+                JSONArray arr = new JSONArray(response);
+                if (arr.length() > 0)
+                {
+                    Log.i(TAG,"REMOVING/VISIBLE ATTRIBUTE VIEW AND");
+
+                    llProductAttributes.setVisibility(VISIBLE);
+
+
+                    for (int i = 0; i < arr.length(); i++)
+                    {
+
+                        JSONObject obj = arr.getJSONObject(i).getJSONObject("attribute_type");
+
+                        JSONArray attributeNameArray = arr.getJSONObject(i).getJSONArray("attribute_name");
+
+                        if (attributeNameArray.length() > 0)
+                        {
+                            Log.i(TAG,"GETTING ATTRIBUTE JSON");
+                            ArrayList<SpinnerVH.SpinnerData> data = new ArrayList<>();
+                            for (int j = 0; j < attributeNameArray.length(); j++)
+                            {
+
+                                JSONObject singleName = attributeNameArray.getJSONObject(j);
+
+                                Log.i(TAG,"SPINNER DATA ID: "+singleName.getString("attribute_name_id"));
+                                Log.i(TAG,"SPINNER DATA VALUES: "+singleName.getString("attribute_name"));
+
+                                data.add(new SpinnerVH.
+                                        SpinnerData(singleName.getString("attribute_name_id"),
+                                        singleName.getString("attribute_name")));
+                            }
+                            SpinnerView sv = new SpinnerView(context, obj.getString("attribute_type"), data);
+
+                            attributeSpinList.add(sv);
+                        }
+                    }
+                    for (SpinnerView sv : attributeSpinList)
+                    {
+                        Log.i(TAG,"ADDING ATTRIBUTE SPINNER TO VIEW");
+                        llProductAttributes.addView(sv);
+                    }
+                }
+
+            } catch (JSONException e)
+            {
+
+            }
+        }
+
+    }
+
+    static class SpinnerView extends LinearLayout
+    {
+        MySpinner mySpinner;
+        SpinnerVH.MySpinnerBaseAdapter adapter;
+
+        ArrayList<SpinnerVH.SpinnerData> data;
+
+        public SpinnerView(Context context, String name, ArrayList<SpinnerVH.SpinnerData> data)
+        {
+            super(context);
+            mySpinner = new MySpinner(context);
+            mySpinner.setTitle(name);
+            adapter = new SpinnerVH.MySpinnerBaseAdapter(context);
+            this.data=data;
+            adapter.setData(this.data);
+            mySpinner.spinner.setAdapter(adapter);
+            this.addView(mySpinner);
+
+            adapter.notifyDataSetChanged();
+            if(data==null){
+                Log.i(TAG,"DATA IS NULL");
+            }
+            else {
+                Log.i(TAG,"DATA : "+data.toString());
+            }
+        }
+
+    }
+
     static class GetDropdownDataAsync extends AsyncTask<Void, Void, String>
     {
         private static final String TAG = AppUtils.APP_TAG + GetDropdownDataAsync.class.getSimpleName();
@@ -163,7 +359,7 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
             this.url = url;
             this.sessionId = sessionId;
             this.adapter = adapter;
-            this.context=context;
+            this.context = context;
         }
 
         @Override

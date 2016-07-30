@@ -14,7 +14,11 @@ import com.example.rutvik.ems.App;
 import com.example.rutvik.ems.R;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import extras.AppUtils;
 import extras.Log;
@@ -29,7 +33,7 @@ public class DropdownProductAdapter extends BaseAdapter implements Filterable
 
     Context context;
 
-    private List<DropdownProduct> dropdownProductList = new ArrayList<>();
+    private Map<String, DropdownProduct> dropdownProductMap = new HashMap<>();
 
     private List<String> suggestions = new ArrayList<>();
 
@@ -44,7 +48,7 @@ public class DropdownProductAdapter extends BaseAdapter implements Filterable
 
     public void addDropdownListProduct(DropdownProduct dp)
     {
-        dropdownProductList.add(dp);
+        dropdownProductMap.put(dp.getSub_cat_name(), dp);
     }
 
     @Override
@@ -62,7 +66,7 @@ public class DropdownProductAdapter extends BaseAdapter implements Filterable
     @Override
     public long getItemId(int i)
     {
-        return Long.valueOf(dropdownProductList.get(i).getSub_cat_id());
+        return Long.valueOf(dropdownProductMap.get(suggestions.get(i)).getSub_cat_id());
     }
 
     @Override
@@ -108,13 +112,18 @@ public class DropdownProductAdapter extends BaseAdapter implements Filterable
         {
             suggestions.clear();
 
-            if (dropdownProductList != null && constraint != null)
+            if (dropdownProductMap != null && constraint != null)
             { // Check if the Original List and Constraint aren't null.
-                for (int i = 0; i < dropdownProductList.size(); i++)
+
+                Collection<DropdownProduct> dpCollection = dropdownProductMap.values();
+                Iterator<DropdownProduct> dpIterator = dpCollection.iterator();
+
+                while (dpIterator.hasNext())
                 {
-                    if (dropdownProductList.get(i).getSub_cat_name().toLowerCase().contains(constraint))
+                    DropdownProduct dp=dpIterator.next();
+                    if (dropdownProductMap.get(dp.getSub_cat_name()).getSub_cat_name().toLowerCase().contains(constraint))
                     { // Compare item in original list if it contains constraints.
-                        suggestions.add(dropdownProductList.get(i).getSub_cat_name()); // If TRUE add item in Suggestions.
+                        suggestions.add(dp.getSub_cat_name()); // If TRUE add item in Suggestions.
                     }
                 }
             }
