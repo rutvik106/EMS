@@ -55,16 +55,9 @@ public class AppendableTextBox extends LinearLayout
 
     Button btnRootButton;
 
-    Map values = new HashMap();
-
     String valueName;
 
     String triggerUrl = "";
-
-    public void setValueName(String name)
-    {
-        valueName = name + "[]";
-    }
 
     OnUrlTriggered urlTriggeredListener;
 

@@ -13,7 +13,6 @@
         android:weightSum="6">
 
         <android.support.design.widget.TextInputLayout
-            style="@style/MyFloatingLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"

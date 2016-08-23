@@ -90,6 +90,7 @@ public class HomeActivity extends AppCompatActivity
     public static final String TAG = AppUtils.APP_TAG + HomeActivity.class.getSimpleName();
 
     FrameLayout flNoNotifications;
+    FrameLayout flLoadingFollowUp;
 
     @SuppressWarnings("ConstantConditions")
     @Override
@@ -111,6 +112,8 @@ public class HomeActivity extends AppCompatActivity
         elvNotificationsListView = (ExpandableListView) findViewById(R.id.elv_notificationList);
 
         flNoNotifications = (FrameLayout) findViewById(R.id.frame_noNotifications);
+
+        flLoadingFollowUp = (FrameLayout) findViewById(R.id.fl_loadingFollowUp);
 
 
         /*elvNotificationsListView.setFocusable(false);*/
@@ -217,27 +220,26 @@ public class HomeActivity extends AppCompatActivity
         new AsyncTask<Void, Void, Void>()
         {
 
-            ProgressDialog dialog;
+            //ProgressDialog dialog;
 
             String response = "";
 
             @Override
             protected void onPreExecute()
             {
-                dialog = new ProgressDialog(HomeActivity.this);
-                dialog.setTitle("Please Wait");
-                dialog.setMessage("Getting follow up...");
-                dialog.setCancelable(true);
-                dialog.setCanceledOnTouchOutside(false);
-                dialog.setOnCancelListener(new DialogInterface.OnCancelListener()
-                {
-                    @Override
-                    public void onCancel(DialogInterface dialog)
-                    {
-                        HomeActivity.this.finish();
-                    }
-                });
-                dialog.show();
+                /**                dialog = new ProgressDialog(HomeActivity.this);
+                 dialog.setTitle("Please Wait");
+                 dialog.setMessage("Getting follow up...");
+                 dialog.setCancelable(true);
+                 dialog.setCanceledOnTouchOutside(false);
+                 dialog.setOnCancelListener(new DialogInterface.OnCancelListener()
+                 {
+                 @Override public void onCancel(DialogInterface dialog)
+                 {
+                 HomeActivity.this.finish();
+                 }
+                 });
+                 dialog.show();*/
             }
 
             @Override
@@ -295,7 +297,9 @@ public class HomeActivity extends AppCompatActivity
                             flNoNotifications.setVisibility(View.GONE);
                         }
 
-                        Toast.makeText(HomeActivity.this, "Model Size: " + modelList.size(), Toast.LENGTH_SHORT).show();
+                        flLoadingFollowUp.setVisibility(View.GONE);
+
+                        //Toast.makeText(HomeActivity.this, "Model Size: " + modelList.size(), Toast.LENGTH_SHORT).show();
 
                     } catch (JSONException e)
                     {
@@ -304,13 +308,13 @@ public class HomeActivity extends AppCompatActivity
                     }
                 }
 
-                if (dialog != null)
-                {
-                    if (dialog.isShowing())
-                    {
-                        dialog.dismiss();
-                    }
-                }
+                /**if (dialog != null)
+                 {
+                 if (dialog.isShowing())
+                 {
+                 dialog.dismiss();
+                 }
+                 }*/
 
             }
         }.execute();
@@ -436,7 +440,6 @@ public class HomeActivity extends AppCompatActivity
             Map.Entry<String, List<FollowUp>> singleEntry = entry.next();
             Log.i(TAG, "KEY: " + singleEntry.getKey());
             modelList.add(new NotificationHeader(singleEntry.getKey(), singleEntry.getValue()));
-
         }
 
         return modelList;

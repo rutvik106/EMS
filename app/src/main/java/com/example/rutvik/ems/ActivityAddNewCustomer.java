@@ -145,10 +145,9 @@ public class ActivityAddNewCustomer extends AppCompatActivity
         addCustomer.setLayoutParams(lParams);
         addCustomer.setText("Add Customer");
         addCustomer.setTextColor(Color.WHITE);
-        addCustomer.getBackground().setColorFilter(0xFFFF9800, PorterDuff.Mode.MULTIPLY);
+        addCustomer.getBackground().setColorFilter(0xFF00695C, PorterDuff.Mode.MULTIPLY);
         addCustomer.setOnClickListener(new OnAddCustomer());
         fragSimpleForm.addView(addCustomer);
-
     }
 
     @Override
@@ -245,8 +244,6 @@ public class ActivityAddNewCustomer extends AppCompatActivity
 
     class AppendableTextBoxUrlListener implements AppendableTextBox.OnUrlTriggered
     {
-
-
         @Override
         public void urlTriggered(EditText etContact, TextView tvDuplicateErrorMsg, String response)
         {

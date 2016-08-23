@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
-import com.example.rutvik.ems.App;
 import com.example.rutvik.ems.R;
 
 import org.json.JSONArray;
@@ -28,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import adapters.DropdownProductAdapter;
 import extras.AppUtils;
@@ -49,10 +49,13 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
 
     AutoCompleteTextView actProduct;
     EditText etProductPrice;
-    Spinner spinProductPer;
+    Spinner spinUnit;
+    SpinnerVH.MySpinnerBaseAdapter unitSpinnerAdapter;
     EditText etInquiryProductQuantity;
     LinearLayout llProductAttributes;
     Button btnAddAnotherProduct;
+
+    ArrayList<SpinnerVH.SpinnerData> spinnerDataList=new ArrayList<>();
 
     DropdownProductAdapter adapter;
 
@@ -63,6 +66,10 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
     OnProductSelected onProductSelectedListener;
 
     PopulateAttributeView populateAttributeView;
+
+    String selectedUnitId = "";
+
+    Map<String, String> unitSpinnerData;
 
     public InquiryProductDetails(Context context)
     {
@@ -80,7 +87,26 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
             actProduct = (AutoCompleteTextView) view.findViewById(R.id.act_products);
 
             etProductPrice = (EditText) view.findViewById(R.id.et_inquiryProductPrice);
-            spinProductPer = (Spinner) view.findViewById(R.id.spin_productPricePer);
+            spinUnit = (Spinner) view.findViewById(R.id.spin_productPricePer);
+            spinUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+            {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
+                {
+                    Log.i(TAG, "UNIT SPINNER SELECTED ITEM ID: " + ((SpinnerVH.MySpinnerBaseAdapter) adapterView.getAdapter()).getItem(i).getId());
+                    selectedUnitId = String.valueOf(((SpinnerVH.MySpinnerBaseAdapter) adapterView.getAdapter()).getItem(i).getId());
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView)
+                {
+
+                }
+            });
+            unitSpinnerAdapter = new SpinnerVH.MySpinnerBaseAdapter(context);
+            spinUnit.setAdapter(unitSpinnerAdapter);
+
+
             etInquiryProductQuantity = (EditText) view.findViewById(R.id.et_inquiryProductQuantity);
             llProductAttributes = (LinearLayout) view.findViewById(R.id.ll_productAttributes);
 
@@ -120,7 +146,128 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
         }
 
 
+    }
 
+    public Map<String, String> getProductDetailsValues()
+    {
+        Log.i(TAG, "COLLECTING VALUES FOR PRODUCT DETAILS");
+
+        Map<String, String> productDetailMap = new HashMap<>();
+
+        JSONArray product_id = new JSONArray();
+        product_id.put(onProductSelectedListener.selectedSubCatId);
+
+        JSONArray mrp = new JSONArray();
+        mrp.put(etProductPrice.getText());
+
+        JSONArray unit_id = new JSONArray();
+        unit_id.put(selectedUnitId);
+
+        JSONArray quantity_id = new JSONArray();
+        quantity_id.put(etInquiryProductQuantity.getText());
+
+        JSONObject attr = new JSONObject();
+
+        try
+        {
+            JSONObject attribut_details = new JSONObject();
+            for (SpinnerView sv : populateAttributeView.attributeSpinList)
+            {
+                JSONArray attribute_value = new JSONArray();
+                attribute_value.put(sv.selectedItemId);
+                attribut_details.put(sv.id, attribute_value);
+            }
+            attr.put(onProductSelectedListener.selectedSubCatId, attribut_details);
+            Log.i(TAG, "attr: " + attr.toString());
+        } catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+
+        for (AnotherProductDetails p : anotherProductDetailsArrayList)
+        {
+            try
+            {
+                JSONObject attribut_details = new JSONObject();
+                for (SpinnerView sv : p.populateAttributeView.attributeSpinList)
+                {
+                    JSONArray attribute_value = new JSONArray();
+                    attribute_value.put(sv.selectedItemId);
+                    attribut_details.put(sv.id, attribute_value);
+                }
+                attr.put(p.onProductSelectedListener.selectedSubCatId, attribut_details);
+                Log.i(TAG, "attr: " + attr.toString());
+            } catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+
+            Log.i(TAG, "APPENDED TEXT BOX VALUE: " + p.onProductSelectedListener.selectedSubCatId);
+            product_id.put(p.onProductSelectedListener.selectedSubCatId);
+
+            Log.i(TAG, "APPENDED TEXT BOX VALUE: " + p.etProductPrice.getText());
+            mrp.put(p.etProductPrice.getText());
+
+            Log.i(TAG, "APPENDED TEXT BOX VALUE: " + p.selectedUnitId);
+            unit_id.put(p.selectedUnitId);
+
+            Log.i(TAG, "APPENDED TEXT BOX VALUE: " + p.etInquiryProductQuantity.getText());
+            quantity_id.put(p.etInquiryProductQuantity.getText());
+
+
+        }
+
+
+        /*for (AnotherProductDetails p : anotherProductDetailsArrayList)
+        {
+            Log.i(TAG, "APPENDED TEXT BOX VALUE: " + p.onProductSelectedListener.selectedSubCatId);
+            product_id.put(p.onProductSelectedListener.selectedSubCatId);
+        }*/
+        productDetailMap.put("product_id", product_id.toString());
+
+
+        /*for (AnotherProductDetails p : anotherProductDetailsArrayList)
+        {
+            Log.i(TAG, "APPENDED TEXT BOX VALUE: " + p.etProductPrice.getText());
+            mrp.put(p.etProductPrice.getText());
+        }*/
+        productDetailMap.put("mrp", mrp.toString());
+
+
+        /*for (AnotherProductDetails p : anotherProductDetailsArrayList)
+        {
+            Log.i(TAG, "APPENDED TEXT BOX VALUE: " + p.selectedUnitId);
+            unit_id.put(p.selectedUnitId);
+        }*/
+        productDetailMap.put("unit_id", unit_id.toString());
+
+
+        /*for (AnotherProductDetails p : anotherProductDetailsArrayList)
+        {
+            Log.i(TAG, "APPENDED TEXT BOX VALUE: " + p.etInquiryProductQuantity.getText());
+            quantity_id.put(p.etInquiryProductQuantity.getText());
+        }*/
+        productDetailMap.put("quantity_id", quantity_id.toString());
+
+        productDetailMap.put("attribute_name_array", attr.toString());
+
+        Log.i(TAG, "PRODUCT DETAIL MAP DATA: " + productDetailMap.toString());
+
+        return productDetailMap;
+    }
+
+    public void setSpinnerAdapter(Map<String, String> data)
+    {
+        unitSpinnerData=data;
+        Set<Map.Entry<String, String>> key = data.entrySet();
+        for (Map.Entry<String, String> e : key)
+        {
+            spinnerDataList.add(new SpinnerVH.SpinnerData(e.getKey(), e.getValue()));
+        }
+
+        unitSpinnerAdapter.setData(spinnerDataList);
+
+        unitSpinnerAdapter.notifyDataSetChanged();
 
     }
 
@@ -131,7 +278,7 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
          {
          llAnotherProduct.setVisibility(VISIBLE);
          }*/
-        AnotherProductDetails ap = new AnotherProductDetails(context);
+        AnotherProductDetails ap = new AnotherProductDetails(context,unitSpinnerData);
         anotherProductDetailsArrayList.add(ap);
         this.addView(ap, this.getChildCount() - 1);
     }
@@ -139,17 +286,18 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
     class AnotherProductDetails extends InquiryProductDetails
     {
 
-        public AnotherProductDetails(Context context)
+        public AnotherProductDetails(Context context, Map<String, String> unitSpinnerData)
         {
             super(context);
             btnAddAnotherProduct.setText("- Remove This Product");
             btnAddAnotherProduct.getBackground().setColorFilter(0xFFFF9800, PorterDuff.Mode.MULTIPLY);
+            setSpinnerAdapter(unitSpinnerData);
         }
 
         @Override
         public void onClick(View view)
         {
-            /**            if(anotherProductDetailsArrayList.size()==1){
+            /**if(anotherProductDetailsArrayList.size()==1){
              llAnotherProduct.setVisibility(GONE);
              }*/
             Log.i(TAG, "REMOVING PRODUCT DETAILS");
@@ -161,15 +309,17 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
 
     static class OnProductSelected implements AdapterView.OnItemClickListener
     {
-        private static final String TAG=AppUtils.APP_TAG+OnProductSelected.class.getSimpleName();
+        private static final String TAG = AppUtils.APP_TAG + OnProductSelected.class.getSimpleName();
 
         Context context;
 
         PopulateAttributeView populateAttributeView;
 
+        String selectedSubCatId;
+
         public OnProductSelected(Context context, PopulateAttributeView populateAttributeView)
         {
-            Log.i(TAG,"CREATED ON PRODUCT SELECTED LISTENER");
+            Log.i(TAG, "CREATED ON PRODUCT SELECTED LISTENER");
             this.context = context;
             this.populateAttributeView = populateAttributeView;
         }
@@ -177,8 +327,11 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
         {
-            Log.i(TAG,"ITEM SELECTED INDEX IS: "+i);
+            Log.i(TAG, "ITEM SELECTED INDEX IS: " + i);
+
             DropdownProductAdapter dp = (DropdownProductAdapter) adapterView.getAdapter();
+            Log.i(TAG, "ITEM SELECTED ID IS: " + String.valueOf(dp.getItemId(i)));
+            selectedSubCatId = String.valueOf(dp.getItemId(i));
             new GetAttributeAsync(String.valueOf(dp.getItemId(i)), context, populateAttributeView).execute();
         }
     }
@@ -256,16 +409,18 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
 
         public void populate(String response)
         {
-            Log.i(TAG,"POPULATING ATTRIBUTE VIEW");
+            Log.i(TAG, "POPULATING ATTRIBUTE VIEW");
             try
             {
                 JSONArray arr = new JSONArray(response);
                 if (arr.length() > 0)
                 {
-                    Log.i(TAG,"REMOVING/VISIBLE ATTRIBUTE VIEW AND");
+                    Log.i(TAG, "REMOVING/VISIBLE ATTRIBUTE VIEW AND");
 
                     llProductAttributes.setVisibility(VISIBLE);
 
+                    llProductAttributes.removeAllViews();
+                    attributeSpinList.clear();
 
                     for (int i = 0; i < arr.length(); i++)
                     {
@@ -276,28 +431,28 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
 
                         if (attributeNameArray.length() > 0)
                         {
-                            Log.i(TAG,"GETTING ATTRIBUTE JSON");
+                            Log.i(TAG, "GETTING ATTRIBUTE JSON");
                             ArrayList<SpinnerVH.SpinnerData> data = new ArrayList<>();
                             for (int j = 0; j < attributeNameArray.length(); j++)
                             {
 
                                 JSONObject singleName = attributeNameArray.getJSONObject(j);
 
-                                Log.i(TAG,"SPINNER DATA ID: "+singleName.getString("attribute_name_id"));
-                                Log.i(TAG,"SPINNER DATA VALUES: "+singleName.getString("attribute_name"));
+                                Log.i(TAG, "SPINNER DATA ID: " + singleName.getString("attribute_name_id"));
+                                Log.i(TAG, "SPINNER DATA VALUES: " + singleName.getString("attribute_name"));
 
                                 data.add(new SpinnerVH.
                                         SpinnerData(singleName.getString("attribute_name_id"),
                                         singleName.getString("attribute_name")));
                             }
-                            SpinnerView sv = new SpinnerView(context, obj.getString("attribute_type"), data);
+                            SpinnerView sv = new SpinnerView(context, obj.getString("attribute_type"), obj.getString("attribute_type_id"), data);
 
                             attributeSpinList.add(sv);
                         }
                     }
                     for (SpinnerView sv : attributeSpinList)
                     {
-                        Log.i(TAG,"ADDING ATTRIBUTE SPINNER TO VIEW");
+                        Log.i(TAG, "ADDING ATTRIBUTE SPINNER TO VIEW");
                         llProductAttributes.addView(sv);
                     }
                 }
@@ -317,23 +472,43 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
 
         ArrayList<SpinnerVH.SpinnerData> data;
 
-        public SpinnerView(Context context, String name, ArrayList<SpinnerVH.SpinnerData> data)
+        String id;
+
+        String selectedItemId = "";
+
+        public SpinnerView(Context context, String name, String id, ArrayList<SpinnerVH.SpinnerData> data)
         {
             super(context);
             mySpinner = new MySpinner(context);
             mySpinner.setTitle(name);
             adapter = new SpinnerVH.MySpinnerBaseAdapter(context);
-            this.data=data;
+            this.data = data;
             adapter.setData(this.data);
             mySpinner.spinner.setAdapter(adapter);
+            mySpinner.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+            {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
+                {
+                    selectedItemId = ((SpinnerVH.MySpinnerBaseAdapter) adapterView.getAdapter()).getItem(i).getId();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView)
+                {
+
+                }
+            });
             this.addView(mySpinner);
+            this.id = id;
 
             adapter.notifyDataSetChanged();
-            if(data==null){
-                Log.i(TAG,"DATA IS NULL");
-            }
-            else {
-                Log.i(TAG,"DATA : "+data.toString());
+            if (data == null)
+            {
+                Log.i(TAG, "DATA IS NULL");
+            } else
+            {
+                Log.i(TAG, "DATA : " + data.toString());
             }
         }
 

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1032442863651",
+    "firebase_url": "https://enquiry-management-system.firebaseio.com",
+    "project_id": "enquiry-management-system",
+    "storage_bucket": "enquiry-management-system.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032442863651:android:30f4d10077939e4b",
+        "android_client_info": {
+          "package_name": "com.example.rutvik.ems"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1032442863651-8tle8eam4p0q38li9sgtf0ttml3npimj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.rutvik.ems",
+            "certificate_hash": "600E613E768D9BEDF0FE7EFEB610C67B2DB0FC88"
+          }
+        },
+        {
+          "client_id": "1032442863651-n2mo0qbvrjqdjvb1dvln356pc2086o6l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvNZLs7iS0dLV-YaWX3qXDr4wtUkh6zIY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1032442863651-n2mo0qbvrjqdjvb1dvln356pc2086o6l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,30 +1,43 @@
 package com.example.rutvik.ems;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import ComponentFactory.AppendableTextBox;
+import ComponentFactory.Component;
 import adapters.SimpleFormAdapter;
 import extras.AppUtils;
 import extras.Log;
+import extras.PostServiceHandler;
 import fragments.SimpleFormFragment;
+import jsonobject.Response;
 
 public class ActivityAddNewInquiry extends AppCompatActivity
 {
@@ -43,6 +56,10 @@ public class ActivityAddNewInquiry extends AppCompatActivity
     SimpleFormFragment leadInquiryDetailsFragment;
 
     LinearLayout fragSimpleForm;
+
+    FrameLayout flLoadingForm;
+
+    Map<String, Map<String, String>> newEnquiryExtraDataMap = new HashMap<>();
 
     App app;
 
@@ -69,17 +86,35 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 
         fragSimpleForm = (LinearLayout) findViewById(R.id.frag_simpleForm);
 
+        flLoadingForm = (FrameLayout) findViewById(R.id.fl_loadingAddNewEnquiryForm);
+
         if (savedInstanceState != null)
         {
             Log.i(TAG, "RESTORING SAVED INSTANCE");
             simpleFormFragment = (SimpleFormFragment) getSupportFragmentManager().getFragment(savedInstanceState, "ADD_NEW_INQUIRY");
         }
 
-        populateAddNewInquiryForm();
+        new GetEnquiryExtraData(this, newEnquiryExtraDataMap, new GetEnquiryExtraData.CompletionCallback()
+        {
+            @Override
+            public void onSuccess()
+            {
+                flLoadingForm.setVisibility(View.GONE);
 
-        populateInterestedProductDetails();
+                populateAddNewInquiryForm();
 
-        populateLeadInquiryDetails();
+                populateInterestedProductDetails();
+
+                populateLeadInquiryDetails();
+            }
+
+            @Override
+            public void onFailure(JSONException e, String response)
+            {
+                Toast.makeText(ActivityAddNewInquiry.this, "JSON Exception: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityAddNewInquiry.this, "RESPONSE: " + response, Toast.LENGTH_SHORT).show();
+            }
+        }).execute();
 
 
     }
@@ -92,21 +127,12 @@ public class ActivityAddNewInquiry extends AppCompatActivity
         addEnquiry.setLayoutParams(lParams);
         addEnquiry.setText("Add Enquiry");
         addEnquiry.setTextColor(Color.WHITE);
-        addEnquiry.getBackground().setColorFilter(0xFFFF9800, PorterDuff.Mode.MULTIPLY);
+        addEnquiry.getBackground().setColorFilter(0xFF00695C, PorterDuff.Mode.MULTIPLY);
+
+        addEnquiry.setOnClickListener(new OnAddEnquiry());
 
         fragSimpleForm.addView(addEnquiry, 3);
 
-
-        /*<Button
-                style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_height="60dp"
-        android:layout_margin="5dp"
-        android:elevation="4dp"
-        android:text="Add Enquiry"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        android:layout_width="match_parent"
-        android:layout_below="@+id/scrollView"/>*/
     }
 
     @Override
@@ -134,6 +160,119 @@ public class ActivityAddNewInquiry extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    private static class GetEnquiryExtraData extends AsyncTask<Void, Void, String>
+    {
+        private final String TAG = AppUtils.APP_TAG + GetEnquiryExtraData.class.getSimpleName();
+
+        final Context context;
+
+        final CompletionCallback completionCallback;
+
+        final Map<String, Map<String, String>> newEnquiryExtraDataMap;
+
+        private final String host;
+
+        private final String sessionId;
+
+        Map<String, String> postParam = new HashMap<>();
+
+        String resp = "";
+
+        public GetEnquiryExtraData(Context context, Map<String, Map<String, String>> newEnquiryExtraDataMap, CompletionCallback completionCallback)
+        {
+            this.context = context;
+            this.completionCallback = completionCallback;
+            this.newEnquiryExtraDataMap = newEnquiryExtraDataMap;
+            this.host = PreferenceManager.getDefaultSharedPreferences(context).getString("host", "");
+            this.sessionId = PreferenceManager.getDefaultSharedPreferences(context).getString("session_id", "");
+
+        }
+
+        interface CompletionCallback
+        {
+            void onSuccess();
+
+            void onFailure(JSONException e, String response);
+        }
+
+        @Override
+        protected String doInBackground(Void... voids)
+        {
+
+            postParam.put("method", "get_add_new_enquiry_data");
+
+            postParam.put("session_id", sessionId);
+
+            new PostServiceHandler(TAG, 2, 2000).doPostRequest(host + AppUtils.URL_WEBSERVICE, postParam, new PostServiceHandler.ResponseCallback()
+            {
+                @Override
+                public void response(int status, String response)
+                {
+                    resp = response;
+                }
+            });
+
+            return resp;
+        }
+
+        @Override
+        protected void onPostExecute(String s)
+        {
+            try
+            {
+                JSONObject obj = new JSONObject(s).getJSONObject("response");
+
+                JSONArray units = obj.getJSONArray("units");
+                Map<String, String> unitsMap = new HashMap<>();
+                for (int i = 0; i < units.length(); i++)
+                {
+                    JSONObject o = units.getJSONObject(i);
+                    unitsMap.put(o.getString("unit_id"), o.getString("unit_name"));
+                }
+
+                newEnquiryExtraDataMap.put("units", unitsMap);
+
+                JSONArray enquiryType = obj.getJSONArray("enquiry_type");
+                Map<String, String> enquiryTypeMap = new HashMap<>();
+                for (int i = 0; i < enquiryType.length(); i++)
+                {
+                    JSONObject o = enquiryType.getJSONObject(i);
+                    enquiryTypeMap.put(o.getString("customer_type_id"), o.getString("customer_type"));
+                }
+
+                newEnquiryExtraDataMap.put("enquiry_type", enquiryTypeMap);
+
+                JSONArray enquiryGroup = obj.getJSONArray("enquiry_group");
+                Map<String, String> enquiryGroupMap = new HashMap<>();
+                for (int i = 0; i < enquiryGroup.length(); i++)
+                {
+                    JSONObject o = enquiryGroup.getJSONObject(i);
+                    enquiryGroupMap.put(o.getString("enquiry_group_id"), o.getString("enquiry_group_name"));
+                }
+
+                newEnquiryExtraDataMap.put("enquiry_group", enquiryGroupMap);
+
+                JSONArray prefix = obj.getJSONArray("prefix");
+                Map<String, String> prefixMap = new HashMap<>();
+                for (int i = 0; i < prefix.length(); i++)
+                {
+                    JSONObject o = prefix.getJSONObject(i);
+                    prefixMap.put(o.getString("prefix_id"), o.getString("prefix"));
+                }
+
+                newEnquiryExtraDataMap.put("prefix", prefixMap);
+
+                completionCallback.onSuccess();
+
+            } catch (JSONException e)
+            {
+                e.printStackTrace();
+                completionCallback.onFailure(e, resp);
+            }
+        }
+    }
+
+
     private void populateAddNewInquiryForm()
     {
         int i = -1;
@@ -159,18 +298,15 @@ public class ActivityAddNewInquiry extends AppCompatActivity
         String date = day + "/" + month + "/" + year;
 
 
-        simpleFormAdapter.addTextBox("Enquiry Date*", "", ++i, InputType.TYPE_CLASS_TEXT, false, date);
+        simpleFormAdapter.addTextBox("Enquiry Date*", "enquiry_date", ++i, InputType.TYPE_CLASS_TEXT, false, date);
 
-        Map<String, String> customerPrefixMap = new HashMap<>();
-        customerPrefixMap.put("", "Mr.");
-        customerPrefixMap.put("", "Ms.");
-        simpleFormAdapter.addSpinner("Customer Prefix", "", customerPrefixMap, ++i);
+        simpleFormAdapter.addSpinner("Customer Prefix", "prefix_id", newEnquiryExtraDataMap.get("prefix"), ++i);
 
-        simpleFormAdapter.addTextBox("Customer Name*", "c_name", ++i, InputType.TYPE_CLASS_TEXT, true, "");
+        simpleFormAdapter.addTextBox("Customer Name*", "customer_name", ++i, InputType.TYPE_CLASS_TEXT, true, "");
 
-        simpleFormAdapter.addAppendableTextBox("Contact No*", "", ++i, app.getHost() + AppUtils.URL_EXACT_CONTACT_NO, new AppendableTextBoxUrlListener());
+        simpleFormAdapter.addAppendableTextBox("Contact No*", "mobile_no", ++i, app.getHost() + AppUtils.URL_EXACT_CONTACT_NO, new AppendableTextBoxUrlListener());
 
-        simpleFormAdapter.addTextBox("Email Address", "c_name", ++i, InputType.TYPE_CLASS_TEXT, true, "");
+        simpleFormAdapter.addTextBox("Email Address", "email_id", ++i, InputType.TYPE_CLASS_TEXT, true, "");
 
         if (simpleFormFragment == null)
         {
@@ -187,13 +323,18 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 
     }
 
+
     private void populateInterestedProductDetails()
     {
         int i = -1;
 
         interestedProductDetailsAdapter = new SimpleFormAdapter(this);
 
-        interestedProductDetailsAdapter.addInquiryProduct(++i);
+        //product_id[]
+        //mrp[]
+        //unit_id[]
+        //quantity_id[]
+        interestedProductDetailsAdapter.addInquiryProduct(++i, newEnquiryExtraDataMap.get("units"));
 
         if (interestedProductDetailsFragment == null)
         {
@@ -218,33 +359,21 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 
         leadInquiryDetailsAdapter = new SimpleFormAdapter(this);
 
-        Map<String, String> enquiryGroup = new HashMap<>();
-        enquiryGroup.put("0", "High Priority");
-        enquiryGroup.put("1", "Trading");
-        enquiryGroup.put("2", "Contracting");
-        enquiryGroup.put("3", "Architect");
-        leadInquiryDetailsAdapter.addSpinner("Add To Enquiry Group*", "to_group", enquiryGroup, ++i);
+        leadInquiryDetailsAdapter.addCheckListSpinner("Add To Enquiry Group*", "enquiry_group_id", newEnquiryExtraDataMap.get("enquiry_group"), ++i);
 
-        leadInquiryDetailsAdapter.addTextBox("Customer Budget*", "c_budget", ++i, InputType.TYPE_CLASS_TEXT, true, "");
+        leadInquiryDetailsAdapter.addTextBox("Customer Budget*", "budget", ++i, InputType.TYPE_CLASS_TEXT, true, "");
 
-        Map<String, String> enquiryType = new HashMap<>();
-        enquiryType.put("0", "Walk In");
-        enquiryType.put("1", "Tele Calling");
-        enquiryType.put("2", "Reference");
-        enquiryType.put("3", "Advertisement");
-        enquiryType.put("4", "Architect");
-        enquiryType.put("5", "Structure Engineer");
-        leadInquiryDetailsAdapter.addSpinner("Enquiry Type", "to_group", enquiryType, ++i);
+        leadInquiryDetailsAdapter.addSpinner("Enquiry Type", "customer_type_id", newEnquiryExtraDataMap.get("enquiry_type"), ++i);
 
         leadInquiryDetailsAdapter.addTextBox("Discussion", "discussion", ++i, InputType.TYPE_CLASS_TEXT, true, "");
 
-        leadInquiryDetailsAdapter.addDatePicker("Follow Up Date", "f_date", ++i, "Pick Follow Up Date");
+        leadInquiryDetailsAdapter.addDatePicker("Follow Up Date", "reminder_date", ++i, "Pick Follow Up Date");
 
 
         Map<String, String> smsOption = new HashMap<>();
-        smsOption.put("0", "Yes");
-        smsOption.put("1", "No");
-        leadInquiryDetailsAdapter.addSpinner("Enquiry Type", "to_group", smsOption, ++i);
+        smsOption.put("1", "Yes");
+        smsOption.put("0", "No");
+        leadInquiryDetailsAdapter.addSpinner("Send SMS", "sms_status", smsOption, ++i);
 
         if (leadInquiryDetailsFragment == null)
         {
@@ -271,15 +400,125 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 
     }
 
+
+    class OnAddEnquiry implements View.OnClickListener
+    {
+        @Override
+        public void onClick(View view)
+        {
+
+            final Map postParams = new HashMap();
+
+            postParams.put("method", "add_new_enquiry");
+
+            postParams.put("session_id", app.getUser().getSession_id());
+
+            for (int i = 0; i < simpleFormAdapter.getItemCount(); i++)
+            {
+                Log.i(TAG, "DATA: " + simpleFormAdapter.getComponentListMap().get(Long.valueOf(i)).getRowItem().getValue());
+
+                postParams.put(simpleFormAdapter.getComponentListMap().get(Long.valueOf(i)).getRowItem().getName(),
+                        simpleFormAdapter.getComponentListMap().get(Long.valueOf(i)).getRowItem().getValue());
+
+            }
+
+            for (int i = 0; i < interestedProductDetailsAdapter.getItemCount(); i++)
+            {
+                Log.i(TAG, "DATA: " + interestedProductDetailsAdapter.getComponentListMap().get(Long.valueOf(i)).getRowItem().getValue());
+
+                if (interestedProductDetailsAdapter.getComponentListMap().get(Long.valueOf(i)).getRowItem().getComponentType() == Component.INQUIRY_PRODUCT_DETAILS)
+                {
+
+                    postParams.putAll((Map) interestedProductDetailsAdapter.getComponentListMap().get(Long.valueOf(i)).getRowItem().getValue());
+
+                } else
+                {
+
+                    postParams.put(interestedProductDetailsAdapter.getComponentListMap().get(Long.valueOf(i)).getRowItem().getName(),
+                            interestedProductDetailsAdapter.getComponentListMap().get(Long.valueOf(i)).getRowItem().getValue());
+                }
+
+            }
+
+            for (int i = 0; i < leadInquiryDetailsAdapter.getItemCount(); i++)
+            {
+                Log.i(TAG, "DATA: " + leadInquiryDetailsAdapter.getComponentListMap().get(Long.valueOf(i)).getRowItem().getValue());
+
+
+                postParams.put(leadInquiryDetailsAdapter.getComponentListMap().get(Long.valueOf(i)).getRowItem().getName(),
+                        leadInquiryDetailsAdapter.getComponentListMap().get(Long.valueOf(i)).getRowItem().getValue());
+
+            }
+
+            Log.i(TAG, "POST PARAM: " + postParams.toString());
+
+            new AsyncTask<Void, Void, Void>()
+            {
+
+                String response = "";
+
+                Response jsonResponse;
+
+                @Override
+                protected Void doInBackground(Void... voids)
+                {
+
+                    new PostServiceHandler(TAG, 2, 2000)
+                     .doPostRequest(app.getHost() + AppUtils.URL_WEBSERVICE,
+                     postParams,
+                     new PostServiceHandler.ResponseCallback()
+                     {
+                     @Override public void response(int status, String r)
+                     {
+                     response = r;
+                     }
+                     });
+
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void aVoid)
+                {
+                    try
+                    {
+                        jsonResponse = new Response(response);
+                        if (jsonResponse.isStatusOk())
+                        {
+                            Toast.makeText(ActivityAddNewInquiry.this,
+                                    jsonResponse.getMessage(),
+                                    Toast.LENGTH_SHORT)
+                                    .show();
+                            ActivityAddNewInquiry.this.finish();
+                        } else
+                        {
+                            Toast.makeText(ActivityAddNewInquiry.this,
+                                    jsonResponse.getMessage(),
+                                    Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    } catch (JSONException e)
+                    {
+                        Log.i(TAG, e.getMessage());
+                        Toast.makeText(ActivityAddNewInquiry.this,
+                                "Something went wrong, Please try again later",
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                }
+            }.execute();
+
+        }
+    }
+
+
     class AppendableTextBoxUrlListener implements AppendableTextBox.OnUrlTriggered
     {
-
-
         @Override
         public void urlTriggered(EditText etContact, TextView tvDuplicateErrorMsg, String response)
         {
             etContact.setTextColor(Color.RED);
-            final String msg="Contact already exist for id "+response;
+            final String msg = "Contact already exist for id " + response;
             tvDuplicateErrorMsg.setText(msg);
         }
     }

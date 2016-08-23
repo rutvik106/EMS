@@ -24,8 +24,8 @@ public class PostServiceHandler {
 
     private int backOff = 2000;
 
-    public static interface ResponseCallback {
-        public void response(int status, String response);
+    public interface ResponseCallback {
+        void response(int status, String response);
     }
 
     public PostServiceHandler(String logtag, int maxAttempts, int backOff) {

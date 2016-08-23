@@ -3,18 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_add_new_inquiry"
+    android:id="@+id/activity_view"
+    android:background="@color/google_grey"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/google_grey"
-    tools:context="com.example.rutvik.ems.ActivityAddNewInquiry">
+    tools:context="com.example.rutvik.ems.ActivityView">
 
     <include
         android:id="@+id/toolbar"
         layout="@layout/toolbar"/>
 
     <FrameLayout
-        android:id="@+id/fl_loadingAddNewEnquiryForm"
+        android:id="@+id/fl_loadingView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar">
@@ -38,7 +38,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
                 android:gravity="center"
-                android:text="Preparing Form"
+                android:text="Preparing View"
                 android:textColor="@android:color/black"/>
 
         </LinearLayout>

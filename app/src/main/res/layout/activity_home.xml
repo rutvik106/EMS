@@ -51,7 +51,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/primary"
+            android:background="@color/google_grey"
             android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -63,6 +63,7 @@
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax"/>
+
 
             <FrameLayout
                 android:id="@+id/frame_noNotifications"
@@ -79,7 +80,7 @@
 
                 <TextView
                     android:layout_margin="10dp"
-                    android:textColor="#ffffff"
+                    android:textColor="@color/primary_dark"
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:layout_width="match_parent"
@@ -88,6 +89,41 @@
                     android:text="No Upcomming Follow Up"/>
 
             </FrameLayout>
+
+
+            <FrameLayout
+                android:id="@+id/fl_loadingFollowUp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/toolbar">
+
+                <LinearLayout
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_height="wrap_content">
+
+                    <ProgressBar
+                        android:id="@+id/pb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:indeterminate="true"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:text="Getting Follow Up"
+                        android:textColor="@android:color/black"/>
+
+                </LinearLayout>
+
+            </FrameLayout>
+
 
         </LinearLayout>
 

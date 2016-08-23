@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.rutvik.ems.ActivityView;
 import com.example.rutvik.ems.R;
 import com.example.rutvik.ems.TakeFollowUp;
 
@@ -46,6 +47,7 @@ public class NotificationListChildVH extends RecyclerView.ViewHolder implements 
         btnTakeFollowUp = (Button) itemView.findViewById(R.id.btn_takeFollowUp);
         btnTakeFollowUp.setOnClickListener(this);
         btnViewFollowUpDetails = (Button) itemView.findViewById(R.id.btn_viewFollowUpDetails);
+        btnViewFollowUpDetails.setOnClickListener(this);
         cv = (CardView) itemView.findViewById(R.id.cv_notificationItem);
     }
 
@@ -84,17 +86,25 @@ public class NotificationListChildVH extends RecyclerView.ViewHolder implements 
     @Override
     public void onClick(View view)
     {
-        if (view.getId() == R.id.btn_takeFollowUp)
+        switch (view.getId())
         {
-            Intent i = new Intent(context, TakeFollowUp.class);
-            i.putExtra("follow_up_customer_name",followUp.getName());
-            i.putExtra("follow_up_customer_contact",followUp.getPhone());
-            i.putExtra("enquiry_id",followUp.getId());
-            context.startActivity(i);
+            case R.id.btn_takeFollowUp:
+                Intent i = new Intent(context, TakeFollowUp.class);
+                i.putExtra("follow_up_customer_name", followUp.getName());
+                i.putExtra("follow_up_customer_contact", followUp.getPhone());
+                i.putExtra("enquiry_id", followUp.getId());
+                context.startActivity(i);
+                break;
 
-        } else if (view.getId() == R.id.btn_viewFollowUpDetails)
-        {
+            case R.id.btn_viewFollowUpDetails:
+
+                Intent intent = new Intent(context, ActivityView.class);
+                intent.putExtra("enquiry_id", followUp.getId());
+                context.startActivity(intent);
+                break;
+
 
         }
     }
+
 }

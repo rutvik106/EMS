@@ -6,7 +6,7 @@
     android:id="@+id/activity_take_follow_up"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary"
+    android:background="@color/google_grey"
     tools:context="com.example.rutvik.ems.TakeFollowUp">
 
 
@@ -14,218 +14,214 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar"/>
 
-    <RelativeLayout
-        android:layout_margin="5dp"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar">
 
-
         <android.support.v7.widget.CardView
-            android:id="@+id/card_followUpDetails"
             android:layout_width="match_parent"
-            app:cardElevation="4dp"
-            app:cardUseCompatPadding="true"
-            android:background="@color/white"
-            android:layout_height="65dp">
+            android:layout_height="match_parent">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:weightSum="2"
-                android:padding="7dp"
-                android:orientation="horizontal">
+                android:layout_below="@id/toolbar"
+                android:layout_margin="5dp">
 
-                <LinearLayout
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_followUpDetails"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/white"
+                    app:cardElevation="4dp"
+                    app:cardUseCompatPadding="true">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="5dp"
-                        android:text="Customer Name"/>
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:padding="7dp"
+                        android:weightSum="2">
 
-                    <TextView
-                        android:id="@+id/tv_followUpCustomerName"
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
+                                android:text="Customer Name"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                                android:textSize="14sp"
+                                android:textStyle="bold"/>
+
+                            <TextView
+                                android:id="@+id/tv_followUpCustomerName"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Rutvik Mehta"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                                android:textSize="14sp"/>
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="#999999"/>
+
+                        <LinearLayout
+                            android:id="@+id/ll_customerContact"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
+                                android:text="Contact"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                                android:textSize="14sp"
+                                android:textStyle="bold"/>
+
+
+                            <TextView
+                                android:id="@+id/tv_followUpCustomerContact"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="9409210488"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                                android:textColor="@color/blueLink"
+                                android:textSize="14sp"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/til_followUpDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/card_followUpDetails"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginTop="2dp"
+                    tools:layout_editor_absoluteX="12dp"
+                    tools:layout_editor_absoluteY="12dp">
+
+                    <EditText
+                        android:id="@+id/et_followUpDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Rutvik Mehta"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                        android:textSize="14sp" />
+                        android:ems="10"
+                        android:hint="Follow Up Date"
+                        android:inputType="textPersonName"/>
 
-                </LinearLayout>
+                </android.support.design.widget.TextInputLayout>
 
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="#999999" />
-
-                <LinearLayout
-                    android:id="@+id/ll_customerContact"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/til_time"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="5dp"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/til_followUpDate"
+                    android:layout_margin="2dp"
+                    tools:layout_editor_absoluteX="12dp"
+                    tools:layout_editor_absoluteY="70dp">
 
-                    <TextView
+                    <EditText
+                        android:id="@+id/et_followUpTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="5dp"
-                        android:text="Contact"/>
+                        android:ems="10"
+                        android:hint="Time"
+                        android:inputType="textPersonName"
+                        />
+                </android.support.design.widget.TextInputLayout>
 
+                <TextView
+                    android:id="@+id/tv_followUpType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/til_time"
+                    android:layout_margin="2dp"
+                    android:padding="5dp"
+                    android:text="Follow Up Type"/>
 
-                    <TextView
-                        android:id="@+id/tv_followUpCustomerContact"
+                <Spinner
+                    android:id="@+id/spin_followUpType"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_below="@id/tv_followUpType"
+                    android:layout_margin="2dp"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/til_discussion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/spin_followUpType"
+                    android:layout_margin="2dp">
+
+                    <EditText
+                        android:id="@+id/et_followUpDiscussion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="9409210488"
-                        android:textColor="@color/blueLink"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                        android:textSize="14sp" />
+                        android:ems="10"
+                        android:hint="Discussion"/>
 
-                </LinearLayout>
+                </android.support.design.widget.TextInputLayout>
 
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_sendSMS"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/til_discussion"
+                    android:layout_margin="2dp"
+                    android:padding="5dp"
+                    android:text="Send SMS?"
+                    tools:layout_editor_absoluteX="12dp"
+                    tools:layout_editor_absoluteY="412dp"/>
+
+
+                <Spinner
+                    android:id="@+id/spin_sendSMS"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_below="@+id/tv_sendSMS"
+                    android:layout_margin="2dp"/>
+
+                <Button
+                    android:id="@+id/btn_saveFollowUp"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_below="@+id/spin_sendSMS"
+                    android:layout_margin="5dp"
+                    android:elevation="4dp"
+                    android:text="Save Follow Up"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"/>
+
+            </RelativeLayout>
 
         </android.support.v7.widget.CardView>
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_below="@id/card_followUpDetails"
-            android:id="@+id/til_followUpDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginTop="2dp"
-            android:theme="@style/MyFloatingLabel"
-            tools:layout_editor_absoluteX="12dp"
-            tools:layout_editor_absoluteY="12dp">
-
-            <EditText
-                android:id="@+id/et_followUpDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="Follow Up Date"
-                android:inputType="textPersonName"
-                android:textColor="#FFFFFF"
-                android:textColorHighlight="#FFFFFF"
-                android:textColorLink="#FFFFFF"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="11dp"/>
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/til_time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/til_followUpDate"
-            android:layout_margin="2dp"
-            android:theme="@style/MyFloatingLabel"
-            tools:layout_editor_absoluteX="12dp"
-            tools:layout_editor_absoluteY="70dp">
-
-            <EditText
-                android:id="@+id/et_followUpTime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="Time"
-                android:inputType="textPersonName"
-                android:textColor="#FFFFFF"
-                android:textColorHighlight="#FFFFFF"
-                android:textColorLink="#FFFFFF"
-                />
-        </android.support.design.widget.TextInputLayout>
-
-        <TextView
-            android:id="@+id/tv_followUpType"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/til_time"
-            android:layout_margin="2dp"
-            android:padding="5dp"
-            android:text="Follow Up Type"
-            android:textColor="#ffffff"/>
-
-        <Spinner
-            android:id="@+id/spin_followUpType"
-            android:layout_width="match_parent"
-            android:layout_margin="2dp"
-            android:layout_height="45dp"
-            android:theme="@style/ThemeSpinner"
-            android:layout_below="@id/tv_followUpType"/>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/til_discussion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/spin_followUpType"
-            android:layout_margin="2dp"
-            android:theme="@style/MyFloatingLabel">
-
-            <EditText
-                android:id="@+id/et_followUpDiscussion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="Discussion"
-                android:inputType="textMultiLine"
-                android:textColor="#ffffff"
-                android:textColorHighlight="#ffffff"
-                android:textColorHint="#eeeeee"
-                android:textColorLink="#ffffff"/>
-
-        </android.support.design.widget.TextInputLayout>
-
-        <TextView
-            android:id="@+id/tv_sendSMS"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/til_discussion"
-            android:layout_margin="2dp"
-            android:padding="5dp"
-            android:text="Send SMS?"
-            android:textColor="#ffffff"
-            tools:layout_editor_absoluteX="12dp"
-            tools:layout_editor_absoluteY="412dp"/>
-
-
-        <Spinner
-            android:id="@+id/spin_sendSMS"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_margin="2dp"
-            android:theme="@style/ThemeSpinner"
-            android:layout_below="@+id/tv_sendSMS"/>
-
-        <Button
-            android:id="@+id/btn_saveFollowUp"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="5dp"
-            android:elevation="4dp"
-            android:text="Save Follow Up"
-            android:textColor="@color/white"
-            android:textStyle="bold"/>
-
-    </RelativeLayout>
+    </ScrollView>
 
 </RelativeLayout>

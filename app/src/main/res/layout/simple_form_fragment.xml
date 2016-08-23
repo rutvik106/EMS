@@ -5,14 +5,12 @@
     android:id="@+id/rl_simpleFormFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="5dp"
-    android:background="@color/primary">
+    android:background="@color/google_grey">
 
     <TextView
         android:id="@+id/tv_fragTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
         android:background="@color/accent"
         android:padding="5dp"
         android:text="Fragment Title"
@@ -35,10 +33,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_fragTitle"
         android:layout_centerInParent="true"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="2dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
         android:background="@drawable/add_inquiry_single_frag_bg"
         android:padding="5dp"
         />

@@ -60,6 +60,7 @@ public class CheckListSpinnerVH extends RecyclerView.ViewHolder implements RowIt
         vh.myCheckListSpinner.editText.setInputType(InputType.TYPE_NULL);
         vh.myCheckListSpinner.editText.setOnFocusChangeListener(vh);
         vh.myCheckListSpinner.editText.setOnClickListener(vh);
+        vh.myCheckListSpinner.editText.setText("None");
         return vh;
     }
 

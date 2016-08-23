@@ -17,7 +17,9 @@ import viewholders.AppendableTextBoxVH;
 import viewholders.CheckListSpinnerVH;
 import viewholders.DateTimePickerVH;
 import viewholders.DependentSpinnerVH;
+import viewholders.FollowUpSeparatorVH;
 import viewholders.InquiryProductDetailsVH;
+import viewholders.SimpleTextViewVH;
 import viewholders.SpinnerVH;
 import viewholders.TextBoxVH;
 
@@ -52,15 +54,24 @@ public class SimpleFormAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         componentListMap = new HashMap<>();
     }
 
-    public void addTextBox(String label, String name, long id, Integer inputType, Boolean enabled,String defaultText)
+    public void addSimpleTextView(long id, String label, String value)
+    {
+        Map map = new HashMap();
+        map.put("label", label);
+        map.put("value", value);
+        componentListMap.put(id, new Component(map, Component.SIMPLE_TEXT_VIEW, id));
+        notifyItemInserted(componentListMap.size());
+    }
+
+    public void addTextBox(String label, String name, long id, Integer inputType, Boolean enabled, String defaultText)
     {
         Map map = new HashMap();
         map.put("label", label);
         map.put("name", name);
         map.put("input_type", inputType);
         map.put("value", "");
-        map.put("enabled",enabled);
-        map.put("default_text",defaultText);
+        map.put("enabled", enabled);
+        map.put("default_text", defaultText);
         componentListMap.put(id, new Component(map, Component.TEXTBOX, id));
         notifyItemInserted(componentListMap.size());
     }
@@ -127,7 +138,7 @@ public class SimpleFormAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public void addAppendableTextBox(String label, String name, long id, String triggerUrl, AppendableTextBox.OnUrlTriggered urlListener)
     {
-        this.urlListener=urlListener;
+        this.urlListener = urlListener;
         Map map = new HashMap();
         map.put("label", label);
         map.put("name", name);
@@ -136,10 +147,18 @@ public class SimpleFormAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         notifyItemInserted(componentListMap.size());
     }
 
-    public void addInquiryProduct(long id)
+    public void addInquiryProduct(long id, Map<String, String> perDataMap)
     {
         Map map = new HashMap();
+        map.put("per", perDataMap);
         componentListMap.put(id, new Component(map, Component.INQUIRY_PRODUCT_DETAILS, id));
+    }
+
+
+    public void addFollowUpSeparator(long id, String text)
+    {
+        componentListMap.put(id, new Component(text, Component.FOLLOW_UP_SEPARATOR, id));
+        notifyItemInserted(componentListMap.size());
     }
 
     @Override
@@ -185,10 +204,16 @@ public class SimpleFormAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             case Component.APPENDABLE_TEXT_BOX:
                 //Log.i(TAG,"CREATING DEPENDENT SPINNER");
-                return AppendableTextBoxVH.create(context,urlListener);
+                return AppendableTextBoxVH.create(context, urlListener);
 
             case Component.INQUIRY_PRODUCT_DETAILS:
                 return InquiryProductDetailsVH.create(context);
+
+            case Component.SIMPLE_TEXT_VIEW:
+                return SimpleTextViewVH.create(context, viewGroup);
+
+            case Component.FOLLOW_UP_SEPARATOR:
+                return FollowUpSeparatorVH.create(context, viewGroup);
 
         }
 
@@ -268,6 +293,18 @@ public class SimpleFormAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 InquiryProductDetailsVH.bind((InquiryProductDetailsVH) viewHolder,
                         (Map) componentListMap.get(Long.valueOf(i)).object,
                         componentListMap.get(Long.valueOf(i)));
+                break;
+
+            case Component.SIMPLE_TEXT_VIEW:
+                Log.i(TAG, "BINDING DATA TO SIMPLE TEXT VIEW");
+                SimpleTextViewVH.bind((SimpleTextViewVH) viewHolder,
+                        componentListMap.get(Long.valueOf(i)));
+                break;
+
+            case Component.FOLLOW_UP_SEPARATOR:
+                FollowUpSeparatorVH.bind((FollowUpSeparatorVH) viewHolder,
+                        (String) componentListMap.get(Long.valueOf(i)).getObject());
+                break;
         }
 
     }

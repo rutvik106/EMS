@@ -9,6 +9,7 @@ import java.util.Map;
 import ComponentFactory.Component;
 import ComponentFactory.InquiryProductDetails;
 import ComponentFactory.RowItem;
+import extras.Log;
 
 import static ComponentFactory.Component.INQUIRY_PRODUCT_DETAILS;
 
@@ -38,13 +39,14 @@ public class InquiryProductDetailsVH extends RecyclerView.ViewHolder implements 
     public static void bind(InquiryProductDetailsVH vh, Map map, Component component)
     {
         vh.map=map;
+        vh.inquiryProductDetails.setSpinnerAdapter((Map<String,String>)map.get("per"));
         component.setRowItem(vh);
     }
 
     @Override
     public Object getValue()
     {
-        return null;
+        return inquiryProductDetails.getProductDetailsValues();
     }
 
     @Override
@@ -92,6 +94,6 @@ public class InquiryProductDetailsVH extends RecyclerView.ViewHolder implements 
     @Override
     public String getName()
     {
-        return null;
+        return "product_details";
     }
 }

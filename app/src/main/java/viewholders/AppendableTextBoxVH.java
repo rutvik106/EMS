@@ -44,7 +44,6 @@ public class AppendableTextBoxVH extends RecyclerView.ViewHolder implements RowI
     {
         vh.map=map;
         vh.appendableTextBox.etRootTextView.setHint(map.get("label").toString());
-        vh.appendableTextBox.setValueName(map.get("name").toString());
         //vh.appendableTextBox.setTriggerUrl(map.get("trigger_url").toString());
         component.setRowItem(vh);
     }

@@ -74,7 +74,7 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
 
         etPassword = (EditText) findViewById(R.id.et_password);
 
-        TextView tv = (TextView) findViewById(R.id.tv_emsTitle);
+        //TextView tv = (TextView) findViewById(R.id.tv_emsTitle);
 
         /**       tilHost = (TextInputLayout) findViewById(R.id.til_host);
 
@@ -84,7 +84,7 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
 
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/carrois_gothic.ttf");
 
-        tv.setTypeface(font);
+        //tv.setTypeface(font);
 
         btnLogin.setOnClickListener(this);
 

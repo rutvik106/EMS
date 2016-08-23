@@ -13,8 +13,10 @@ public class Component<T>
     public static final int DATEPICKER = 3;
     public static final int TIMEPICKER = 4;
     public static final int DEPENDENT_SPINNER = 5;
-    public static final int APPENDABLE_TEXT_BOX=6;
-    public static final int INQUIRY_PRODUCT_DETAILS=7;
+    public static final int APPENDABLE_TEXT_BOX = 6;
+    public static final int INQUIRY_PRODUCT_DETAILS = 7;
+    public static final int SIMPLE_TEXT_VIEW = 8;
+    public static final int FOLLOW_UP_SEPARATOR = 9;
 
     final long id;
 

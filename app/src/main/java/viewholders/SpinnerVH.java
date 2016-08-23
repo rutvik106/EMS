@@ -10,6 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 
+import com.example.rutvik.ems.R;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -198,7 +200,7 @@ public class SpinnerVH extends RecyclerView.ViewHolder implements RowItem, Adapt
             if (view == null)
             {
 
-                view = inflater.inflate(android.R.layout.simple_spinner_item, viewGroup, false);
+                view = inflater.inflate(R.layout.single_spinner_row, viewGroup, false);
             }
 
             TextView tv = (TextView) view
