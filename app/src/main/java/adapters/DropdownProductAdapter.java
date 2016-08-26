@@ -1,7 +1,6 @@
 package adapters;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +9,9 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
-import com.example.rutvik.ems.App;
 import com.example.rutvik.ems.R;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -22,7 +19,6 @@ import java.util.Map;
 
 import extras.AppUtils;
 import extras.Log;
-import jsonobject.DropdownProduct;
 
 /**
  * Created by rutvik on 28-07-2016 at 04:18 PM.
@@ -33,11 +29,11 @@ public class DropdownProductAdapter extends BaseAdapter implements Filterable
 
     Context context;
 
-    private Map<String, DropdownProduct> dropdownProductMap = new HashMap<>();
+    private Map<String, AutoCompleteDropDownItem> dropdownItemMap = new HashMap<>();
 
     private List<String> suggestions = new ArrayList<>();
 
-    private Filter filter = new CustomFilter();
+    private Filter filter;
 
     private static final String TAG = AppUtils.APP_TAG + DropdownProductAdapter.class.getSimpleName();
 
@@ -46,10 +42,12 @@ public class DropdownProductAdapter extends BaseAdapter implements Filterable
         this.context = context;
     }
 
-    public void addDropdownListProduct(DropdownProduct dp)
+    public void addDropdownListProduct(AutoCompleteDropDownItem dp)
     {
-        dropdownProductMap.put(dp.getSub_cat_name(), dp);
+        dropdownItemMap.put(dp.getValue(), dp);
     }
+
+
 
     @Override
     public int getCount()
@@ -66,7 +64,7 @@ public class DropdownProductAdapter extends BaseAdapter implements Filterable
     @Override
     public long getItemId(int i)
     {
-        return Long.valueOf(dropdownProductMap.get(suggestions.get(i)).getSub_cat_id());
+        return Long.valueOf(dropdownItemMap.get(suggestions.get(i)).getKey());
     }
 
     @Override
@@ -102,28 +100,32 @@ public class DropdownProductAdapter extends BaseAdapter implements Filterable
     @Override
     public Filter getFilter()
     {
+        filter = new CustomFilter();
         return filter;
     }
 
-    private class CustomFilter extends Filter
+    public class CustomFilter extends Filter
     {
         @Override
         protected FilterResults performFiltering(CharSequence constraint)
         {
+
+            Log.i(TAG, "performFiltering: FILTERING TEXT: " + constraint);
+
             suggestions.clear();
 
-            if (dropdownProductMap != null && constraint != null)
+            if (dropdownItemMap != null && constraint != null)
             { // Check if the Original List and Constraint aren't null.
 
-                Collection<DropdownProduct> dpCollection = dropdownProductMap.values();
-                Iterator<DropdownProduct> dpIterator = dpCollection.iterator();
+                //Collection<AutoCompleteDropDownItem> dpCollection = dropdownItemMap.values();
+                Iterator<AutoCompleteDropDownItem> dpIterator = dropdownItemMap.values().iterator();
 
                 while (dpIterator.hasNext())
                 {
-                    DropdownProduct dp=dpIterator.next();
-                    if (dropdownProductMap.get(dp.getSub_cat_name()).getSub_cat_name().toLowerCase().contains(constraint))
+                    AutoCompleteDropDownItem dp = dpIterator.next();
+                    if (dropdownItemMap.get(dp.getValue()).getValue().toLowerCase().contains(constraint))
                     { // Compare item in original list if it contains constraints.
-                        suggestions.add(dp.getSub_cat_name()); // If TRUE add item in Suggestions.
+                        suggestions.add(dp.getValue()); // If TRUE add item in Suggestions.
                     }
                 }
             }
@@ -150,6 +152,13 @@ public class DropdownProductAdapter extends BaseAdapter implements Filterable
     private static class ViewHolder
     {
         TextView autoText;
+    }
+
+    public interface AutoCompleteDropDownItem
+    {
+        String getValue();
+
+        int getKey();
     }
 
 }

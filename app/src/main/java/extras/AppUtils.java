@@ -17,6 +17,11 @@ public final class AppUtils
 
     public static final String URL_EXACT_CONTACT_NO = "/ems/json/exact_mobile_no.php";
 
+    public static final String URL_GET_CUSTOMER_NAME = "/ems/json/customer_name.php";
+    public static final String URL_GET_CUSTOMER_EMAIL = "/ems/json/email.php";
+    public static final String URL_GET_CUSTOMER_CONTACT = "/ems/json/mobile_no.php";
+    public static final String URL_GET_ENQUIRY_ID = "/ems/json/enquiry_id.php";
+
     public static final Map<String, String> followUpTypeMap = new HashMap<>();
 
     public static final Map<String, String> sendSmsMap = new HashMap<>();
@@ -55,7 +60,7 @@ public final class AppUtils
     public static String dateToDMY(int year, int monthOfYear, int dayOfMonth)
     {
         String day = String.valueOf(dayOfMonth);
-        String month = String.valueOf(monthOfYear+1);
+        String month = String.valueOf(monthOfYear + 1);
         if (month.length() == 1)
         {
             month = "0" + month;
@@ -71,7 +76,7 @@ public final class AppUtils
     {
         String hour = String.valueOf(hourOfDay);
         String minute = String.valueOf(minuteOfDay);
-        String second=String.valueOf(secondOfDay);
+        String second = String.valueOf(secondOfDay);
         if (hour.length() == 1)
         {
             hour = "0" + hour;
@@ -86,7 +91,6 @@ public final class AppUtils
         }
         return hour + ":" + minute + ":" + second;
     }
-
 
 
 }

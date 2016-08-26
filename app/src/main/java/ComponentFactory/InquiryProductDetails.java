@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.rutvik.ems.R;
 
@@ -55,7 +56,7 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
     LinearLayout llProductAttributes;
     Button btnAddAnotherProduct;
 
-    ArrayList<SpinnerVH.SpinnerData> spinnerDataList=new ArrayList<>();
+    ArrayList<SpinnerVH.SpinnerData> spinnerDataList = new ArrayList<>();
 
     DropdownProductAdapter adapter;
 
@@ -258,7 +259,7 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
 
     public void setSpinnerAdapter(Map<String, String> data)
     {
-        unitSpinnerData=data;
+        unitSpinnerData = data;
         Set<Map.Entry<String, String>> key = data.entrySet();
         for (Map.Entry<String, String> e : key)
         {
@@ -278,7 +279,7 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
          {
          llAnotherProduct.setVisibility(VISIBLE);
          }*/
-        AnotherProductDetails ap = new AnotherProductDetails(context,unitSpinnerData);
+        AnotherProductDetails ap = new AnotherProductDetails(context, unitSpinnerData);
         anotherProductDetailsArrayList.add(ap);
         this.addView(ap, this.getChildCount() - 1);
     }
@@ -374,7 +375,10 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
                     @Override
                     public void response(int status, String response)
                     {
-                        GetAttributeAsync.this.response = response;
+                        if (status == HttpURLConnection.HTTP_OK)
+                        {
+                            GetAttributeAsync.this.response = response;
+                        }
                     }
                 });
             }
@@ -386,9 +390,18 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
         protected void onPostExecute(String s)
         {
             Log.i(TAG, "RESPONSE: " + s);
-            if (!s.isEmpty())
+            if (s != null)
             {
-                populateAttributeView.populate(s);
+                if (!s.isEmpty())
+                {
+                    populateAttributeView.populate(s);
+                } else
+                {
+                    populateAttributeView.clearAttributeView();
+                }
+            } else
+            {
+                Toast.makeText(context, "cannot get attributes, network error", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -405,6 +418,17 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
         {
             this.llProductAttributes = llProductAttributes;
             this.context = context;
+        }
+
+        public void clearAttributeView()
+        {
+            if (llProductAttributes != null)
+            {
+                if (llProductAttributes.getChildCount() > 0)
+                {
+                    llProductAttributes.removeAllViews();
+                }
+            }
         }
 
         public void populate(String response)
@@ -455,6 +479,9 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
                         Log.i(TAG, "ADDING ATTRIBUTE SPINNER TO VIEW");
                         llProductAttributes.addView(sv);
                     }
+                } else
+                {
+                    clearAttributeView();
                 }
 
             } catch (JSONException e)

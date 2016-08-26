@@ -232,8 +232,17 @@ public class ActivityView extends AppCompatActivity
             final String total_enquiry = obj.getString("total_enquiry");
             adapterEnquiryStatus.addSimpleTextView(++i, "Successful/Total Enquiries: ", total_enquiry);
 
-            final String group = obj.getString("group").substring(0, obj.getString("group").lastIndexOf(','));
-            adapterEnquiryStatus.addSimpleTextView(++i, "Group: ", group);
+            try
+            {
+                final String group = obj.getString("group").substring(0, obj.getString("group").lastIndexOf(','));
+                adapterEnquiryStatus.addSimpleTextView(++i, "Group: ", group);
+            } catch (StringIndexOutOfBoundsException s)
+            {
+                s.printStackTrace();
+                final String group = obj.getString("group");
+                adapterEnquiryStatus.addSimpleTextView(++i, "Group: ", group);
+            }
+
 
         } catch (JSONException e)
         {
