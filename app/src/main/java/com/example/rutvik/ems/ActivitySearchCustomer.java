@@ -1,14 +1,10 @@
 package com.example.rutvik.ems;
 
-import android.content.Context;
 import android.os.AsyncTask;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.AutoCompleteTextView;
@@ -19,11 +15,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import ComponentFactory.InquiryProductDetails;
 import adapters.DropdownProductAdapter;
 import extras.AppUtils;
 import extras.PostServiceHandler;
@@ -33,9 +27,11 @@ public class ActivitySearchCustomer extends AppCompatActivity
 {
     private static final String TAG = AppUtils.APP_TAG + ActivitySearchCustomer.class.getSimpleName();
 
-    AutoCompleteTextView actEnquiryId, actContact, actName, actEmail;
+    private AutoCompleteTextView actEnquiryId, actContact, actName, actEmail;
 
-    DropdownProductAdapter adapterName;
+    private DropdownProductAdapter adapterName, adapterContact, adapterEmail, adapterEnquiry;
+
+    private GetSearchData getSearchDataName, getSearchDataContact, getSearchDataEmail, getSearchDataEnquiry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -49,24 +45,122 @@ public class ActivitySearchCustomer extends AppCompatActivity
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        final String host = PreferenceManager.getDefaultSharedPreferences(ActivitySearchCustomer.this).getString("host", "");
+
+        final String urlName = host + AppUtils.URL_GET_CUSTOMER_NAME;
+        final String urlContact = host + AppUtils.URL_GET_CUSTOMER_CONTACT;
+        final String urlEmail = host + AppUtils.URL_GET_CUSTOMER_EMAIL;
+        final String urlEnquiry = host + AppUtils.URL_GET_ENQUIRY_ID;
+
         actEmail = (AutoCompleteTextView) findViewById(R.id.act_customerEmail);
-        actEnquiryId = (AutoCompleteTextView) findViewById(R.id.act_enquiryId);
-        actContact = (AutoCompleteTextView) findViewById(R.id.act_customerContact);
-        actName = (AutoCompleteTextView) findViewById(R.id.act_customerName);
-
-        adapterName = new DropdownProductAdapter(ActivitySearchCustomer.this)
+        adapterEmail = new DropdownProductAdapter(ActivitySearchCustomer.this)
         {
-
             @Override
             public Filter getFilter()
             {
                 return new DropdownProductAdapter.CustomFilter()
                 {
-
                     @Override
                     protected FilterResults performFiltering(CharSequence constraint)
                     {
-                        new GetNameAsync(constraint.toString()).execute();
+                        if (getSearchDataEmail == null)
+                        {
+                            getSearchDataEmail = new GetSearchData(constraint.toString(), urlEmail, adapterEmail);
+                        } else
+                        {
+                            getSearchDataEmail.cancel(true);
+                            getSearchDataEmail = new GetSearchData(constraint.toString(), urlEmail, adapterEmail);
+                        }
+                        getSearchDataEmail.execute();
+                        return super.performFiltering(constraint);
+                    }
+                };
+            }
+        };
+        actEmail.setAdapter(adapterEmail);
+        actEmail.setThreshold(3);
+
+
+        actEnquiryId = (AutoCompleteTextView) findViewById(R.id.act_enquiryId);
+        adapterEnquiry = new DropdownProductAdapter(ActivitySearchCustomer.this)
+        {
+            @Override
+            public Filter getFilter()
+            {
+                return new DropdownProductAdapter.CustomFilter()
+                {
+                    @Override
+                    protected FilterResults performFiltering(CharSequence constraint)
+                    {
+                        if (getSearchDataEnquiry == null)
+                        {
+                            getSearchDataEnquiry = new GetSearchData(constraint.toString(), urlEnquiry, adapterEnquiry);
+                        } else
+                        {
+                            getSearchDataEnquiry.cancel(true);
+                            getSearchDataEnquiry = new GetSearchData(constraint.toString(), urlEnquiry, adapterEnquiry);
+                        }
+                        getSearchDataEnquiry.execute();
+                        return super.performFiltering(constraint);
+                    }
+
+                };
+            }
+        };
+        actEnquiryId.setAdapter(adapterEnquiry);
+        actEnquiryId.setThreshold(3);
+
+
+        actContact = (AutoCompleteTextView) findViewById(R.id.act_customerContact);
+        adapterContact = new DropdownProductAdapter(ActivitySearchCustomer.this)
+        {
+            @Override
+            public Filter getFilter()
+            {
+                return new DropdownProductAdapter.CustomFilter()
+                {
+                    @Override
+                    protected FilterResults performFiltering(CharSequence constraint)
+                    {
+                        if (getSearchDataContact == null)
+                        {
+                            getSearchDataContact = new GetSearchData(constraint.toString(), urlContact, adapterContact);
+                        } else
+                        {
+                            getSearchDataContact.cancel(true);
+                            getSearchDataContact = new GetSearchData(constraint.toString(), urlContact, adapterContact);
+                        }
+                        getSearchDataContact.execute();
+                        return super.performFiltering(constraint);
+                    }
+
+                };
+            }
+        };
+        actContact.setAdapter(adapterContact);
+        actContact.setThreshold(3);
+
+
+        actName = (AutoCompleteTextView) findViewById(R.id.act_customerName);
+        adapterName = new DropdownProductAdapter(ActivitySearchCustomer.this)
+        {
+            @Override
+            public Filter getFilter()
+            {
+                return new DropdownProductAdapter.CustomFilter()
+                {
+                    @Override
+                    protected FilterResults performFiltering(CharSequence constraint)
+                    {
+                        if (getSearchDataName == null)
+                        {
+                            getSearchDataName = new GetSearchData(constraint.toString(), urlName, adapterName);
+                        } else
+                        {
+                            getSearchDataName.cancel(true);
+                            getSearchDataName = new GetSearchData(constraint.toString(), urlName, adapterName);
+                        }
+                        getSearchDataName.execute();
                         return super.performFiltering(constraint);
                     }
 
@@ -74,7 +168,7 @@ public class ActivitySearchCustomer extends AppCompatActivity
             }
         };
         actName.setAdapter(adapterName);
-        actName.setThreshold(1);
+        actName.setThreshold(3);
 
     }
 
@@ -90,23 +184,23 @@ public class ActivitySearchCustomer extends AppCompatActivity
     }
 
 
-    class GetNameAsync extends AsyncTask<Void, Void, String>
+    static class GetSearchData extends AsyncTask<Void, Void, String>
     {
-        final String host = PreferenceManager.getDefaultSharedPreferences(ActivitySearchCustomer.this).getString("host", "");
 
-        final String url = host + AppUtils.URL_GET_CUSTOMER_NAME;
-
+        final String url;
 
         String resp = "";
 
         final String term;
 
-        class Name implements DropdownProductAdapter.AutoCompleteDropDownItem
+        DropdownProductAdapter adapter;
+
+        class Label implements DropdownProductAdapter.AutoCompleteDropDownItem
         {
             String term;
             int id;
 
-            public Name(String term, int id)
+            public Label(String term, int id)
             {
                 this.term = term;
                 this.id = id;
@@ -125,9 +219,11 @@ public class ActivitySearchCustomer extends AppCompatActivity
             }
         }
 
-        public GetNameAsync(String term)
+        public GetSearchData(final String term, final String url, final DropdownProductAdapter adapter)
         {
+            this.url = url;
             this.term = term;
+            this.adapter = adapter;
         }
 
         @Override
@@ -143,7 +239,7 @@ public class ActivitySearchCustomer extends AppCompatActivity
                 {
                     if (status == HttpURLConnection.HTTP_OK)
                     {
-                        GetNameAsync.this.resp = response;
+                        GetSearchData.this.resp = response;
                     }
                 }
             });
@@ -164,7 +260,7 @@ public class ActivitySearchCustomer extends AppCompatActivity
                     for (int i = 0; i < arr.length(); i++)
                     {
                         JSONObject obj = arr.getJSONObject(i);
-                        adapterName.addDropdownListProduct(new Name(obj.getString("label"), i));
+                        adapter.addDropdownListProduct(new Label(obj.getString("label"), i));
                     }
                 } catch (JSONException e)
                 {
