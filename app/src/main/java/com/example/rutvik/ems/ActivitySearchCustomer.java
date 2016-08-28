@@ -1,5 +1,6 @@
 package com.example.rutvik.ems;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -7,8 +8,12 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.Filter;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +37,10 @@ public class ActivitySearchCustomer extends AppCompatActivity
     private DropdownProductAdapter adapterName, adapterContact, adapterEmail, adapterEnquiry;
 
     private GetSearchData getSearchDataName, getSearchDataContact, getSearchDataEmail, getSearchDataEnquiry;
+
+    private Button btnSearchCustomer;
+
+    private ProgressBar pbSearchInProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -170,6 +179,22 @@ public class ActivitySearchCustomer extends AppCompatActivity
         actName.setAdapter(adapterName);
         actName.setThreshold(3);
 
+
+        btnSearchCustomer = (Button) findViewById(R.id.btn_searchCustomer);
+        btnSearchCustomer.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                new SearchCustomerAsync(actName.getText().toString(),
+                        actEmail.getText().toString(),
+                        actContact.getText().toString(),
+                        actEnquiryId.getText().toString()).execute();
+            }
+        });
+
+        pbSearchInProgress = (ProgressBar) findViewById(R.id.pb_searchInProgress);
+
     }
 
 
@@ -193,7 +218,7 @@ public class ActivitySearchCustomer extends AppCompatActivity
 
         final String term;
 
-        DropdownProductAdapter adapter;
+        final DropdownProductAdapter adapter;
 
         class Label implements DropdownProductAdapter.AutoCompleteDropDownItem
         {
@@ -270,4 +295,100 @@ public class ActivitySearchCustomer extends AppCompatActivity
         }
 
     }
+
+
+    public class SearchCustomerAsync extends AsyncTask<Void, Void, Void>
+    {
+
+        final String url = PreferenceManager.getDefaultSharedPreferences(ActivitySearchCustomer.this)
+                .getString("host", "") + AppUtils.URL_WEBSERVICE;
+
+        String response = "";
+
+        final String name, contact, email, enquiryId;
+
+        public SearchCustomerAsync(final String name, final String email,
+                                   final String contact, final String enquiryId)
+        {
+            this.email = email;
+            this.contact = contact;
+            this.enquiryId = enquiryId;
+            this.name = name;
+        }
+
+        @Override
+        protected void onPreExecute()
+        {
+            btnSearchCustomer.setVisibility(View.GONE);
+            pbSearchInProgress.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids)
+        {
+            final Map<String, String> postParam = new HashMap<>();
+            postParam.put("method", "search_customer");
+            postParam.put("enquiry_id", enquiryId);
+            postParam.put("mobile_no", contact);
+            postParam.put("name", name);
+            postParam.put("email", email);
+
+            new PostServiceHandler(TAG, 2, 2000).doPostRequest(url, postParam, new PostServiceHandler.ResponseCallback()
+            {
+                @Override
+                public void response(int status, String response)
+                {
+                    if (status == HttpURLConnection.HTTP_OK)
+                    {
+                        SearchCustomerAsync.this.response = response;
+                    }
+                }
+            });
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid)
+        {
+            try
+            {
+                if (!response.isEmpty())
+                {
+                    JSONObject obj = new JSONObject(response).getJSONObject("response");
+                    try
+                    {
+                        obj.getJSONArray("result");
+                        Intent i=new Intent(ActivitySearchCustomer.this,ActivitySearchResult.class);
+                        i.putExtra("search_result",response);
+                        startActivity(i);
+                    } catch (JSONException e)
+                    {
+                        e.printStackTrace();
+                        final String result = obj.getString("result");
+                        try
+                        {
+                            final int customerId = Integer.valueOf(result);
+                            Toast.makeText(ActivitySearchCustomer.this,
+                                    customerId + "", Toast.LENGTH_SHORT).show();
+                        } catch (NumberFormatException n)
+                        {
+                            e.printStackTrace();
+                            Toast.makeText(ActivitySearchCustomer.this,
+                                    result, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            } catch (JSONException e)
+            {
+                e.printStackTrace();
+            } finally
+            {
+                btnSearchCustomer.setVisibility(View.VISIBLE);
+                pbSearchInProgress.setVisibility(View.GONE);
+            }
+        }
+    }
+
+
 }

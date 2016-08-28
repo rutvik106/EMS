@@ -46,6 +46,8 @@
         </activity>
         <activity android:name=".ActivitySearchCustomer">
         </activity>
+        <activity android:name=".ActivitySearchResult">
+        </activity>
     </application>
 
 </manifest>
