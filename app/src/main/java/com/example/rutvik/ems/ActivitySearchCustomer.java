@@ -359,8 +359,8 @@ public class ActivitySearchCustomer extends AppCompatActivity
                     try
                     {
                         obj.getJSONArray("result");
-                        Intent i=new Intent(ActivitySearchCustomer.this,ActivitySearchResult.class);
-                        i.putExtra("search_result",response);
+                        Intent i = new Intent(ActivitySearchCustomer.this, ActivitySearchResult.class);
+                        i.putExtra("search_result", response);
                         startActivity(i);
                     } catch (JSONException e)
                     {
@@ -371,6 +371,10 @@ public class ActivitySearchCustomer extends AppCompatActivity
                             final int customerId = Integer.valueOf(result);
                             Toast.makeText(ActivitySearchCustomer.this,
                                     customerId + "", Toast.LENGTH_SHORT).show();
+
+                            Intent i = new Intent(ActivitySearchCustomer.this, ActivityCustomerDetails.class);
+                            i.putExtra("customer_id", String.valueOf(customerId));
+                            startActivity(i);
                         } catch (NumberFormatException n)
                         {
                             e.printStackTrace();

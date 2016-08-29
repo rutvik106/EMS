@@ -48,6 +48,8 @@
         </activity>
         <activity android:name=".ActivitySearchResult">
         </activity>
+        <activity android:name=".ActivityCustomerDetails">
+        </activity>
     </application>
 
 </manifest>

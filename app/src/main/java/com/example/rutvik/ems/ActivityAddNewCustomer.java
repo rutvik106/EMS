@@ -60,11 +60,11 @@ public class ActivityAddNewCustomer extends AppCompatActivity
         {
             setSupportActionBar(mToolbar);
             getSupportActionBar().setTitle("Add New Customer");
-            getSupportActionBar().setHomeButtonEnabled(true);
+            //getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-            upArrow.setColorFilter(getResources().getColor(R.color.mdtp_white), PorterDuff.Mode.SRC_ATOP);
-            getSupportActionBar().setHomeAsUpIndicator(upArrow);
+            /** final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+             upArrow.setColorFilter(getResources().getColor(R.color.mdtp_white), PorterDuff.Mode.SRC_ATOP);
+             getSupportActionBar().setHomeAsUpIndicator(upArrow);*/
         }
 
         fragSimpleForm = (LinearLayout) findViewById(R.id.frag_simpleForm);
@@ -248,7 +248,7 @@ public class ActivityAddNewCustomer extends AppCompatActivity
         public void urlTriggered(EditText etContact, TextView tvDuplicateErrorMsg, String response)
         {
             etContact.setTextColor(Color.RED);
-            final String msg="Contact already exist for id "+response;
+            final String msg = "Contact already exist for id " + response;
             tvDuplicateErrorMsg.setText(msg);
         }
     }

@@ -1,6 +1,7 @@
 package viewholders;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.rutvik.ems.ActivityCustomerDetails;
 import com.example.rutvik.ems.R;
 
 import extras.AppUtils;
@@ -25,13 +27,24 @@ public class SearchResultItemVH extends RecyclerView.ViewHolder
 
     SearchResultItem model;
 
-    private SearchResultItemVH(View itemView)
+    private SearchResultItemVH(final Context context, View itemView)
     {
         super(itemView);
 
         tvCustomerContact = (TextView) itemView.findViewById(R.id.tv_customerContact);
         tvCustomerName = (TextView) itemView.findViewById(R.id.tv_customerName);
 
+        itemView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent i = new Intent(context, ActivityCustomerDetails.class);
+                //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.putExtra("customer_id", model.getId());
+                context.startActivity(i);
+            }
+        });
     }
 
     public static SearchResultItemVH create(Context context, ViewGroup parent)
@@ -40,7 +53,7 @@ public class SearchResultItemVH extends RecyclerView.ViewHolder
         {
             Log.i(TAG, "create: context is null");
         }
-        return new SearchResultItemVH(LayoutInflater.from(context)
+        return new SearchResultItemVH(context, LayoutInflater.from(context)
                 .inflate(R.layout.single_search_result_row_item, parent, false));
 
     }

@@ -61,7 +61,7 @@ public class ActivitySearchResult extends AppCompatActivity
                     for (int j = 0; j < contact.length(); j++)
                     {
                         Log.i(TAG, "Contact no: " + contact.getJSONObject(j).getString("customer_contact_no"));
-                        contactNo = contactNo + contact.getJSONObject(j).getString("customer_contact_no") + ", ";
+                        contactNo = contactNo + contact.getJSONObject(j).getString("customer_contact_no") + " | ";
                     }
                     Log.i(TAG, "Contact No: " + contactNo);
                     contactNo = contactNo.substring(0, contactNo.length() - 2);
