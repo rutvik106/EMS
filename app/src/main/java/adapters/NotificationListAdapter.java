@@ -59,7 +59,6 @@ public class NotificationListAdapter extends RecyclerView.Adapter<RecyclerView.V
 
             case NotificationListItemComp.Type.HEADER:
                 Log.i(TAG,"creating header");
-
                 return NotificationListHeaderVH.create(context,parent,this);
 
             case NotificationListItemComp.Type.CHILD:

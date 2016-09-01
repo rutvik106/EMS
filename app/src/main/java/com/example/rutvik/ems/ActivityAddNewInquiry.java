@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,11 +64,20 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 
     App app;
 
+    Button addEnquiry;
+
+    ProgressBar pb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_inquiry);
+
+        pb = new ProgressBar(this);
+        pb.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+        pb.setIndeterminate(true);
 
         app = (App) getApplication();
 
@@ -122,7 +132,7 @@ public class ActivityAddNewInquiry extends AppCompatActivity
     public void setAddEnquiryButton()
     {
 
-        Button addEnquiry = new Button(this);
+        addEnquiry = new Button(this);
         ViewGroup.LayoutParams lParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 200);
         addEnquiry.setLayoutParams(lParams);
         addEnquiry.setText("Add Enquiry");
@@ -406,6 +416,8 @@ public class ActivityAddNewInquiry extends AppCompatActivity
         @Override
         public void onClick(View view)
         {
+            fragSimpleForm.removeViewAt(3);
+            fragSimpleForm.addView(pb, 3);
 
             final Map postParams = new HashMap();
 
@@ -464,15 +476,16 @@ public class ActivityAddNewInquiry extends AppCompatActivity
                 {
 
                     new PostServiceHandler(TAG, 2, 2000)
-                     .doPostRequest(app.getHost() + AppUtils.URL_WEBSERVICE,
-                     postParams,
-                     new PostServiceHandler.ResponseCallback()
-                     {
-                     @Override public void response(int status, String r)
-                     {
-                     response = r;
-                     }
-                     });
+                            .doPostRequest(app.getHost() + AppUtils.URL_WEBSERVICE,
+                                    postParams,
+                                    new PostServiceHandler.ResponseCallback()
+                                    {
+                                        @Override
+                                        public void response(int status, String r)
+                                        {
+                                            response = r;
+                                        }
+                                    });
 
                     return null;
                 }
@@ -492,6 +505,8 @@ public class ActivityAddNewInquiry extends AppCompatActivity
                             ActivityAddNewInquiry.this.finish();
                         } else
                         {
+                            fragSimpleForm.removeViewAt(3);
+                            fragSimpleForm.addView(addEnquiry, 3);
                             Toast.makeText(ActivityAddNewInquiry.this,
                                     jsonResponse.getMessage(),
                                     Toast.LENGTH_SHORT)
@@ -499,6 +514,8 @@ public class ActivityAddNewInquiry extends AppCompatActivity
                         }
                     } catch (JSONException e)
                     {
+                        fragSimpleForm.removeViewAt(3);
+                        fragSimpleForm.addView(addEnquiry, 3);
                         Log.i(TAG, e.getMessage());
                         Toast.makeText(ActivityAddNewInquiry.this,
                                 "Something went wrong, Please try again later",

@@ -1,5 +1,9 @@
 package fragments;
 
+/**
+ * Created by rutvik on 31-08-2016 at 05:06 PM.
+ */
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -12,12 +16,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.example.rutvik.ems.App;
-import com.example.rutvik.ems.HomeActivity;
 import com.example.rutvik.ems.R;
 
 import org.json.JSONArray;
@@ -27,7 +29,6 @@ import org.json.JSONObject;
 import java.net.HttpURLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,7 +39,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import adapters.ExpandableListAdapter;
 import adapters.NotificationListAdapter;
 import extras.AppUtils;
 import extras.Log;
@@ -46,10 +46,8 @@ import extras.PostServiceHandler;
 import models.FollowUp;
 import models.NotificationHeader;
 
-/**
- * Created by rutvik on 26-04-2016 at 07:00 PM.
- */
-public class NotificationFragment extends Fragment
+
+public class ExpiredFollowUpFragment extends Fragment
 {
 
 
@@ -68,15 +66,16 @@ public class NotificationFragment extends Fragment
 
     List<NotificationHeader> modelList = new LinkedList<>();
 
+    private LinkedList<FollowUp> expiredFollowUpArray = new LinkedList<>();
 
-    public NotificationFragment()
+    public ExpiredFollowUpFragment()
     {
 
     }
 
-    public static NotificationFragment getInstance(Context context)
+    public static ExpiredFollowUpFragment getInstance(Context context)
     {
-        NotificationFragment fragment = new NotificationFragment();
+        ExpiredFollowUpFragment fragment = new ExpiredFollowUpFragment();
         fragment.context = context;
         return fragment;
     }
@@ -95,17 +94,117 @@ public class NotificationFragment extends Fragment
 
         rv.setHasFixedSize(true);
 
-        rv.setNestedScrollingEnabled(true);
+        rv.setNestedScrollingEnabled(false);
 
         lm = new LinearLayoutManager(context);
 
         rv.setLayoutManager(lm);
 
+        getFollowUpAsync();
+
         return rootView;
 
     }
 
+    void getFollowUpAsync()
+    {
 
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        final String host = sp.getString("host", "http://127.0.0.1/");
+
+        final String sessionId = ((App) getActivity().getApplication()).getUser().getSession_id();
+
+        new AsyncTask<Void, Void, Void>()
+        {
+
+            //ProgressDialog dialog;
+
+            String response = "";
+
+            @Override
+            protected void onPreExecute()
+            {
+                /**                dialog = new ProgressDialog(HomeActivity.this);
+                 dialog.setTitle("Please Wait");
+                 dialog.setMessage("Getting follow up...");
+                 dialog.setCancelable(true);
+                 dialog.setCanceledOnTouchOutside(false);
+                 dialog.setOnCancelListener(new DialogInterface.OnCancelListener()
+                 {
+                 @Override public void onCancel(DialogInterface dialog)
+                 {
+                 HomeActivity.this.finish();
+                 }
+                 });
+                 dialog.show();*/
+            }
+
+            @Override
+            protected Void doInBackground(Void... params)
+            {
+
+                Map<String, String> postParams = new HashMap<>();
+                postParams.put("method", "get_follow_up");
+                postParams.put("session_id", sessionId);
+
+                new PostServiceHandler(AppUtils.APP_TAG, 2, 2000)
+                        .doPostRequest(host + AppUtils.URL_WEBSERVICE, postParams, new PostServiceHandler.ResponseCallback()
+                        {
+                            @Override
+                            public void response(int status, String r)
+                            {
+                                if (status == HttpURLConnection.HTTP_OK)
+                                {
+                                    response = r;
+                                }
+                            }
+                        });
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid)
+            {
+                Log.i(TAG, "RESPONSE: " + response);
+                if (!response.isEmpty())
+                {
+                    Log.i(TAG, "RESPONSE NOT EMPTY");
+                    try
+                    {
+                        expiredFollowUpArray.clear();
+                        Log.i(TAG, "PARSING JSON");
+                        JSONArray upcomingFollowUps = new JSONObject(response).getJSONArray("expired");
+                        Log.i(TAG, "JSON ARRAY LENGTH: " + upcomingFollowUps.length());
+                        for (int i = 0; i < upcomingFollowUps.length(); i++)
+                        {
+                            expiredFollowUpArray.add(new FollowUp(upcomingFollowUps.getJSONObject(i)));
+                        }
+
+                        setupAdapter(expiredFollowUpArray);
+
+                        //Toast.makeText(HomeActivity.this, "Model Size: " + modelList.size(), Toast.LENGTH_SHORT).show();
+
+                    } catch (JSONException e)
+                    {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(), "parsing error", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+
+                /**if (dialog != null)
+                 {
+                 if (dialog.isShowing())
+                 {
+                 dialog.dismiss();
+                 }
+                 }*/
+
+            }
+        }.execute();
+    }
 
     public void setupAdapter(final LinkedList<FollowUp> followUpArray)
     {
@@ -207,3 +306,4 @@ public class NotificationFragment extends Fragment
 
 
 }
+

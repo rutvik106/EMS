@@ -1,19 +1,17 @@
 package com.example.rutvik.ems;
 
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
@@ -21,39 +19,28 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ExpandableListView;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
-import adapters.ExpandableListAdapter;
 import adapters.HomeGridAdapter;
-import adapters.NotificationListAdapter;
+import adapters.ViewPagerAdapter;
 import extras.AppUtils;
 import extras.Log;
 import extras.PostServiceHandler;
+import fragments.ExpiredFollowUpFragment;
+import fragments.NotificationFragment;
 import models.FollowUp;
 import models.GridItem;
-import models.NotificationHeader;
 
 public class HomeActivity extends AppCompatActivity
 {
@@ -68,29 +55,25 @@ public class HomeActivity extends AppCompatActivity
 
     private Toolbar toolbar;
 
-    private ExpandableListView elvNotificationsListView;
-
-    private ExpandableListAdapter expandableListAdapter;
-
-    Map<String, List<FollowUp>> modelListMap;
-
     boolean isShow = false;
     int scrollRange = -1;
 
-    List<NotificationHeader> modelList = new LinkedList<>();
-
-    RecyclerView rv;
-
-    RecyclerView.LayoutManager lm;
-
-    NotificationListAdapter adapter;
-
-    LinkedList<FollowUp> followUpArray = new LinkedList<FollowUp>();
 
     public static final String TAG = AppUtils.APP_TAG + HomeActivity.class.getSimpleName();
 
-    FrameLayout flNoNotifications;
-    FrameLayout flLoadingFollowUp;
+
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+
+    final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
+    NotificationFragment upcoming;
+    NotificationFragment expired;
+
+
+    private LinkedList<FollowUp> upcomingFollowUpArray = new LinkedList<>();
+    private LinkedList<FollowUp> expiredFollowUpArray = new LinkedList<>();
+
 
     @SuppressWarnings("ConstantConditions")
     @Override
@@ -100,6 +83,7 @@ public class HomeActivity extends AppCompatActivity
         initActivityTransitions();
         setContentView(R.layout.activity_home);
 
+
         ViewCompat.setTransitionName(findViewById(R.id.app_bar_layout), EXTRA_IMAGE);
         supportPostponeEnterTransition();
 
@@ -108,12 +92,6 @@ public class HomeActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
-
-        elvNotificationsListView = (ExpandableListView) findViewById(R.id.elv_notificationList);
-
-        flNoNotifications = (FrameLayout) findViewById(R.id.frame_noNotifications);
-
-        flLoadingFollowUp = (FrameLayout) findViewById(R.id.fl_loadingFollowUp);
 
 
         /*elvNotificationsListView.setFocusable(false);*/
@@ -183,20 +161,55 @@ public class HomeActivity extends AppCompatActivity
         recyclerView.setAdapter(homeGridAdapter);
 
 
-        rv = (RecyclerView) findViewById(R.id.rv_notification);
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        viewPager.setOffscreenPageLimit(2);
+        setupViewPager(viewPager);
 
-        rv.setHasFixedSize(true);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
 
-        rv.setNestedScrollingEnabled(false);
+        viewPager.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener()
+        {
+            @Override
+            public void onViewAttachedToWindow(View view)
+            {
+                Log.i(TAG, "onViewAttachedToWindow: view attached to pager now");
+                getFollowUpAsync();
+            }
 
-        lm = new LinearLayoutManager(this);
+            @Override
+            public void onViewDetachedFromWindow(View view)
+            {
 
-        rv.setLayoutManager(lm);
+            }
+        });
+
+        //setupTabIcons();
 
 
-        //prepareData();1
+        //prepareData();
 
-        getFollowUpAsync();
+        //getFollowUpAsync();
+
+    }
+
+    private void setupTabIcons()
+    {
+
+        tabLayout.getTabAt(0).setIcon(R.drawable.logo);
+
+    }
+
+    private void setupViewPager(ViewPager viewPager)
+    {
+
+        upcoming = NotificationFragment.getInstance(this);
+        expired = NotificationFragment.getInstance(this);
+
+        adapter.addFragment(upcoming, "UPCOMING");
+        adapter.addFragment(expired, "EXPIRED");
+
+        viewPager.setAdapter(adapter);
 
     }
 
@@ -208,10 +221,102 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
+
+    /**
+     * void prepareData() {
+     * <p>
+     * final String data = "{\"follow_up\":{ \"id\":\"1\", \"follow_up_date\":\"14-4-2016\", \"discussion\":\"yoyo\", \"name\":\"jeet patel\", \"product\":\"ems\", \"extra_details\":\"extra long\", \"phone\":\"9824243009\", \"handle_by\":\"sanket jasani\" } }";
+     * <p>
+     * <p>
+     * try {
+     * final JSONObject obj = new JSONObject(data).getJSONObject("follow_up");
+     * <p>
+     * modelList = new ArrayList<>();
+     * modelList.add("Today");
+     * modelList.add("Tomorrow");
+     * <p>
+     * List<FollowUp> today = new ArrayList<>();
+     * today.add(new FollowUp(obj, "Today"));
+     * today.add(new FollowUp(obj, "Today"));
+     * <p>
+     * List<FollowUp> tomorrow = new ArrayList<>();
+     * tomorrow.add(new FollowUp(obj, "Tomorrow"));
+     * tomorrow.add(new FollowUp(obj, "Tomorrow"));
+     * <p>
+     * modelListMap = new HashMap<>();
+     * modelListMap.put(modelList.get(0), today);
+     * modelListMap.put(modelList.get(1), tomorrow);
+     * <p>
+     * expandableListAdapter = new ExpandableListAdapter(this, modelList, modelListMap);
+     * elvNotificationsListView.setAdapter(expandableListAdapter);
+     * <p>
+     * for (int i = 0; i < expandableListAdapter.getGroupCount(); i++) {
+     * elvNotificationsListView.expandGroup(i);
+     * }
+     * <p>
+     * } catch (Exception e) {
+     * e.printStackTrace();
+     * Toast.makeText(this, "error parsing json", Toast.LENGTH_SHORT).show();
+     * }
+     * }
+     */
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+
+        getMenuInflater().inflate(R.menu.menu_home, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.action_profile:
+                //startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+
+            case R.id.action_refresh:
+                //getFollowUpAsync();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent motionEvent)
+    {
+        try
+        {
+            return super.dispatchTouchEvent(motionEvent);
+        } catch (NullPointerException e)
+        {
+            return false;
+        }
+    }
+
+    private void initActivityTransitions()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            Slide transition = new Slide();
+            transition.excludeTarget(android.R.id.statusBarBackground, true);
+            getWindow().setEnterTransition(transition);
+            getWindow().setReturnTransition(transition);
+        }
+    }
+
+
     void getFollowUpAsync()
     {
 
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
 
         final String host = sp.getString("host", "http://127.0.0.1/");
 
@@ -275,29 +380,16 @@ public class HomeActivity extends AppCompatActivity
                     Log.i(TAG, "RESPONSE NOT EMPTY");
                     try
                     {
-                        followUpArray.clear();
+                        upcomingFollowUpArray.clear();
                         Log.i(TAG, "PARSING JSON");
-                        JSONArray arr = new JSONArray(response);
-                        Log.i(TAG, "JSON ARRAY LENGTH: " + arr.length());
-                        for (int i = 0; i < arr.length(); i++)
+                        JSONArray upcomingFollowUps = new JSONObject(response).getJSONArray("upcoming");
+                        Log.i(TAG, "JSON ARRAY LENGTH: " + upcomingFollowUps.length());
+                        for (int i = 0; i < upcomingFollowUps.length(); i++)
                         {
-                            followUpArray.add(new FollowUp(arr.getJSONObject(i)));
+                            upcomingFollowUpArray.add(new FollowUp(upcomingFollowUps.getJSONObject(i)));
                         }
 
-
-                        adapter = new NotificationListAdapter(HomeActivity.this, preapareModelList(followUpArray));
-
-                        rv.setAdapter(adapter);
-
-                        if (adapter.getItemCount() < 1)
-                        {
-                            flNoNotifications.setVisibility(View.VISIBLE);
-                        } else
-                        {
-                            flNoNotifications.setVisibility(View.GONE);
-                        }
-
-                        flLoadingFollowUp.setVisibility(View.GONE);
+                        upcoming.setupAdapter(upcomingFollowUpArray);
 
                         //Toast.makeText(HomeActivity.this, "Model Size: " + modelList.size(), Toast.LENGTH_SHORT).show();
 
@@ -306,6 +398,30 @@ public class HomeActivity extends AppCompatActivity
                         e.printStackTrace();
                         Toast.makeText(HomeActivity.this, "parsing error", Toast.LENGTH_SHORT).show();
                     }
+
+
+                    try
+                    {
+                        expiredFollowUpArray.clear();
+                        Log.i(TAG, "PARSING JSON");
+                        JSONArray expiredFollowUps = new JSONObject(response).getJSONArray("expired");
+                        Log.i(TAG, "JSON ARRAY LENGTH: " + expiredFollowUps.length());
+                        for (int i = 0; i < expiredFollowUps.length(); i++)
+                        {
+                            expiredFollowUpArray.add(new FollowUp(expiredFollowUps.getJSONObject(i)));
+                        }
+
+                        expired.setupAdapter(expiredFollowUpArray);
+
+                        //Toast.makeText(HomeActivity.this, "Model Size: " + modelList.size(), Toast.LENGTH_SHORT).show();
+
+                    } catch (JSONException e)
+                    {
+                        e.printStackTrace();
+                        Toast.makeText(HomeActivity.this, "parsing error", Toast.LENGTH_SHORT).show();
+                    }
+
+
                 }
 
                 /**if (dialog != null)
@@ -320,217 +436,5 @@ public class HomeActivity extends AppCompatActivity
         }.execute();
     }
 
-
-    /**
-     * void prepareData() {
-     * <p>
-     * final String data = "{\"follow_up\":{ \"id\":\"1\", \"follow_up_date\":\"14-4-2016\", \"discussion\":\"yoyo\", \"name\":\"jeet patel\", \"product\":\"ems\", \"extra_details\":\"extra long\", \"phone\":\"9824243009\", \"handle_by\":\"sanket jasani\" } }";
-     * <p>
-     * <p>
-     * try {
-     * final JSONObject obj = new JSONObject(data).getJSONObject("follow_up");
-     * <p>
-     * modelList = new ArrayList<>();
-     * modelList.add("Today");
-     * modelList.add("Tomorrow");
-     * <p>
-     * List<FollowUp> today = new ArrayList<>();
-     * today.add(new FollowUp(obj, "Today"));
-     * today.add(new FollowUp(obj, "Today"));
-     * <p>
-     * List<FollowUp> tomorrow = new ArrayList<>();
-     * tomorrow.add(new FollowUp(obj, "Tomorrow"));
-     * tomorrow.add(new FollowUp(obj, "Tomorrow"));
-     * <p>
-     * modelListMap = new HashMap<>();
-     * modelListMap.put(modelList.get(0), today);
-     * modelListMap.put(modelList.get(1), tomorrow);
-     * <p>
-     * expandableListAdapter = new ExpandableListAdapter(this, modelList, modelListMap);
-     * elvNotificationsListView.setAdapter(expandableListAdapter);
-     * <p>
-     * for (int i = 0; i < expandableListAdapter.getGroupCount(); i++) {
-     * elvNotificationsListView.expandGroup(i);
-     * }
-     * <p>
-     * } catch (Exception e) {
-     * e.printStackTrace();
-     * Toast.makeText(this, "error parsing json", Toast.LENGTH_SHORT).show();
-     * }
-     * }
-     */
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-
-        getMenuInflater().inflate(R.menu.menu_home, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.action_profile:
-                //startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-
-            case R.id.action_refresh:
-                getFollowUpAsync();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent motionEvent)
-    {
-        try
-        {
-            return super.dispatchTouchEvent(motionEvent);
-        } catch (NullPointerException e)
-        {
-            return false;
-        }
-    }
-
-    private void initActivityTransitions()
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
-            Slide transition = new Slide();
-            transition.excludeTarget(android.R.id.statusBarBackground, true);
-            getWindow().setEnterTransition(transition);
-            getWindow().setReturnTransition(transition);
-        }
-    }
-
-
-    private List preapareModelList(List<FollowUp> followUpList)
-    {
-        modelList.clear();
-        Log.i(TAG, "PREPARING MODEL LIST");
-        Log.i(TAG, "FOLLOW UP LIST SIZE: " + followUpList.size());
-        HashMap<String, List<FollowUp>> dates = new LinkedHashMap<>();
-        for (FollowUp followUp : followUpList)
-        {
-            Log.i(TAG, "follow up date: " + followUp.getFollowUpDate());
-            if (dates.get(dateToNotificationLabel(followUp.getFollowUpDate())) == null)
-            {
-                Log.i(TAG, "DATE NOT FOUND IN dates map");
-                List<FollowUp> f = new LinkedList<>();
-                f.add(followUp);
-                dates.put(dateToNotificationLabel(followUp.getFollowUpDate()), f);
-            } else
-            {
-                dates.get(dateToNotificationLabel(followUp.getFollowUpDate())).add(followUp);
-            }
-        }
-        Set<Map.Entry<String, List<FollowUp>>> set = dates.entrySet();
-        Iterator<Map.Entry<String, List<FollowUp>>> entry = set.iterator();
-
-        while (entry.hasNext())
-        {
-            Map.Entry<String, List<FollowUp>> singleEntry = entry.next();
-            Log.i(TAG, "KEY: " + singleEntry.getKey());
-            modelList.add(new NotificationHeader(singleEntry.getKey(), singleEntry.getValue()));
-        }
-
-        return modelList;
-    }
-
-    private String dateToNotificationLabel(String date)
-    {
-        Log.i(TAG, "CHECKING DATE: " + date);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-        String d = null;
-        String today = null;
-        String tomorrow = null;
-
-        try
-        {
-            d = simpleDateFormat.format(simpleDateFormat.parse(date));
-        } catch (ParseException e)
-        {
-            e.printStackTrace();
-        }
-        today = simpleDateFormat.format(Calendar.getInstance().getTime());
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE, 1);
-        tomorrow = simpleDateFormat.format(c.getTime());
-        Log.i(TAG, "DATE: " + d);
-        Log.i(TAG, "TODAY: " + today);
-        Log.i(TAG, "TOMORROW: " + tomorrow);
-
-
-        if (d.equals(today))
-        {
-            return "Today";
-        } else if (d.equals(tomorrow))
-        {
-            return "Tomorrow";
-        } else
-        {
-            SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
-            String dt = d;
-            try
-            {
-                dt = simpleDateFormat2.format(simpleDateFormat.parse(d));
-            } catch (ParseException e)
-            {
-                e.printStackTrace();
-            }
-            return dt;
-        }
-    }
-
-
-    void prepareData()
-    {
-
-        final String data = "{\"follow_up\":{ \"id\":\"1\", \"follow_up_date\":\"14-4-2016\", \"discussion\":\"yoyo\", \"name\":\"jeet patel\", \"product\":\"ems\", \"extra_details\":\"extra long\", \"phone\":\"9824243009\", \"handle_by\":\"sanket jasani\" } }";
-
-
-        modelList = new LinkedList();
-
-
-        try
-        {
-
-            final JSONObject obj = new JSONObject(data).getJSONObject("follow_up");
-
-            List<FollowUp> f1 = new LinkedList<>();
-            f1.add(new FollowUp(obj));
-            f1.add(new FollowUp(obj));
-            f1.add(new FollowUp(obj));
-            f1.add(new FollowUp(obj));
-
-            modelList.add(new NotificationHeader("Today", f1));
-
-            List<FollowUp> f2 = new LinkedList<>();
-            f2.add(new FollowUp(obj));
-            f2.add(new FollowUp(obj));
-            f2.add(new FollowUp(obj));
-            f2.add(new FollowUp(obj));
-
-            modelList.add(new NotificationHeader("Tomorrow", f2));
-
-            adapter = new NotificationListAdapter(this, modelList);
-
-            rv.setAdapter(adapter);
-
-        } catch (JSONException e)
-        {
-            Toast.makeText(this, "Parsing error", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-
-    }
 
 }
