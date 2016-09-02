@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.rutvik.ems.R;
+import com.tapandtype.rutvik.ems.R;
 
 /**
  * Created by rutvik on 23-08-2016 at 05:38 PM.

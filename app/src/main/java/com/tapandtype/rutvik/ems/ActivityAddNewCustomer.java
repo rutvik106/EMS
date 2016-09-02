@@ -1,8 +1,7 @@
-package com.example.rutvik.ems;
+package com.tapandtype.rutvik.ems;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 

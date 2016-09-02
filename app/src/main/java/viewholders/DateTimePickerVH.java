@@ -1,17 +1,9 @@
 package viewholders;
 
-import android.app.DatePickerDialog;
 import android.app.FragmentManager;
-import android.app.TimePickerDialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.DatePicker;
-import android.widget.TimePicker;
 
-import com.example.rutvik.ems.R;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 
 import java.util.Map;

@@ -6,7 +6,7 @@
     android:id="@+id/activity_customer_details"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.rutvik.ems.ActivityCustomerDetails">
+    tools:context="com.tapandtype.rutvik.ems.ActivityCustomerDetails">
 
     <include
         android:id="@+id/toolbar"

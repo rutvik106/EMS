@@ -15,20 +15,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
-import com.example.rutvik.ems.App;
-import com.example.rutvik.ems.R;
+import com.tapandtype.rutvik.ems.R;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import extras.AppUtils;
 import extras.PostServiceHandler;

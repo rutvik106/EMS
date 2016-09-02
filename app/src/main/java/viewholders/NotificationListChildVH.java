@@ -8,14 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.rutvik.ems.ActivityView;
-import com.example.rutvik.ems.R;
-import com.example.rutvik.ems.TakeFollowUp;
+import com.tapandtype.rutvik.ems.ActivityView;
+import com.tapandtype.rutvik.ems.R;
+import com.tapandtype.rutvik.ems.TakeFollowUp;
 
-import component.NotificationListItemComp;
 import models.FollowUp;
 
 /**

@@ -9,7 +9,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
-import com.example.rutvik.ems.R;
+import com.tapandtype.rutvik.ems.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

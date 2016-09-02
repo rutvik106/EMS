@@ -13,14 +13,14 @@ public final class AppUtils
 
     public static final String APP_TAG = "EMS ";
 
-    public static final String URL_WEBSERVICE = "/ems/webservice/webservice.php";
+    public static final String URL_WEBSERVICE = "/webservice/webservice.php";
 
-    public static final String URL_EXACT_CONTACT_NO = "/ems/json/exact_mobile_no.php";
+    public static final String URL_EXACT_CONTACT_NO = "/json/exact_mobile_no.php";
 
-    public static final String URL_GET_CUSTOMER_NAME = "/ems/json/customer_name.php";
-    public static final String URL_GET_CUSTOMER_EMAIL = "/ems/json/email.php";
-    public static final String URL_GET_CUSTOMER_CONTACT = "/ems/json/mobile_no.php";
-    public static final String URL_GET_ENQUIRY_ID = "/ems/json/enquiry_id.php";
+    public static final String URL_GET_CUSTOMER_NAME = "/json/customer_name.php";
+    public static final String URL_GET_CUSTOMER_EMAIL = "/json/email.php";
+    public static final String URL_GET_CUSTOMER_CONTACT = "/json/mobile_no.php";
+    public static final String URL_GET_ENQUIRY_ID = "/json/enquiry_id.php";
 
     public static final Map<String, String> followUpTypeMap = new HashMap<>();
 

@@ -1,27 +1,14 @@
-package com.example.rutvik.ems;
+package com.tapandtype.rutvik.ems;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.widget.ExpandableListView;
-import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import adapters.ExpandableListAdapter;
 import adapters.NotificationListAdapter;
-import models.FollowUp;
-import models.NotificationHeader;
 
 public class SettingsActivity extends AppCompatActivity {
 

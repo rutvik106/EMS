@@ -18,13 +18,13 @@
         android:id="@+id/frame_noNotifications"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <ImageView
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="110dp"
+            android:layout_marginTop="80dp"
             android:src="@drawable/bell"/>
 
         <TextView

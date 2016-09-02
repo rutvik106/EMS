@@ -1,4 +1,4 @@
-package com.example.rutvik.ems;
+package com.tapandtype.rutvik.ems;
 
 import org.junit.Test;
 

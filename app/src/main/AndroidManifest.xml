@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.example.rutvik.ems">
+          package="com.tapandtype.rutvik.ems">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:name=".App"
+        android:name="com.tapandtype.rutvik.ems.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name=".InitialActivity"
+            android:name="com.tapandtype.rutvik.ems.InitialActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -21,35 +22,45 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".SettingsActivity"
-            android:parentActivityName=".InitialActivity"
+            android:name="com.tapandtype.rutvik.ems.SettingsActivity"
+            android:parentActivityName="com.tapandtype.rutvik.ems.InitialActivity"
             android:screenOrientation="portrait"/>
+
         <activity
-            android:name=".HomeActivity"
+            android:name="com.tapandtype.rutvik.ems.HomeActivity"
             android:screenOrientation="portrait"/>
+
         <activity
-            android:name=".TakeFollowUp"
+            android:name="com.tapandtype.rutvik.ems.TakeFollowUp"
             android:screenOrientation="portrait"/>
+
         <activity
-            android:name=".ActivityAddNewInquiry"
+            android:name="com.tapandtype.rutvik.ems.ActivityAddNewInquiry"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
         </activity>
+
         <activity
-            android:name=".ActivityAddNewCustomer"
+            android:name="com.tapandtype.rutvik.ems.ActivityAddNewCustomer"
             android:screenOrientation="portrait">
         </activity>
+
         <activity
-            android:name=".ActivityView"
+            android:name="com.tapandtype.rutvik.ems.ActivityView"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ActivitySearchCustomer">
+
+        <activity android:name="com.tapandtype.rutvik.ems.ActivitySearchCustomer">
         </activity>
-        <activity android:name=".ActivitySearchResult">
+
+        <activity android:name="com.tapandtype.rutvik.ems.ActivitySearchResult">
         </activity>
-        <activity android:name=".ActivityCustomerDetails">
+
+        <activity android:name="com.tapandtype.rutvik.ems.ActivityCustomerDetails">
         </activity>
+
     </application>
 
 </manifest>

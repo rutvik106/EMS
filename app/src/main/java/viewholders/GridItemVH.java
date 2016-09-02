@@ -7,11 +7,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.rutvik.ems.ActivityAddNewCustomer;
-import com.example.rutvik.ems.ActivityAddNewInquiry;
-import com.example.rutvik.ems.ActivitySearchCustomer;
-import com.example.rutvik.ems.R;
-import com.example.rutvik.ems.TakeFollowUp;
+import com.tapandtype.rutvik.ems.ActivityAddNewCustomer;
+import com.tapandtype.rutvik.ems.ActivityAddNewInquiry;
+import com.tapandtype.rutvik.ems.ActivitySearchCustomer;
+import com.tapandtype.rutvik.ems.R;
 
 /**
  * Created by rutvik on 25-04-2016 at 02:50 PM.

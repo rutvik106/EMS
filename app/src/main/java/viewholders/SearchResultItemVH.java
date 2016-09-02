@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.rutvik.ems.ActivityCustomerDetails;
-import com.example.rutvik.ems.R;
+import com.tapandtype.rutvik.ems.ActivityCustomerDetails;
+import com.tapandtype.rutvik.ems.R;
 
 import extras.AppUtils;
 import models.SearchResultItem;

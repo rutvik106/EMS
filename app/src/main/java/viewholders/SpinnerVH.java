@@ -10,13 +10,11 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 
-import com.example.rutvik.ems.R;
+import com.tapandtype.rutvik.ems.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import extras.AppUtils;
 import extras.Log;

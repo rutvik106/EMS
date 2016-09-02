@@ -1,10 +1,7 @@
 package fragments;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,22 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
-import com.example.rutvik.ems.App;
-import com.example.rutvik.ems.HomeActivity;
-import com.example.rutvik.ems.R;
+import com.tapandtype.rutvik.ems.R;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.HttpURLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,11 +25,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import adapters.ExpandableListAdapter;
 import adapters.NotificationListAdapter;
 import extras.AppUtils;
 import extras.Log;
-import extras.PostServiceHandler;
 import models.FollowUp;
 import models.NotificationHeader;
 

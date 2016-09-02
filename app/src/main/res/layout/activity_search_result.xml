@@ -6,7 +6,7 @@
     android:id="@+id/activity_search_result"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.rutvik.ems.ActivitySearchResult">
+    tools:context="com.tapandtype.rutvik.ems.ActivitySearchResult">
 
 
     <include

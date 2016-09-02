@@ -1,4 +1,4 @@
-package com.example.rutvik.ems;
+package com.tapandtype.rutvik.ems;
 
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -37,7 +37,6 @@ import adapters.ViewPagerAdapter;
 import extras.AppUtils;
 import extras.Log;
 import extras.PostServiceHandler;
-import fragments.ExpiredFollowUpFragment;
 import fragments.NotificationFragment;
 import models.FollowUp;
 import models.GridItem;
@@ -94,7 +93,7 @@ public class HomeActivity extends AppCompatActivity
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
 
 
-        /*elvNotificationsListView.setFocusable(false);*/
+        /**elvNotificationsListView.setFocusable(false);*/
 
         //prepareData();
 
@@ -280,7 +279,7 @@ public class HomeActivity extends AppCompatActivity
                 return true;
 
             case R.id.action_refresh:
-                //getFollowUpAsync();
+                getFollowUpAsync();
                 return true;
 
             default:

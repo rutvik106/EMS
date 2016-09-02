@@ -1,14 +1,12 @@
 package ComponentFactory;
 
 import android.content.Context;
-import android.util.AttributeSet;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.rutvik.ems.R;
+import com.tapandtype.rutvik.ems.R;
 
 import java.util.ArrayList;
 

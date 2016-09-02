@@ -19,8 +19,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.example.rutvik.ems.App;
-import com.example.rutvik.ems.R;
+import com.tapandtype.rutvik.ems.App;
+import com.tapandtype.rutvik.ems.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;

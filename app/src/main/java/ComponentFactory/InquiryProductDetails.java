@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.rutvik.ems.R;
+import com.tapandtype.rutvik.ems.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;

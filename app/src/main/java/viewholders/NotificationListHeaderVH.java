@@ -1,20 +1,16 @@
 package viewholders;
 
 import android.content.Context;
-import android.media.Image;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.rutvik.ems.R;
+import com.tapandtype.rutvik.ems.R;
 
-import adapters.NotificationListAdapter;
-import component.NotificationListItemComp;
 import models.NotificationHeader;
 
 /**

@@ -1,4 +1,4 @@
-package com.example.rutvik.ems;
+package com.tapandtype.rutvik.ems;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -26,7 +26,6 @@ import java.util.Map;
 import adapters.DropdownProductAdapter;
 import extras.AppUtils;
 import extras.PostServiceHandler;
-import jsonobject.DropdownProduct;
 
 public class ActivitySearchCustomer extends AppCompatActivity
 {

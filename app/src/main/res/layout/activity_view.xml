@@ -7,7 +7,7 @@
     android:background="@color/google_grey"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.rutvik.ems.ActivityView">
+    tools:context="com.tapandtype.rutvik.ems.ActivityView">
 
     <include
         android:id="@+id/toolbar"

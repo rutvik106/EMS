@@ -1,4 +1,4 @@
-package com.example.rutvik.ems;
+package com.tapandtype.rutvik.ems;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
