@@ -356,6 +356,10 @@ public class TakeFollowUp extends AppCompatActivity implements DatePickerDialog.
                     if (response.isStatusOk())
                     {
                         Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(context, ActivityView.class);
+                        i.putExtra("enquiry_id", postParams.get("enquiry_id"));
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        context.startActivity(i);
                     } else
                     {
                         Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();

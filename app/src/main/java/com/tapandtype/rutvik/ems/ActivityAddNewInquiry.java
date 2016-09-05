@@ -1,6 +1,7 @@
 package com.tapandtype.rutvik.ems;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -498,10 +499,16 @@ public class ActivityAddNewInquiry extends AppCompatActivity
                         if (jsonResponse.isStatusOk())
                         {
                             Toast.makeText(ActivityAddNewInquiry.this,
-                                    jsonResponse.getMessage(),
+                                    "Inquiry added successfully",
                                     Toast.LENGTH_SHORT)
                                     .show();
-                            ActivityAddNewInquiry.this.finish();
+
+                            Intent i = new Intent(ActivityAddNewInquiry.this, ActivityView.class);
+                            i.putExtra("enquiry_id", jsonResponse.getMessage());
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                            startActivity(i);
+
                         } else
                         {
                             fragSimpleForm.removeViewAt(3);

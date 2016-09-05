@@ -1,9 +1,11 @@
 package com.tapandtype.rutvik.ems;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.multidex.MultiDex;
 import android.widget.Toast;
 
 import extras.AppUtils;
@@ -29,6 +31,13 @@ public class App extends Application
 
         Log.i(TAG, "APPLICATION CREATED!!!");
 
+    }
+
+    @Override
+    protected void attachBaseContext(Context base)
+    {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     public void setUser(User user)
