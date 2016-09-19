@@ -36,14 +36,15 @@ public class AppendableTextBoxVH extends RecyclerView.ViewHolder implements RowI
 
     public static AppendableTextBoxVH create(Context context, AppendableTextBox.OnUrlTriggered listener)
     {
-        AppendableTextBoxVH vh = new AppendableTextBoxVH(new AppendableTextBox(context,listener));
+        AppendableTextBoxVH vh = new AppendableTextBoxVH(new AppendableTextBox(context, listener));
         return vh;
     }
 
     public static void bind(AppendableTextBoxVH vh, Map map, Component component)
     {
-        vh.map=map;
+        vh.map = map;
         vh.appendableTextBox.etRootTextView.setHint(map.get("label").toString());
+        vh.appendableTextBox.etRootTextView.setInputType(Integer.valueOf(map.get("input_type").toString()));
         //vh.appendableTextBox.setTriggerUrl(map.get("trigger_url").toString());
         component.setRowItem(vh);
     }
@@ -51,7 +52,7 @@ public class AppendableTextBoxVH extends RecyclerView.ViewHolder implements RowI
     @Override
     public Object getValue()
     {
-        Log.i(TAG,"RETURNING VALUE OF APPENDABLE TEXT BOX");
+        Log.i(TAG, "RETURNING VALUE OF APPENDABLE TEXT BOX");
         return appendableTextBox.getValues().toString();
     }
 

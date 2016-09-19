@@ -97,6 +97,8 @@ public class NotificationListChildVH extends RecyclerView.ViewHolder implements 
             case R.id.btn_viewFollowUpDetails:
 
                 Intent intent = new Intent(context, ActivityView.class);
+                intent.putExtra("follow_up_customer_name", followUp.getName());
+                intent.putExtra("follow_up_customer_contact", followUp.getPhone());
                 intent.putExtra("enquiry_id", followUp.getId());
                 context.startActivity(intent);
                 break;

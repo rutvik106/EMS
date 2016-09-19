@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.tapandtype.rutvik.ems.R;
 
 import models.NotificationHeader;
@@ -16,7 +17,8 @@ import models.NotificationHeader;
 /**
  * Created by rutvik on 27-04-2016 at 03:15 PM.
  */
-public class NotificationListHeaderVH extends RecyclerView.ViewHolder {
+public class NotificationListHeaderVH extends RecyclerView.ViewHolder
+{
 
     TextView tvHeaderTitle, tvChildCount;
 
@@ -26,49 +28,65 @@ public class NotificationListHeaderVH extends RecyclerView.ViewHolder {
 
     NotificationHeader header;
 
-    final Handler mHandler=new Handler();
+    final Context context;
 
-    public NotificationListHeaderVH(View itemView, NotificationHeader.HeaderExpandCollapseListener listener) {
+    public NotificationListHeaderVH(final Context context,View itemView, NotificationHeader.HeaderExpandCollapseListener listener)
+    {
         super(itemView);
+        this.context=context;
         tvHeaderTitle = (TextView) itemView.findViewById(R.id.tv_elvTitle);
         tvChildCount = (TextView) itemView.findViewById(R.id.tv_elvGroupCount);
-        ibExpand=(ImageButton) itemView.findViewById(R.id.ib_expand);
-        this.listener=listener;
-        ibExpand.setOnClickListener(new View.OnClickListener() {
+        ibExpand = (ImageButton) itemView.findViewById(R.id.ib_expand);
+        this.listener = listener;
+        ibExpand.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                if(header.isExpand()){
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            ibExpand.setImageResource(R.mipmap.ic_chevron_right_white_48dp);
-                        }
-                    });
-                }
-                else{
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            ibExpand.setImageResource(R.mipmap.ic_expand_more_white_48dp);
-                        }
-                    });
+            public void onClick(View v)
+            {
+                if (header.isExpand())
+                {
+
+                    Picasso.with(context).load(R.mipmap.ic_chevron_right_white_48dp)
+                            .into(ibExpand);
+
+                } else
+                {
+
+                    Picasso.with(context).load(R.mipmap.ic_expand_more_white_48dp)
+                            .into(ibExpand);
+
                 }
                 NotificationListHeaderVH.this.listener.onExpandOrCollapse(header);
             }
         });
     }
 
-    public static NotificationListHeaderVH create(Context context, ViewGroup parent, NotificationHeader.HeaderExpandCollapseListener listener) {
-        View view = LayoutInflater.from(context).inflate(R.layout.expandable_list_group,null,false);
+    public static NotificationListHeaderVH create(Context context, ViewGroup parent, NotificationHeader.HeaderExpandCollapseListener listener)
+    {
+        View view = LayoutInflater.from(context).inflate(R.layout.expandable_list_group, null, false);
         RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         view.setLayoutParams(lp);
-        return new NotificationListHeaderVH(view,listener);
+        return new NotificationListHeaderVH(context, view, listener);
     }
 
-    public static void bind(NotificationListHeaderVH viewHolder, NotificationHeader header) {
-        viewHolder.header=header;
+    public static void bind(final NotificationListHeaderVH viewHolder, final NotificationHeader header)
+    {
+        viewHolder.header = header;
         viewHolder.tvHeaderTitle.setText(viewHolder.header.getTitle());
         viewHolder.tvChildCount.setText(viewHolder.header.getChildCount());
+        if (header.isExpand())
+        {
+
+                    Picasso.with(viewHolder.context).load(R.mipmap.ic_chevron_right_white_48dp)
+                            .into(viewHolder.ibExpand);
+
+        } else
+        {
+
+                    Picasso.with(viewHolder.context).load(R.mipmap.ic_expand_more_white_48dp)
+                            .into(viewHolder.ibExpand);
+
+        }
     }
 
 }

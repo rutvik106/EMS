@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import ComponentFactory.AppendableTextBox;
@@ -314,7 +315,9 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 
         simpleFormAdapter.addTextBox("Customer Name*", "customer_name", ++i, InputType.TYPE_CLASS_TEXT, true, "");
 
-        simpleFormAdapter.addAppendableTextBox("Contact No*", "mobile_no", ++i, app.getHost() + AppUtils.URL_EXACT_CONTACT_NO, new AppendableTextBoxUrlListener());
+        simpleFormAdapter.addAppendableTextBox("Contact No*", "mobile_no", ++i,
+                app.getHost() + AppUtils.URL_EXACT_CONTACT_NO,
+                new AppendableTextBoxUrlListener(), InputType.TYPE_CLASS_NUMBER);
 
         simpleFormAdapter.addTextBox("Email Address", "email_id", ++i, InputType.TYPE_CLASS_TEXT, true, "");
 
@@ -379,11 +382,10 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 
         leadInquiryDetailsAdapter.addDatePicker("Follow Up Date", "reminder_date", ++i, "Pick Follow Up Date");
 
-
-        Map<String, String> smsOption = new HashMap<>();
-        smsOption.put("1", "Yes");
-        smsOption.put("0", "No");
-        leadInquiryDetailsAdapter.addSpinner("Send SMS", "sms_status", smsOption, ++i);
+        final Map<String, String> smsOptions = new LinkedHashMap<>();
+        smsOptions.put("1", "Yes");
+        smsOptions.put("0", "No");
+        leadInquiryDetailsAdapter.addSpinner("Send SMS", "sms_status", smsOptions, ++i);
 
         if (leadInquiryDetailsFragment == null)
         {
@@ -505,8 +507,6 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 
                             Intent i = new Intent(ActivityAddNewInquiry.this, ActivityView.class);
                             i.putExtra("enquiry_id", jsonResponse.getMessage());
-                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
                             startActivity(i);
 
                         } else

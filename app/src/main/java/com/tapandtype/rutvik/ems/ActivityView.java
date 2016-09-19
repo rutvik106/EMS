@@ -1,6 +1,8 @@
 package com.tapandtype.rutvik.ems;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -73,13 +75,48 @@ public class ActivityView extends AppCompatActivity
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+
         fragSimpleForm = (LinearLayout) findViewById(R.id.frag_simpleForm);
 
         flLoadingView = (FrameLayout) findViewById(R.id.fl_loadingView);
 
         final String enquiryId = getIntent().getStringExtra("enquiry_id");
+        final String customerName = getIntent().getStringExtra("follow_up_customer_name");
+        final String customerContact = getIntent().getStringExtra("follow_up_customer_contact");
         if (enquiryId != null)
         {
+
+            findViewById(R.id.btn_takeFollowUp).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+
+                    final Intent i = new Intent(ActivityView.this,
+                            TakeFollowUp.class);
+                    i.putExtra("enquiry_id", enquiryId);
+
+                    i.putExtra("follow_up_customer_name", customerName);
+                    i.putExtra("follow_up_customer_contact", customerContact);
+                    i.putExtra("enquiry_id", enquiryId);
+
+                    startActivity(i);
+                }
+            });
+
+            findViewById(R.id.btn_closeLead).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    final Intent i = new Intent(ActivityView.this,
+                            ActivityCloseLead.class);
+                    i.putExtra("enquiry_id", enquiryId);
+
+                    startActivity(i);
+                }
+            });
+
             new GetViewDetailAsync(enquiryId, this).execute();
         }
 
@@ -207,7 +244,7 @@ public class ActivityView extends AppCompatActivity
             JSONObject obj = (JSONObject) responseJson.get("enquiry");
 
             final String unique_enquiry_id = obj.getString("unique_enquiry_id");
-            adapterEnquiryStatus.addSimpleTextView(++i, "Enquiry ID: ", unique_enquiry_id);
+            adapterEnquiryStatus.addSimpleTextView(++i, "Enquiry ID: ", unique_enquiry_id, null);
 
             final String is_bought = obj.getString("is_bought");
             String current_lead_status = "";
@@ -227,20 +264,20 @@ public class ActivityView extends AppCompatActivity
                     current_lead_status = "Ongoing Enquiry";
                 }
             }
-            adapterEnquiryStatus.addSimpleTextView(++i, "Current Lead Status: ", current_lead_status);
+            adapterEnquiryStatus.addSimpleTextView(++i, "Current Lead Status: ", current_lead_status, null);
 
             final String total_enquiry = obj.getString("total_enquiry");
-            adapterEnquiryStatus.addSimpleTextView(++i, "Successful/Total Enquiries: ", total_enquiry);
+            adapterEnquiryStatus.addSimpleTextView(++i, "Successful/Total Enquiries: ", total_enquiry, null);
 
             try
             {
                 final String group = obj.getString("group").substring(0, obj.getString("group").lastIndexOf(','));
-                adapterEnquiryStatus.addSimpleTextView(++i, "Group: ", group);
+                adapterEnquiryStatus.addSimpleTextView(++i, "Group: ", group, null);
             } catch (StringIndexOutOfBoundsException s)
             {
                 s.printStackTrace();
                 final String group = obj.getString("group");
-                adapterEnquiryStatus.addSimpleTextView(++i, "Group: ", group);
+                adapterEnquiryStatus.addSimpleTextView(++i, "Group: ", group, null);
             }
 
 
@@ -272,19 +309,31 @@ public class ActivityView extends AppCompatActivity
 
             final String customer_name = obj.getString("customer_name");
             final String prefix = obj.getString("prefix");
-            adapterCustomerDetail.addSimpleTextView(++i, "Customer Name: ", prefix + " " + customer_name);
+            adapterCustomerDetail.addSimpleTextView(++i, "Customer Name: ", prefix + " " + customer_name, null);
 
             final String customer_email = obj.getString("customer_email");
-            adapterCustomerDetail.addSimpleTextView(++i, "Email: ", customer_email);
+            adapterCustomerDetail.addSimpleTextView(++i, "Email: ", customer_email, null);
 
             final JSONArray arr = (JSONArray) responseJson.get("contact");
-            String contact = "";
+
             for (int j = 0; j < arr.length(); j++)
             {
-                contact += arr.getJSONObject(j).getString("customer_contact_no") + " ,";
+                final String contact = arr.getJSONObject(j).getString("customer_contact_no");
+                adapterCustomerDetail.addSimpleTextView(++i, "Contact No: " + j + 1, contact, new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        if (contact != null && contact != "")
+                        {
+                            Intent supportIntent = new Intent(Intent.ACTION_DIAL);
+                            supportIntent.setData(Uri.parse("tel:" + contact));
+                            startActivity(supportIntent);
+                        }
+                    }
+                });
             }
 
-            adapterCustomerDetail.addSimpleTextView(++i, "Contact No: ", contact);
 
         } catch (JSONException e)
         {
@@ -318,19 +367,19 @@ public class ActivityView extends AppCompatActivity
                 adapterFollowUpDetail.addFollowUpSeparator(++i, "Follow Up " + (j + 1));
 
                 final String next_follow_up_date = arr.getJSONObject(j).getString("next_follow_up_date");
-                adapterFollowUpDetail.addSimpleTextView(++i, "Follow Up Date: ", next_follow_up_date);
+                adapterFollowUpDetail.addSimpleTextView(++i, "Follow Up Date: ", next_follow_up_date, null);
 
                 final String follow_up_type = arr.getJSONObject(j).getString("follow_up_type");
-                adapterFollowUpDetail.addSimpleTextView(++i, "Follow Up Type: ", follow_up_type);
+                adapterFollowUpDetail.addSimpleTextView(++i, "Follow Up Type: ", follow_up_type, null);
 
                 final String discussion = arr.getJSONObject(j).getString("discussion");
-                adapterFollowUpDetail.addSimpleTextView(++i, "Discussion: ", discussion);
+                adapterFollowUpDetail.addSimpleTextView(++i, "Discussion: ", discussion, null);
 
                 final String handled_by = arr.getJSONObject(j).getString("handled_by");
-                adapterFollowUpDetail.addSimpleTextView(++i, "Handled By: ", handled_by);
+                adapterFollowUpDetail.addSimpleTextView(++i, "Handled By: ", handled_by, null);
 
                 final String date_added = arr.getJSONObject(j).getString("date_added");
-                adapterFollowUpDetail.addSimpleTextView(++i, "Date Added: ", date_added);
+                adapterFollowUpDetail.addSimpleTextView(++i, "Date Added: ", date_added, null);
 
             }
 
@@ -338,7 +387,6 @@ public class ActivityView extends AppCompatActivity
         {
             e.printStackTrace();
         }
-
 
         if (fragmentFollowUpDetail == null)
         {
@@ -366,7 +414,7 @@ public class ActivityView extends AppCompatActivity
             {
 
                 final String product_name = arr.getJSONObject(j).getString("product_name");
-                adapterProductDetails.addSimpleTextView(++i, "Product: ", product_name);
+                adapterProductDetails.addSimpleTextView(++i, "Product: ", product_name, null);
 
                 final JSONArray types = arr.getJSONObject(j).getJSONArray("type");
                 for (int k = 0; k < types.length(); k++)
@@ -377,14 +425,14 @@ public class ActivityView extends AppCompatActivity
                     type = type.replace("\"]", "");
                     String singleType[] = type.split(":");
 
-                    adapterProductDetails.addSimpleTextView(++i, singleType[0] + ": ", singleType[1]);
+                    adapterProductDetails.addSimpleTextView(++i, singleType[0] + ": ", singleType[1], null);
                 }
 
                 final String quantity = arr.getJSONObject(j).getString("quantity");
-                adapterProductDetails.addSimpleTextView(++i, "Quantity: ", quantity);
+                adapterProductDetails.addSimpleTextView(++i, "Quantity: ", quantity, null);
 
                 final String price = arr.getJSONObject(j).getString("price");
-                adapterProductDetails.addSimpleTextView(++i, "Estimated Price : ", price);
+                adapterProductDetails.addSimpleTextView(++i, "Estimated Price : ", price, null);
 
 
             }
@@ -421,25 +469,25 @@ public class ActivityView extends AppCompatActivity
             JSONObject obj = (JSONObject) responseJson.get("enquiry_details");
 
             final String enquiry_type = obj.getString("enquiry_type");
-            adapterEnquiryDetails.addSimpleTextView(++i, "Enquiry Type: ", enquiry_type);
+            adapterEnquiryDetails.addSimpleTextView(++i, "Enquiry Type: ", enquiry_type, null);
 
             final String customer_budget = obj.getString("customer_budget");
-            adapterEnquiryDetails.addSimpleTextView(++i, "Customer Budget: ", customer_budget);
+            adapterEnquiryDetails.addSimpleTextView(++i, "Customer Budget: ", customer_budget, null);
 
             final String discussion = obj.getString("discussion");
-            adapterEnquiryDetails.addSimpleTextView(++i, "Discussion: ", discussion);
+            adapterEnquiryDetails.addSimpleTextView(++i, "Discussion: ", discussion, null);
 
             final String fst_follow_up_date = obj.getString("fst_follow_up_date");
-            adapterEnquiryDetails.addSimpleTextView(++i, "1st Follow Up Date: ", fst_follow_up_date);
+            adapterEnquiryDetails.addSimpleTextView(++i, "1st Follow Up Date: ", fst_follow_up_date, null);
 
             final String date_of_enquiry = obj.getString("date_of_enquiry");
-            adapterEnquiryDetails.addSimpleTextView(++i, "Date of Enquiry: ", date_of_enquiry);
+            adapterEnquiryDetails.addSimpleTextView(++i, "Date of Enquiry: ", date_of_enquiry, null);
 
             final String enquiry_added_by = obj.getString("enquiry_added_by");
-            adapterEnquiryDetails.addSimpleTextView(++i, "Enquiry Added By: ", enquiry_added_by);
+            adapterEnquiryDetails.addSimpleTextView(++i, "Enquiry Added By: ", enquiry_added_by, null);
 
             final String enquiry_currently_handled_by = obj.getString("enquiry_currently_handled_by");
-            adapterEnquiryDetails.addSimpleTextView(++i, "Enquiry Currently Handled By : ", enquiry_currently_handled_by);
+            adapterEnquiryDetails.addSimpleTextView(++i, "Enquiry Currently Handled By : ", enquiry_currently_handled_by, null);
 
 
         } catch (JSONException e)

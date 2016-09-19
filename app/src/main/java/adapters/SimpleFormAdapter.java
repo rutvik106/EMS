@@ -3,6 +3,8 @@ package adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.HashMap;
@@ -12,6 +14,7 @@ import ComponentFactory.AppendableTextBox;
 import ComponentFactory.Component;
 import ComponentFactory.MyDateTimePicker;
 import ComponentFactory.RowItem;
+import extras.AppUtils;
 import extras.Log;
 import viewholders.AppendableTextBoxVH;
 import viewholders.CheckListSpinnerVH;
@@ -45,7 +48,7 @@ public class SimpleFormAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     AppendableTextBox.OnUrlTriggered urlListener;
 
-    public static final String TAG = "STS" + SimpleFormAdapter.class.getSimpleName();
+    public static final String TAG = AppUtils.APP_TAG + SimpleFormAdapter.class.getSimpleName();
 
     public SimpleFormAdapter(Activity activity)
     {
@@ -54,11 +57,12 @@ public class SimpleFormAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         componentListMap = new HashMap<>();
     }
 
-    public void addSimpleTextView(long id, String label, String value)
+    public void addSimpleTextView(long id, String label, String value, View.OnClickListener onClickListener)
     {
         Map map = new HashMap();
         map.put("label", label);
         map.put("value", value);
+        map.put("on_click_listener",onClickListener);
         componentListMap.put(id, new Component(map, Component.SIMPLE_TEXT_VIEW, id));
         notifyItemInserted(componentListMap.size());
     }
@@ -136,13 +140,17 @@ public class SimpleFormAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         notifyItemInserted(componentListMap.size());
     }
 
-    public void addAppendableTextBox(String label, String name, long id, String triggerUrl, AppendableTextBox.OnUrlTriggered urlListener)
+    public void addAppendableTextBox(String label, String name, long id,
+                                     String triggerUrl,
+                                     AppendableTextBox.OnUrlTriggered urlListener,
+                                     int inputType)
     {
         this.urlListener = urlListener;
         Map map = new HashMap();
         map.put("label", label);
         map.put("name", name);
         map.put("trigger_url", triggerUrl);
+        map.put("input_type", inputType);
         componentListMap.put(id, new Component(map, Component.APPENDABLE_TEXT_BOX, id));
         notifyItemInserted(componentListMap.size());
     }

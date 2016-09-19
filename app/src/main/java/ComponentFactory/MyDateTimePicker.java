@@ -87,14 +87,14 @@ public class MyDateTimePicker extends MyTextBox
         if (pickerType == PickerType.DATE_PICKER)
         {
             dpd = DatePickerDialog.newInstance(dateListener, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
-            dpd.setAccentColor(Color.parseColor("#FF9800"));
+            dpd.setAccentColor(Color.parseColor("#00695C"));
             dpd.setTitle(dialogTitle);
             dpd.show(fragmentManager, "Datepickerdialog");
         }
         if (pickerType == PickerType.TIME_PICKER)
         {
             tpd = TimePickerDialog.newInstance(timeListener, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), now.get(Calendar.SECOND), true);
-            tpd.setAccentColor(Color.parseColor("#FF9800"));
+            tpd.setAccentColor(Color.parseColor("#00695C"));
             tpd.setTitle(dialogTitle);
             tpd.show(fragmentManager, "Timepickerdialog");
         }

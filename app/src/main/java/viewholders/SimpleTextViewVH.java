@@ -1,6 +1,7 @@
 package viewholders;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +24,7 @@ public class SimpleTextViewVH extends RecyclerView.ViewHolder
 
     TextView tvLabel, tvValue;
 
-    Map model=new HashMap();
+    Map model = new HashMap();
 
     public SimpleTextViewVH(View itemView)
     {
@@ -43,9 +44,15 @@ public class SimpleTextViewVH extends RecyclerView.ViewHolder
 
     public static void bind(SimpleTextViewVH vh, Component component)
     {
-        vh.model=(Map) component.getObject();
+        vh.model = (Map) component.getObject();
         vh.tvLabel.setText(vh.model.get("label").toString());
         vh.tvValue.setText(vh.model.get("value").toString());
+        final View.OnClickListener listener = (View.OnClickListener) vh.model.get("on_click_listener");
+        if (listener!=null)
+        {
+            vh.tvValue.setOnClickListener(listener);
+            vh.tvValue.setTextColor(Color.BLUE);
+        }
     }
 
 }

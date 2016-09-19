@@ -115,6 +115,8 @@
                     android:id="@+id/til_followUpDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:descendantFocusability="beforeDescendants"
+                    android:focusableInTouchMode="true"
                     android:layout_below="@id/card_followUpDetails"
                     android:layout_marginBottom="2dp"
                     android:layout_marginLeft="2dp"

@@ -221,7 +221,6 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
                     Intent i = new Intent(InitialActivity.this, HomeActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(i);
-
                 }
             } else
             {

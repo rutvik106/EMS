@@ -94,7 +94,7 @@ public class SpinnerVH extends RecyclerView.ViewHolder implements RowItem, Adapt
         vh.baseAdapter.setData(data);
         vh.mySpinner.spinner.setAdapter(vh.baseAdapter);
         //vh.mySpinner.spinner.setOnItemSelectedListener(vh.baseAdapter);
-        vh.baseAdapter.setSelection(1);
+        vh.baseAdapter.setSelection(0);
         vh.mySpinner.spinner.setSelection(vh.baseAdapter.getSelection());
 
         vh.mySpinner.setTitle(vh.map.get("label").toString());

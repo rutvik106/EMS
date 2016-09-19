@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,6 +89,7 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
             actProduct = (AutoCompleteTextView) view.findViewById(R.id.act_products);
 
             etProductPrice = (EditText) view.findViewById(R.id.et_inquiryProductPrice);
+            etProductPrice.setInputType(InputType.TYPE_CLASS_NUMBER);
             spinUnit = (Spinner) view.findViewById(R.id.spin_productPricePer);
             spinUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
             {
@@ -109,6 +111,9 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
 
 
             etInquiryProductQuantity = (EditText) view.findViewById(R.id.et_inquiryProductQuantity);
+            etInquiryProductQuantity.setInputType(InputType.TYPE_CLASS_NUMBER);
+            etInquiryProductQuantity.setText("1");
+
             llProductAttributes = (LinearLayout) view.findViewById(R.id.ll_productAttributes);
 
             populateAttributeView = new PopulateAttributeView(context, llProductAttributes);

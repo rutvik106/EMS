@@ -191,7 +191,7 @@ public class TakeFollowUp extends AppCompatActivity implements DatePickerDialog.
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
             {
-                sendSmsValue = AppUtils.sendSmsMap.get(AppUtils.sendSmsList.get(i));
+                sendSmsValue = AppUtils.sendSmsOptionMap.get(AppUtils.sendSmsList.get(i));
             }
 
             @Override
@@ -358,8 +358,8 @@ public class TakeFollowUp extends AppCompatActivity implements DatePickerDialog.
                         Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(context, ActivityView.class);
                         i.putExtra("enquiry_id", postParams.get("enquiry_id"));
-                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         context.startActivity(i);
+
                     } else
                     {
                         Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();

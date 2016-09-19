@@ -208,7 +208,7 @@ public class ActivitySearchCustomer extends AppCompatActivity
     }
 
 
-    static class GetSearchData extends AsyncTask<Void, Void, String>
+    class GetSearchData extends AsyncTask<Void, Void, String>
     {
 
         final String url;
@@ -285,6 +285,26 @@ public class ActivitySearchCustomer extends AppCompatActivity
                     {
                         JSONObject obj = arr.getJSONObject(i);
                         adapter.addDropdownListProduct(new Label(obj.getString("label"), i));
+                    }
+                    adapter.notifyDataSetChanged();
+                    if (actContact.getText().toString().isEmpty())
+                    {
+                        actContact.showDropDown();
+                    }
+
+                    if (actEmail.getText().toString().isEmpty())
+                    {
+                        actEmail.showDropDown();
+                    }
+
+                    if (actEnquiryId.getText().toString().isEmpty())
+                    {
+                        actEnquiryId.showDropDown();
+                    }
+
+                    if (actName.getText().toString().isEmpty())
+                    {
+                        actName.showDropDown();
                     }
                 } catch (JSONException e)
                 {

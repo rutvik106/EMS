@@ -107,7 +107,10 @@ public class ActivityAddNewCustomer extends AppCompatActivity
 
         customerDetailsAdapter.addTextBox("Customer Name*", "customer_name", ++i, InputType.TYPE_CLASS_TEXT, true, "");
 
-        customerDetailsAdapter.addAppendableTextBox("Contact No*", "mobile_no", ++i, app.getHost() + AppUtils.URL_EXACT_CONTACT_NO, new ActivityAddNewCustomer.AppendableTextBoxUrlListener());
+        customerDetailsAdapter.addAppendableTextBox("Contact No*", "mobile_no", ++i,
+                app.getHost() + AppUtils.URL_EXACT_CONTACT_NO,
+                new ActivityAddNewCustomer.AppendableTextBoxUrlListener(),
+                InputType.TYPE_CLASS_NUMBER);
 
         customerDetailsAdapter.addTextBox("Email Address", "email_id", ++i, InputType.TYPE_CLASS_TEXT, true, "");
 

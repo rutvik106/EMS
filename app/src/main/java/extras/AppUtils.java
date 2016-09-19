@@ -24,7 +24,7 @@ public final class AppUtils
 
     public static final Map<String, String> followUpTypeMap = new HashMap<>();
 
-    public static final Map<String, String> sendSmsMap = new HashMap<>();
+    public static final Map<String, String> sendSmsOptionMap = new HashMap<>();
 
     static
     {
@@ -35,8 +35,8 @@ public final class AppUtils
         followUpTypeMap.put("Email", "4");
         followUpTypeMap.put("Other", "6");
 
-        sendSmsMap.put("Yes", "1");
-        sendSmsMap.put("No", "0");
+        sendSmsOptionMap.put("No", "0");
+        sendSmsOptionMap.put("Yes", "1");
     }
 
     public static final List<String> followUpTypeList = new ArrayList<>();
