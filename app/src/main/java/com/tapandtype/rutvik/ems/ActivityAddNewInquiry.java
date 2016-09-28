@@ -506,6 +506,7 @@ public class ActivityAddNewInquiry extends AppCompatActivity
                                     .show();
 
                             Intent i = new Intent(ActivityAddNewInquiry.this, ActivityView.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             i.putExtra("enquiry_id", jsonResponse.getMessage());
                             startActivity(i);
 
