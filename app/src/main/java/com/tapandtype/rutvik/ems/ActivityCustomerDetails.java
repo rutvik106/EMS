@@ -23,6 +23,7 @@ import adapters.SimpleFormAdapter;
 import extras.AppUtils;
 import extras.PostServiceHandler;
 import fragments.SimpleFormFragment;
+import models.FollowUpSeparator;
 
 public class ActivityCustomerDetails extends AppCompatActivity
 {
@@ -35,7 +36,7 @@ public class ActivityCustomerDetails extends AppCompatActivity
     SimpleFormAdapter adapterEnquiryDetails;
     SimpleFormFragment fragmentEnquiryDetails;
 
-    Button addEnquiry;
+    String customerName, customerContact;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -169,17 +170,18 @@ public class ActivityCustomerDetails extends AppCompatActivity
 
             simpleFormAdapter = new SimpleFormAdapter(ActivityCustomerDetails.this);
 
+            simpleFormAdapter.addSimpleTextView(++i, "Customer Name: ", customerDetails.getString("customer_name"), null);
 
-            simpleFormAdapter.addSimpleTextView(++i, "Customer Name: ", customerDetails.getString("customer_name"),null);
+            customerName = customerDetails.getString("customer_name");
 
-            simpleFormAdapter.addSimpleTextView(++i, "Email: ", customerDetails.getString("customer_email"),null);
+            simpleFormAdapter.addSimpleTextView(++i, "Email: ", customerDetails.getString("customer_email"), null);
 
             JSONArray contact = customerDetails.getJSONArray("customer_contact");
 
             for (int j = 0; j < contact.length(); j++)
             {
-                final String contactNo=contact.getJSONObject(j).getString("customer_contact_no");
-
+                final String contactNo = contact.getJSONObject(j).getString("customer_contact_no");
+                customerContact = customerContact + ", " + contact;
                 simpleFormAdapter.addSimpleTextView(++i, "Contact No: ", contactNo, new View.OnClickListener()
                 {
                     @Override
@@ -217,19 +219,21 @@ public class ActivityCustomerDetails extends AppCompatActivity
 
             for (int j = 0; j < customerEnquiries.length(); j++)
             {
-                adapterEnquiryDetails.addFollowUpSeparator(++i, "Enquiry " + (j + 1));
+                final String enquiryFormId = customerEnquiries.getJSONObject(j).getString("enquiry_form_id");
+                adapterEnquiryDetails
+                        .addFollowUpSeparator(++i, new FollowUpSeparator(enquiryFormId, customerName, customerContact, "Enquiry " + (j + 1)));
 
                 final String enquiry_date = customerEnquiries.getJSONObject(j).getString("enquiry_date");
-                adapterEnquiryDetails.addSimpleTextView(++i, "Enquiry Date: ", enquiry_date,null);
+                adapterEnquiryDetails.addSimpleTextView(++i, "Enquiry Date: ", enquiry_date, null);
 
                 final String enquiry_for = customerEnquiries.getJSONObject(j).getString("enquiry_for");
-                adapterEnquiryDetails.addSimpleTextView(++i, "Enquiry For (Product): ", enquiry_for,null);
+                adapterEnquiryDetails.addSimpleTextView(++i, "Enquiry For (Product): ", enquiry_for, null);
 
                 final String enquiry_status = customerEnquiries.getJSONObject(j).getString("enquiry_status");
-                adapterEnquiryDetails.addSimpleTextView(++i, "Enquiry Status: ", enquiry_status,null);
+                adapterEnquiryDetails.addSimpleTextView(++i, "Enquiry Status: ", enquiry_status, null);
 
                 final String enquiry_managed_by = customerEnquiries.getJSONObject(j).getString("enquiry_managed_by");
-                adapterEnquiryDetails.addSimpleTextView(++i, "Enquiry Managed By: ", enquiry_managed_by,null);
+                adapterEnquiryDetails.addSimpleTextView(++i, "Enquiry Managed By: ", enquiry_managed_by, null);
 
             }
 

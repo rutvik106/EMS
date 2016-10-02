@@ -1,22 +1,21 @@
 package com.tapandtype.rutvik.ems;
 
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.firebase.crash.FirebaseCrash;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.json.JSONArray;
@@ -28,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import extras.AppUtils;
 import extras.PostServiceHandler;
@@ -64,6 +62,10 @@ public class ActivityCloseLead extends AppCompatActivity implements AdapterView.
     private DatePickerDialog dpd1;
     private DatePickerDialog dpd2;
 
+    ProgressBar pbProcessing;
+
+    Button btnCloseLead;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -88,6 +90,8 @@ public class ActivityCloseLead extends AppCompatActivity implements AdapterView.
 
         flPurchased = (FrameLayout) findViewById(R.id.fl_purchased);
         flNotPurchased = (FrameLayout) findViewById(R.id.fl_notPurchased);
+
+        pbProcessing = (ProgressBar) findViewById(R.id.pb_processing);
 
         spinSmsOption = (Spinner) findViewById(R.id.spin_smsOption);
         spinReasonsToDecline = (Spinner) findViewById(R.id.spin_reasonsToDecline);
@@ -203,7 +207,9 @@ public class ActivityCloseLead extends AppCompatActivity implements AdapterView.
             }
         });
 
-        findViewById(R.id.btn_closeLead).setOnClickListener(new View.OnClickListener()
+        btnCloseLead = (Button) findViewById(R.id.btn_closeLead);
+
+        btnCloseLead.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
@@ -331,6 +337,13 @@ public class ActivityCloseLead extends AppCompatActivity implements AdapterView.
         }
 
         @Override
+        protected void onPreExecute()
+        {
+            pbProcessing.setVisibility(View.VISIBLE);
+            btnCloseLead.setVisibility(View.GONE);
+        }
+
+        @Override
         protected Void doInBackground(Void... voids)
         {
 
@@ -377,6 +390,11 @@ public class ActivityCloseLead extends AppCompatActivity implements AdapterView.
                 {
                     Toast.makeText(ActivityCloseLead.this, "Successfully closed", Toast.LENGTH_SHORT).show();
                     ActivityCloseLead.this.finish();
+                } else
+                {
+                    Toast.makeText(ActivityCloseLead.this, "Something went wrong, try again later", Toast.LENGTH_SHORT).show();
+                    pbProcessing.setVisibility(View.GONE);
+                    btnCloseLead.setVisibility(View.VISIBLE);
                 }
             }
         }

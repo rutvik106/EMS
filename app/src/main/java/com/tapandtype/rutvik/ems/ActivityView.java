@@ -25,6 +25,7 @@ import adapters.SimpleFormAdapter;
 import extras.AppUtils;
 import extras.PostServiceHandler;
 import fragments.SimpleFormFragment;
+import models.FollowUpSeparator;
 
 public class ActivityView extends AppCompatActivity
 {
@@ -308,6 +309,7 @@ public class ActivityView extends AppCompatActivity
             JSONObject obj = (JSONObject) responseJson.get("customer");
 
             final String customer_name = obj.getString("customer_name");
+
             final String prefix = obj.getString("prefix");
             adapterCustomerDetail.addSimpleTextView(++i, "Customer Name: ", prefix + " " + customer_name, null);
 
@@ -319,7 +321,8 @@ public class ActivityView extends AppCompatActivity
             for (int j = 0; j < arr.length(); j++)
             {
                 final String contact = arr.getJSONObject(j).getString("customer_contact_no");
-                adapterCustomerDetail.addSimpleTextView(++i, "Contact No: " + j + 1, contact, new View.OnClickListener()
+
+                adapterCustomerDetail.addSimpleTextView(++i, "Contact No: " + (j + 1), contact, new View.OnClickListener()
                 {
                     @Override
                     public void onClick(View view)
@@ -364,7 +367,9 @@ public class ActivityView extends AppCompatActivity
 
             for (int j = 0; j < arr.length(); j++)
             {
-                adapterFollowUpDetail.addFollowUpSeparator(++i, "Follow Up " + (j + 1));
+                adapterFollowUpDetail
+                        .addFollowUpSeparator(++i,
+                                new FollowUpSeparator("", "", "", "Follow Up " + (j + 1)));
 
                 final String next_follow_up_date = arr.getJSONObject(j).getString("next_follow_up_date");
                 adapterFollowUpDetail.addSimpleTextView(++i, "Follow Up Date: ", next_follow_up_date, null);

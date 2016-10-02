@@ -5,20 +5,42 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_marginTop="10dp"
-        android:id="@+id/tv_followUpCount"
+    <LinearLayout
+        android:padding="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textColor="@color/primary"
-        android:layout_marginBottom="2dp"
-        android:text="Follow Up 1"/>
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/tv_followUpCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:layout_marginTop="10dp"
+            android:text="Follow Up 1"
+            android:textColor="@color/primary"
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/btn_viewFollowUp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/btn_view"
+            android:elevation="2dp"
+            android:gravity="center"
+            android:text="V"
+            android:hint="View Details"
+            android:textColor="@color/primary_text"
+            android:textSize="16sp" />
+
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/primary_dark"
-        android:layout_marginBottom="5dp"/>
+        android:layout_marginBottom="5dp"
+        android:background="@color/primary_dark"/>
 
 </LinearLayout>

@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -86,7 +87,8 @@ public class ActivitySearchCustomer extends AppCompatActivity
             }
         };
         actEmail.setAdapter(adapterEmail);
-        actEmail.setThreshold(3);
+
+        actEmail.setThreshold(2);
 
 
         actEnquiryId = (AutoCompleteTextView) findViewById(R.id.act_enquiryId);
@@ -116,7 +118,7 @@ public class ActivitySearchCustomer extends AppCompatActivity
             }
         };
         actEnquiryId.setAdapter(adapterEnquiry);
-        actEnquiryId.setThreshold(3);
+        actEnquiryId.setThreshold(2);
 
 
         actContact = (AutoCompleteTextView) findViewById(R.id.act_customerContact);
@@ -146,7 +148,7 @@ public class ActivitySearchCustomer extends AppCompatActivity
             }
         };
         actContact.setAdapter(adapterContact);
-        actContact.setThreshold(3);
+        actContact.setThreshold(2);
 
 
         actName = (AutoCompleteTextView) findViewById(R.id.act_customerName);
@@ -176,7 +178,7 @@ public class ActivitySearchCustomer extends AppCompatActivity
             }
         };
         actName.setAdapter(adapterName);
-        actName.setThreshold(3);
+        actName.setThreshold(2);
 
 
         btnSearchCustomer = (Button) findViewById(R.id.btn_searchCustomer);
@@ -287,24 +289,28 @@ public class ActivitySearchCustomer extends AppCompatActivity
                         adapter.addDropdownListProduct(new Label(obj.getString("label"), i));
                     }
                     adapter.notifyDataSetChanged();
-                    if (actContact.getText().toString().isEmpty())
+                    if (!actContact.getText().toString().isEmpty())
                     {
                         actContact.showDropDown();
+                        adapterContact.getFilter().filter(actContact.getText().toString());
                     }
 
-                    if (actEmail.getText().toString().isEmpty())
+                    if (!actEmail.getText().toString().isEmpty())
                     {
                         actEmail.showDropDown();
+                        adapterEmail.getFilter().filter(actEmail.getText().toString());
                     }
 
-                    if (actEnquiryId.getText().toString().isEmpty())
+                    if (!actEnquiryId.getText().toString().isEmpty())
                     {
                         actEnquiryId.showDropDown();
+                        adapterEnquiry.getFilter().filter(actEnquiryId.getText().toString());
                     }
 
-                    if (actName.getText().toString().isEmpty())
+                    if (!actName.getText().toString().isEmpty())
                     {
                         actName.showDropDown();
+                        adapterName.getFilter().filter(actName.getText().toString());
                     }
                 } catch (JSONException e)
                 {

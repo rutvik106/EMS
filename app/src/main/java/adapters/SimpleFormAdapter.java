@@ -16,6 +16,7 @@ import ComponentFactory.MyDateTimePicker;
 import ComponentFactory.RowItem;
 import extras.AppUtils;
 import extras.Log;
+import models.FollowUpSeparator;
 import viewholders.AppendableTextBoxVH;
 import viewholders.CheckListSpinnerVH;
 import viewholders.DateTimePickerVH;
@@ -62,7 +63,7 @@ public class SimpleFormAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         Map map = new HashMap();
         map.put("label", label);
         map.put("value", value);
-        map.put("on_click_listener",onClickListener);
+        map.put("on_click_listener", onClickListener);
         componentListMap.put(id, new Component(map, Component.SIMPLE_TEXT_VIEW, id));
         notifyItemInserted(componentListMap.size());
     }
@@ -163,9 +164,9 @@ public class SimpleFormAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
 
-    public void addFollowUpSeparator(long id, String text)
+    public void addFollowUpSeparator(long id, FollowUpSeparator followUpSeparator)
     {
-        componentListMap.put(id, new Component(text, Component.FOLLOW_UP_SEPARATOR, id));
+        componentListMap.put(id, new Component(followUpSeparator, Component.FOLLOW_UP_SEPARATOR, id));
         notifyItemInserted(componentListMap.size());
     }
 
@@ -311,7 +312,7 @@ public class SimpleFormAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             case Component.FOLLOW_UP_SEPARATOR:
                 FollowUpSeparatorVH.bind((FollowUpSeparatorVH) viewHolder,
-                        (String) componentListMap.get(Long.valueOf(i)).getObject());
+                        (FollowUpSeparator) componentListMap.get(Long.valueOf(i)).getObject());
                 break;
         }
 

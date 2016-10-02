@@ -46,13 +46,21 @@
             android:name=".ActivityView"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ActivitySearchCustomer">
+        <activity
+            android:name=".ActivitySearchCustomer"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ActivitySearchResult">
+        <activity
+            android:name=".ActivitySearchResult"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ActivityCustomerDetails">
+        <activity
+            android:name=".ActivityCustomerDetails"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ActivityCloseLead">
+        <activity
+            android:name=".ActivityCloseLead"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 
