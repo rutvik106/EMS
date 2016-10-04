@@ -67,7 +67,7 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 
     Button addEnquiry;
 
-    ProgressBar pb;
+    ProgressBar pbProcessing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -75,10 +75,10 @@ public class ActivityAddNewInquiry extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_inquiry);
 
-        pb = new ProgressBar(this);
-        pb.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        pbProcessing = new ProgressBar(this);
+        pbProcessing.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-        pb.setIndeterminate(true);
+        pbProcessing.setIndeterminate(true);
 
         app = (App) getApplication();
 
@@ -419,7 +419,7 @@ public class ActivityAddNewInquiry extends AppCompatActivity
         public void onClick(View view)
         {
             fragSimpleForm.removeViewAt(3);
-            fragSimpleForm.addView(pb, 3);
+            fragSimpleForm.addView(pbProcessing, 3);
 
             final Map postParams = new HashMap();
 

@@ -115,13 +115,13 @@
                     android:id="@+id/til_followUpDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:descendantFocusability="beforeDescendants"
-                    android:focusableInTouchMode="true"
                     android:layout_below="@id/card_followUpDetails"
                     android:layout_marginBottom="2dp"
                     android:layout_marginLeft="2dp"
                     android:layout_marginRight="2dp"
                     android:layout_marginTop="2dp"
+                    android:descendantFocusability="beforeDescendants"
+                    android:focusableInTouchMode="true"
                     tools:layout_editor_absoluteX="12dp"
                     tools:layout_editor_absoluteY="12dp">
 
@@ -207,18 +207,32 @@
                     android:layout_below="@+id/tv_sendSMS"
                     android:layout_margin="2dp"/>
 
-                <Button
-                    android:id="@+id/btn_saveFollowUp"
-                    style="@style/Widget.AppCompat.Button.Colored"
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/spin_sendSMS"
-                    android:layout_margin="5dp"
-                    android:elevation="4dp"
-                    android:text="Save Follow Up"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"/>
+                    android:layout_below="@+id/spin_sendSMS">
+
+                    <Button
+                        android:id="@+id/btn_saveFollowUp"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_margin="5dp"
+                        android:elevation="4dp"
+                        android:text="Save Follow Up"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"/>
+
+                    <ProgressBar
+                        android:id="@+id/pb_processing"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_margin="5dp"
+                        android:indeterminate="true"
+                        android:visibility="gone"/>
+
+                </FrameLayout>
 
             </RelativeLayout>
 

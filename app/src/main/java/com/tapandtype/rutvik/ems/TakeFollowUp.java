@@ -17,10 +17,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -38,6 +40,8 @@ import jsonobject.Response;
 
 public class TakeFollowUp extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener
 {
+
+    private static final String TAG = AppUtils.APP_TAG + TakeFollowUp.class.getSimpleName();
 
     Toolbar toolbar;
 
@@ -63,6 +67,8 @@ public class TakeFollowUp extends AppCompatActivity implements DatePickerDialog.
 
     String followUpDate, followUpTime;
 
+    ProgressBar pbProcessing;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -81,6 +87,8 @@ public class TakeFollowUp extends AppCompatActivity implements DatePickerDialog.
         customerName = getIntent().getStringExtra("follow_up_customer_name");
         customerContact = getIntent().getStringExtra("follow_up_customer_contact");
         enquiryId = getIntent().getStringExtra("enquiry_id");
+
+        pbProcessing = (ProgressBar) findViewById(R.id.pb_processing);
 
         if (customerName != null && customerContact != null)
         {
@@ -284,14 +292,10 @@ public class TakeFollowUp extends AppCompatActivity implements DatePickerDialog.
     }
 
 
-    static class SaveNewFollowUp extends AsyncTask<Void, Void, String>
+    class SaveNewFollowUp extends AsyncTask<Void, Void, String>
     {
 
-        private static final String TAG = AppUtils.APP_TAG + SaveNewFollowUp.class.getSimpleName();
-
         private final Map<String, String> postParams = new HashMap<>();
-
-        private Context context;
 
         String response = "";
 
@@ -301,7 +305,6 @@ public class TakeFollowUp extends AppCompatActivity implements DatePickerDialog.
                                String follow_up_type_id,
                                String enquiryId)
         {
-            this.context = context;
             postParams.put("method", "add_new_follow_up");
             postParams.put("session_id", session_id);
             postParams.put("followUpDiscussion", followUpDiscussion);
@@ -314,7 +317,7 @@ public class TakeFollowUp extends AppCompatActivity implements DatePickerDialog.
 
         public String constructUrl()
         {
-            String url = PreferenceManager.getDefaultSharedPreferences(context).getString("host", "");
+            String url = PreferenceManager.getDefaultSharedPreferences(TakeFollowUp.this).getString("host", "");
             if (!url.isEmpty())
             {
                 url = url + AppUtils.URL_WEBSERVICE;
@@ -322,6 +325,12 @@ public class TakeFollowUp extends AppCompatActivity implements DatePickerDialog.
             return url;
         }
 
+        @Override
+        protected void onPreExecute()
+        {
+            pbProcessing.setVisibility(View.VISIBLE);
+            btnSaveFollowUp.setVisibility(View.GONE);
+        }
 
         @Override
         protected String doInBackground(Void... voids)
@@ -355,23 +364,29 @@ public class TakeFollowUp extends AppCompatActivity implements DatePickerDialog.
                     Response response = new Response(s);
                     if (response.isStatusOk())
                     {
-                        Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();
-                        Intent i = new Intent(context, ActivityView.class);
+                        Toast.makeText(TakeFollowUp.this, response.getMessage(), Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(TakeFollowUp.this, ActivityView.class);
                         i.putExtra("enquiry_id", postParams.get("enquiry_id"));
-                        context.startActivity(i);
+                        TakeFollowUp.this.startActivity(i);
 
                     } else
                     {
-                        Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TakeFollowUp.this, response.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e)
                 {
-                    Toast.makeText(context, "Parsing Error: " + s, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TakeFollowUp.this, "something went wrong, please try again later", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
+                } finally
+                {
+                    btnSaveFollowUp.setVisibility(View.VISIBLE);
+                    pbProcessing.setVisibility(View.GONE);
                 }
             } else
             {
-                Toast.makeText(context, "Something went wrong, Please try again later", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TakeFollowUp.this, "Something went wrong, Please try again later", Toast.LENGTH_SHORT).show();
+                btnSaveFollowUp.setVisibility(View.VISIBLE);
+                pbProcessing.setVisibility(View.GONE);
             }
         }
     }
