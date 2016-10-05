@@ -68,7 +68,7 @@ public class SimpleFormAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         notifyItemInserted(componentListMap.size());
     }
 
-    public void addTextBox(String label, String name, long id, Integer inputType, Boolean enabled, String defaultText)
+    public void addTextBox(String label, String name, long id, Integer inputType, Boolean enabled, String defaultText, boolean isMandatory)
     {
         Map map = new HashMap();
         map.put("label", label);
@@ -77,6 +77,7 @@ public class SimpleFormAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         map.put("value", "");
         map.put("enabled", enabled);
         map.put("default_text", defaultText);
+        map.put("is_mandatory", isMandatory);
         componentListMap.put(id, new Component(map, Component.TEXTBOX, id));
         notifyItemInserted(componentListMap.size());
     }

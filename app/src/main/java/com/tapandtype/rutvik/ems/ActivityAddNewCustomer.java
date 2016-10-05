@@ -105,14 +105,14 @@ public class ActivityAddNewCustomer extends AppCompatActivity
         customerPrefixMap.put("3", "Ms.");
         customerDetailsAdapter.addSpinner("Customer Prefix", "prefix_id", customerPrefixMap, ++i);
 
-        customerDetailsAdapter.addTextBox("Customer Name*", "customer_name", ++i, InputType.TYPE_CLASS_TEXT, true, "");
+        customerDetailsAdapter.addTextBox("Customer Name*", "customer_name", ++i, InputType.TYPE_CLASS_TEXT, true, "",true);
 
         customerDetailsAdapter.addAppendableTextBox("Contact No*", "mobile_no", ++i,
                 app.getHost() + AppUtils.URL_EXACT_CONTACT_NO,
                 new ActivityAddNewCustomer.AppendableTextBoxUrlListener(),
                 InputType.TYPE_CLASS_NUMBER);
 
-        customerDetailsAdapter.addTextBox("Email Address", "email_id", ++i, InputType.TYPE_CLASS_TEXT, true, "");
+        customerDetailsAdapter.addTextBox("Email Address", "email_id", ++i, InputType.TYPE_CLASS_TEXT, true, "",false);
 
         if (customerDetailsFragment == null)
         {

@@ -16,6 +16,7 @@ public class MyTextBox extends TextInputLayout
 
     public EditText editText;
 
+    boolean isMandatory = false;
 
     public MyTextBox(Context context)
     {
@@ -33,6 +34,16 @@ public class MyTextBox extends TextInputLayout
 
         editText = (EditText) getChildAt(0);
 
+    }
+
+    public void setIsMandatory(boolean isMandatory)
+    {
+        this.isMandatory = isMandatory;
+    }
+
+    public boolean isMandatory()
+    {
+        return isMandatory;
     }
 
 

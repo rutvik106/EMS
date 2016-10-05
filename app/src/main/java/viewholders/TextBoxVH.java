@@ -21,6 +21,8 @@ import ComponentFactory.Component;
 import ComponentFactory.MyTextBox;
 import ComponentFactory.RowItem;
 
+import static extras.CommonUtils.MANDATORY_FIELD;
+
 /**
  * Created by ACER on 05-Feb-16.
  */
@@ -33,6 +35,7 @@ public class TextBoxVH extends RecyclerView.ViewHolder implements RowItem, TextW
 
     Map map;
 
+    long viewId = 0;
 
     public TextBoxVH(MyTextBox myTextBox)
     {
@@ -60,8 +63,10 @@ public class TextBoxVH extends RecyclerView.ViewHolder implements RowItem, TextW
         vh.myTextBox.editText.setInputType((Integer) map.get("input_type"));
         vh.myTextBox.editText.setText((String) map.get("value"));
         vh.myTextBox.editText.setEnabled((Boolean) map.get("enabled"));
-        String defaultText=(String ) map.get("default_text");
-        if(defaultText.length()>0){
+        String defaultText = (String) map.get("default_text");
+        vh.myTextBox.setIsMandatory((boolean) map.get("is_mandatory"));
+        if (defaultText.length() > 0)
+        {
             vh.myTextBox.editText.setText(defaultText);
         }
         component.setRowItem(vh);
@@ -71,7 +76,14 @@ public class TextBoxVH extends RecyclerView.ViewHolder implements RowItem, TextW
     @Override
     public String getValue()
     {
-        return map.get("value").toString();
+        if (myTextBox.isMandatory())
+        {
+            if (map.get("value").toString().trim().isEmpty())
+            {
+                return MANDATORY_FIELD;
+            }
+        }
+        return map.get("value").toString().trim();
     }
 
     @Override

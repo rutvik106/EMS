@@ -29,8 +29,10 @@ import org.json.JSONObject;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import ComponentFactory.AppendableTextBox;
 import ComponentFactory.Component;
@@ -40,6 +42,8 @@ import extras.Log;
 import extras.PostServiceHandler;
 import fragments.SimpleFormFragment;
 import jsonobject.Response;
+
+import static extras.CommonUtils.MANDATORY_FIELD;
 
 public class ActivityAddNewInquiry extends AppCompatActivity
 {
@@ -309,17 +313,17 @@ public class ActivityAddNewInquiry extends AppCompatActivity
         String date = day + "/" + month + "/" + year;
 
 
-        simpleFormAdapter.addTextBox("Enquiry Date*", "enquiry_date", ++i, InputType.TYPE_CLASS_TEXT, false, date);
+        simpleFormAdapter.addTextBox("Enquiry Date*", "enquiry_date", ++i, InputType.TYPE_CLASS_TEXT, false, date, true);
 
         simpleFormAdapter.addSpinner("Customer Prefix", "prefix_id", newEnquiryExtraDataMap.get("prefix"), ++i);
 
-        simpleFormAdapter.addTextBox("Customer Name*", "customer_name", ++i, InputType.TYPE_CLASS_TEXT, true, "");
+        simpleFormAdapter.addTextBox("Customer Name*", "customer_name", ++i, InputType.TYPE_CLASS_TEXT, true, "", true);
 
         simpleFormAdapter.addAppendableTextBox("Contact No*", "mobile_no", ++i,
                 app.getHost() + AppUtils.URL_EXACT_CONTACT_NO,
                 new AppendableTextBoxUrlListener(), InputType.TYPE_CLASS_NUMBER);
 
-        simpleFormAdapter.addTextBox("Email Address", "email_id", ++i, InputType.TYPE_CLASS_TEXT, true, "");
+        simpleFormAdapter.addTextBox("Email Address", "email_id", ++i, InputType.TYPE_CLASS_TEXT, true, "", false);
 
         if (simpleFormFragment == null)
         {
@@ -374,13 +378,13 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 
         leadInquiryDetailsAdapter.addCheckListSpinner("Add To Enquiry Group*", "enquiry_group_id", newEnquiryExtraDataMap.get("enquiry_group"), ++i);
 
-        leadInquiryDetailsAdapter.addTextBox("Customer Budget*", "budget", ++i, InputType.TYPE_CLASS_TEXT, true, "");
+        leadInquiryDetailsAdapter.addTextBox("Customer Budget*", "budget", ++i, InputType.TYPE_CLASS_TEXT, true, "", false);
 
         leadInquiryDetailsAdapter.addSpinner("Enquiry Type", "customer_type_id", newEnquiryExtraDataMap.get("enquiry_type"), ++i);
 
-        leadInquiryDetailsAdapter.addTextBox("Discussion", "discussion", ++i, InputType.TYPE_CLASS_TEXT, true, "");
+        leadInquiryDetailsAdapter.addTextBox("Discussion", "discussion", ++i, InputType.TYPE_CLASS_TEXT, true, "", false);
 
-        leadInquiryDetailsAdapter.addDatePicker("Follow Up Date", "reminder_date", ++i, "Pick Follow Up Date");
+        leadInquiryDetailsAdapter.addDatePicker("Follow Up Date*", "reminder_date", ++i, "Pick Follow Up Date");
 
         final Map<String, String> smsOptions = new LinkedHashMap<>();
         smsOptions.put("1", "Yes");
@@ -464,9 +468,18 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 
             }
 
+
+            if (isMandatoryFieldsEmpty(postParams))
+            {
+                return;
+            }
+
+
             Log.i(TAG, "POST PARAM: " + postParams.toString());
 
+
             new AsyncTask<Void, Void, Void>()
+
             {
 
                 String response = "";
@@ -530,9 +543,46 @@ public class ActivityAddNewInquiry extends AppCompatActivity
                                 .show();
                     }
                 }
-            }.execute();
+            }
+
+                    .
+
+                            execute();
 
         }
+    }
+
+
+    private boolean isMandatoryFieldsEmpty(final Map postParams)
+    {
+        Set<Map.Entry<String, String>> entrySet = postParams.entrySet();
+
+        Iterator<Map.Entry<String, String>> entryIterator = entrySet.iterator();
+
+        String mandatoryFields = "";
+
+        while (entryIterator.hasNext())
+        {
+            Map.Entry<String, String> entry = entryIterator.next();
+
+            if (entry.getValue().equals(MANDATORY_FIELD))
+            {
+                mandatoryFields = mandatoryFields + entry.getKey() + ", ";
+            }
+
+        }
+
+        if (!mandatoryFields.isEmpty())
+        {
+            fragSimpleForm.removeViewAt(3);
+            fragSimpleForm.addView(addEnquiry, 3);
+            mandatoryFields = mandatoryFields.substring(0, mandatoryFields.length() - 2);
+            Toast.makeText(ActivityAddNewInquiry.this,
+                    mandatoryFields + " cannot be empty", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return false;
     }
 
 
