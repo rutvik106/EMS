@@ -74,10 +74,7 @@ public class SimpleFormFragment extends Fragment
     @Override
     public void onSaveInstanceState(Bundle outState)
     {
-        super.onSaveInstanceState(outState);
-
-        Log.i(TAG, "SAVE INSTANCE CALLED!");
-
+        Log.i(TAG, "SAVE INSTANCE CALLED!!");
     }
 
     public void setData(SimpleFormAdapter adapter,String fragmentTitle)

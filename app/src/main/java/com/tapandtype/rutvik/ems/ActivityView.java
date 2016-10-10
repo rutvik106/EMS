@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 import adapters.SimpleFormAdapter;
 import extras.AppUtils;
+import extras.Log;
 import extras.PostServiceHandler;
 import fragments.SimpleFormFragment;
 import models.FollowUpSeparator;
@@ -77,6 +79,24 @@ public class ActivityView extends AppCompatActivity
         }
 
 
+        if (savedInstanceState != null)
+        {
+
+            Log.i(TAG, "RESTORNIG SAVED INSTANCE");
+
+            fragmentCustomerDetail = (SimpleFormFragment) getSupportFragmentManager().getFragment(savedInstanceState, "CUSTOMER_DETAILS");
+
+            fragmentEnquiryDetails = (SimpleFormFragment) getSupportFragmentManager().getFragment(savedInstanceState, "ENQUIRY_DETAILS");
+
+            fragmentEnquiryStatus = (SimpleFormFragment) getSupportFragmentManager().getFragment(savedInstanceState, "ENQUIRY_STATUS");
+
+            fragmentFollowUpDetail = (SimpleFormFragment) getSupportFragmentManager().getFragment(savedInstanceState, "FOLLOW_UP_DETAILS");
+
+            fragmentProductDetails = (SimpleFormFragment) getSupportFragmentManager().getFragment(savedInstanceState, "PRODUCT_DETAILS");
+
+        }
+
+
         fragSimpleForm = (LinearLayout) findViewById(R.id.frag_simpleForm);
 
         flLoadingView = (FrameLayout) findViewById(R.id.fl_loadingView);
@@ -121,6 +141,28 @@ public class ActivityView extends AppCompatActivity
             new GetViewDetailAsync(enquiryId, this).execute();
         }
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        try
+        {
+
+            getSupportFragmentManager().putFragment(outState, "CUSTOMER_DETAILS", fragmentCustomerDetail);
+
+            getSupportFragmentManager().putFragment(outState, "ENQUIRY_DETAILS", fragmentEnquiryDetails);
+
+            getSupportFragmentManager().putFragment(outState, "ENQUIRY_STATUS", fragmentEnquiryStatus);
+
+            getSupportFragmentManager().putFragment(outState, "FOLLOW_UP_DETAILS", fragmentFollowUpDetail);
+
+            getSupportFragmentManager().putFragment(outState, "PRODUCT_DETAILS", fragmentProductDetails);
+
+        } catch (NullPointerException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override

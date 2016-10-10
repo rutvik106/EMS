@@ -8,6 +8,8 @@ import android.preference.PreferenceManager;
 import android.support.multidex.MultiDex;
 import android.widget.Toast;
 
+import org.json.JSONException;
+
 import extras.AppUtils;
 import extras.Log;
 import jsonobject.User;
@@ -42,14 +44,33 @@ public class App extends Application
 
     public void setUser(User user)
     {
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .edit().putString("user", user.getResponseString()).apply();
         this.user = user;
     }
 
     public User getUser()
     {
-        if(user.getSession_id().isEmpty() || user.getSession_id()==null)
+        if (user == null)
         {
-            Toast.makeText(this,"Your Session was expired",Toast.LENGTH_LONG).show();
+            final String userJsonResponse = PreferenceManager.getDefaultSharedPreferences(this).getString("user", "");
+            if (!userJsonResponse.isEmpty())
+            {
+                try
+                {
+                    user = new User(userJsonResponse);
+                    setUser(user);
+                } catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+        if (user.getSession_id().isEmpty() || user.getSession_id() == null)
+        {
+            Toast.makeText(this, "Your Session was expired", Toast.LENGTH_LONG).show();
             Intent i = new Intent(this, InitialActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
