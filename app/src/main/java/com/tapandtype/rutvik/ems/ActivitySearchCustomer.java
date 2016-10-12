@@ -2,6 +2,7 @@ package com.tapandtype.rutvik.ems;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -80,7 +81,13 @@ public class ActivitySearchCustomer extends AppCompatActivity
                             getSearchDataEmail.cancel(true);
                             getSearchDataEmail = new GetSearchData(constraint.toString(), urlEmail, adapterEmail);
                         }
-                        getSearchDataEmail.execute();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                        {
+                            getSearchDataEmail.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        } else
+                        {
+                            getSearchDataEmail.execute();
+                        }
                         return super.performFiltering(constraint);
                     }
                 };
@@ -110,7 +117,13 @@ public class ActivitySearchCustomer extends AppCompatActivity
                             getSearchDataEnquiry.cancel(true);
                             getSearchDataEnquiry = new GetSearchData(constraint.toString(), urlEnquiry, adapterEnquiry);
                         }
-                        getSearchDataEnquiry.execute();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                        {
+                            getSearchDataEnquiry.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        } else
+                        {
+                            getSearchDataEnquiry.execute();
+                        }
                         return super.performFiltering(constraint);
                     }
 
@@ -140,7 +153,14 @@ public class ActivitySearchCustomer extends AppCompatActivity
                             getSearchDataContact.cancel(true);
                             getSearchDataContact = new GetSearchData(constraint.toString(), urlContact, adapterContact);
                         }
-                        getSearchDataContact.execute();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                        {
+                            getSearchDataContact.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        } else
+                        {
+                            getSearchDataContact.execute();
+                        }
+
                         return super.performFiltering(constraint);
                     }
 
@@ -170,7 +190,13 @@ public class ActivitySearchCustomer extends AppCompatActivity
                             getSearchDataName.cancel(true);
                             getSearchDataName = new GetSearchData(constraint.toString(), urlName, adapterName);
                         }
-                        getSearchDataName.execute();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                        {
+                            getSearchDataName.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        } else
+                        {
+                            getSearchDataName.execute();
+                        }
                         return super.performFiltering(constraint);
                     }
 
@@ -419,5 +445,32 @@ public class ActivitySearchCustomer extends AppCompatActivity
         }
     }
 
+    @Override
+    public void finish()
+    {
+        if (getSearchDataContact != null)
+        {
+            getSearchDataContact.cancel(true);
+            getSearchDataContact = null;
+        }
 
+        if (getSearchDataEmail != null)
+        {
+            getSearchDataEmail.cancel(true);
+            getSearchDataEmail = null;
+        }
+
+        if (getSearchDataEnquiry != null)
+        {
+            getSearchDataEnquiry.cancel(true);
+            getSearchDataEnquiry = null;
+        }
+
+        if (getSearchDataName != null)
+        {
+            getSearchDataName.cancel(true);
+            getSearchDataName = null;
+        }
+        super.finish();
+    }
 }

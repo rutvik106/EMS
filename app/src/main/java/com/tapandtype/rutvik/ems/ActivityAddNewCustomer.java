@@ -20,7 +20,9 @@ import android.widget.Toast;
 import org.json.JSONException;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import ComponentFactory.AppendableTextBox;
 import adapters.SimpleFormAdapter;
@@ -29,6 +31,8 @@ import extras.Log;
 import extras.PostServiceHandler;
 import fragments.SimpleFormFragment;
 import jsonobject.Response;
+
+import static extras.CommonUtils.MANDATORY_FIELD;
 
 public class ActivityAddNewCustomer extends AppCompatActivity
 {
@@ -105,14 +109,14 @@ public class ActivityAddNewCustomer extends AppCompatActivity
         customerPrefixMap.put("3", "Ms.");
         customerDetailsAdapter.addSpinner("Customer Prefix", "prefix_id", customerPrefixMap, ++i);
 
-        customerDetailsAdapter.addTextBox("Customer Name*", "customer_name", ++i, InputType.TYPE_CLASS_TEXT, true, "",true);
+        customerDetailsAdapter.addTextBox("Customer Name*", "customer_name", ++i, InputType.TYPE_CLASS_TEXT, true, "", true);
 
         customerDetailsAdapter.addAppendableTextBox("Contact No*", "mobile_no", ++i,
                 app.getHost() + AppUtils.URL_EXACT_CONTACT_NO,
                 new ActivityAddNewCustomer.AppendableTextBoxUrlListener(),
                 InputType.TYPE_CLASS_NUMBER);
 
-        customerDetailsAdapter.addTextBox("Email Address", "email_id", ++i, InputType.TYPE_CLASS_TEXT, true, "",false);
+        customerDetailsAdapter.addTextBox("Email Address", "email_id", ++i, InputType.TYPE_CLASS_TEXT, true, "", false);
 
         if (customerDetailsFragment == null)
         {
@@ -183,6 +187,11 @@ public class ActivityAddNewCustomer extends AppCompatActivity
 
             }
 
+            if (isMandatoryFieldsEmpty(postParams))
+            {
+                return;
+            }
+
             new AsyncTask<Void, Void, Void>()
             {
 
@@ -241,6 +250,36 @@ public class ActivityAddNewCustomer extends AppCompatActivity
             }.execute();
 
         }
+    }
+
+    private boolean isMandatoryFieldsEmpty(final Map postParams)
+    {
+        Set<Map.Entry<String, String>> entrySet = postParams.entrySet();
+
+        Iterator<Map.Entry<String, String>> entryIterator = entrySet.iterator();
+
+        String mandatoryFields = "";
+
+        while (entryIterator.hasNext())
+        {
+            Map.Entry<String, String> entry = entryIterator.next();
+
+            if (entry.getValue().equals(MANDATORY_FIELD))
+            {
+                mandatoryFields = mandatoryFields + entry.getKey() + ", ";
+            }
+
+        }
+
+        if (!mandatoryFields.isEmpty())
+        {
+            mandatoryFields = mandatoryFields.substring(0, mandatoryFields.length() - 2);
+            Toast.makeText(ActivityAddNewCustomer.this,
+                    mandatoryFields + " cannot be empty", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return false;
     }
 
     class AppendableTextBoxUrlListener implements AppendableTextBox.OnUrlTriggered

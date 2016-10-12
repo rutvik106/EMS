@@ -146,6 +146,7 @@ public class ActivityView extends AppCompatActivity
     @Override
     public void onSaveInstanceState(Bundle outState)
     {
+        super.onSaveInstanceState(outState);
         try
         {
 
