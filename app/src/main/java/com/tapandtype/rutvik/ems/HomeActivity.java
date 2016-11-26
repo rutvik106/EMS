@@ -3,6 +3,7 @@ package com.tapandtype.rutvik.ems;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -10,7 +11,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +20,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
+
+import com.google.firebase.crash.FirebaseCrash;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -388,7 +390,13 @@ public class HomeActivity extends AppCompatActivity
                             upcomingFollowUpArray.add(new FollowUp(upcomingFollowUps.getJSONObject(i)));
                         }
 
-                        upcoming.setupAdapter(upcomingFollowUpArray);
+                        if (upcoming != null)
+                        {
+                            upcoming.setupAdapter(upcomingFollowUpArray);
+                        } else
+                        {
+                            FirebaseCrash.report(new Exception("Upcoming NotificationFragment was NULL"));
+                        }
 
                         //Toast.makeText(HomeActivity.this, "Model Size: " + modelList.size(), Toast.LENGTH_SHORT).show();
 

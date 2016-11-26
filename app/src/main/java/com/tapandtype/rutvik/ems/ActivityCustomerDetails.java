@@ -207,7 +207,7 @@ public class ActivityCustomerDetails extends AppCompatActivity
 
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.add(R.id.frag_simpleForm, simpleFormFragment, "CUSTOMER_DETAILS")
-                    .commit();
+                    .commitAllowingStateLoss();
 
             simpleFormAdapter.notifyDataSetChanged();
         }

@@ -127,7 +127,7 @@ public class ActivityAddNewCustomer extends AppCompatActivity
 
         android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.frag_simpleForm, customerDetailsFragment, "ADD_NEW_CUSTOMER")
-                .commit();
+                .commitAllowingStateLoss();
 
         customerDetailsAdapter.notifyDataSetChanged();
 

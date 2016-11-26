@@ -334,7 +334,7 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 
         android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.frag_simpleForm, simpleFormFragment, "ADD_NEW_INQUIRY")
-                .commit();
+                .commitAllowingStateLoss();
 
         simpleFormAdapter.notifyDataSetChanged();
 
