@@ -6,11 +6,13 @@ import android.support.v7.widget.RecyclerView;
 
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 
+import java.util.Calendar;
 import java.util.Map;
 
 import ComponentFactory.Component;
 import ComponentFactory.MyDateTimePicker;
 import ComponentFactory.RowItem;
+import extras.AppUtils;
 
 /**
  * Created by ACER on 20-Feb-16.
@@ -37,11 +39,18 @@ public class DateTimePickerVH extends RecyclerView.ViewHolder implements RowItem
     public static void bind(DateTimePickerVH vh, Map map, Component component)
     {
         vh.map = map;
-/**        vh.label = (String) vh.map.get("label");
-        vh.name = (String) vh.map.get("name");
-        vh.value=(String) vh.map.get("value");*/
+        /**        vh.label = (String) vh.map.get("label");
+         vh.name = (String) vh.map.get("name");
+         vh.value=(String) vh.map.get("value");*/
         vh.myDateTimePicker.setHint(vh.map.get("label").toString());
         vh.myDateTimePicker.setDialogTitle(vh.map.get("title").toString());
+
+        final String today = AppUtils.dateToDMY(Calendar.getInstance().get(Calendar.YEAR),
+                Calendar.getInstance().get(Calendar.MONTH),
+                Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+
+        vh.myDateTimePicker.editText.setText(today);
+        vh.map.put("value", today);
         component.setRowItem(vh);
     }
 
@@ -110,14 +119,16 @@ public class DateTimePickerVH extends RecyclerView.ViewHolder implements RowItem
     @Override
     public void onDateSet(com.wdullaer.materialdatetimepicker.date.DatePickerDialog view, int year, int monthOfYear, int dayOfMonth)
     {
-        String month=String.valueOf(monthOfYear + 1);
-        if(month.length()==1){
-            month="0"+month;
+        String month = String.valueOf(monthOfYear + 1);
+        if (month.length() == 1)
+        {
+            month = "0" + month;
         }
 
-        String day=String.valueOf(dayOfMonth);
-        if(day.length()==1){
-            day="0"+day;
+        String day = String.valueOf(dayOfMonth);
+        if (day.length() == 1)
+        {
+            day = "0" + day;
         }
 
         String date = day + "/" + month + "/" + year;

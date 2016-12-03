@@ -1,6 +1,7 @@
 package jsonobject;
 
 import android.content.Intent;
+import android.preference.PreferenceManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -8,6 +9,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import extras.AppUtils;
 
 /**
  * Created by rutvik on 21-07-2016 at 07:40 PM.

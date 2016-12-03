@@ -62,6 +62,12 @@
             android:name=".ActivityCloseLead"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".ActivityReports">
+        </activity>
+        <activity android:name=".ActivityCustomReportFilters">
+        </activity>
+        <activity android:name=".ActivityShowReport">
+        </activity>
     </application>
 
 </manifest>

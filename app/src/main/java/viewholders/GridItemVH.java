@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.tapandtype.rutvik.ems.ActivityAddNewCustomer;
 import com.tapandtype.rutvik.ems.ActivityAddNewInquiry;
+import com.tapandtype.rutvik.ems.ActivityReports;
 import com.tapandtype.rutvik.ems.ActivitySearchCustomer;
 import com.tapandtype.rutvik.ems.R;
 
@@ -44,6 +45,9 @@ public class GridItemVH extends RecyclerView.ViewHolder implements View.OnClickL
                 break;
             case 2:
                 context.startActivity(new Intent(context, ActivityAddNewCustomer.class));
+                break;
+            case 3:
+                context.startActivity(new Intent(context, ActivityReports.class));
                 break;
         }
     }

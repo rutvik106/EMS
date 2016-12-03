@@ -13,6 +13,8 @@ public final class AppUtils
 
     public static final String APP_TAG = "EMS ";
 
+    public static final String SESSION_ID = "SESSION_ID";
+
     public static final String URL_WEBSERVICE = "/webservice/webservice.php";
 
     public static final String URL_EXACT_CONTACT_NO = "/json/exact_mobile_no.php";

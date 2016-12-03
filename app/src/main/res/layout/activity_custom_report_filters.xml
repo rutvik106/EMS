@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_custom_report_filters"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tapandtype.rutvik.ems.ActivityCustomReportFilters">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_customReportFilters"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:clipToPadding="false"
+        android:padding="5dp"/>
+
+
+    <Button
+        android:id="@+id/btn_generateCustomLeadReports"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:text="Generate"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"/>
+
+
+</RelativeLayout>
