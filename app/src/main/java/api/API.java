@@ -1,7 +1,10 @@
 package api;
 
+import java.util.List;
+
 import apimodels.CustomLeadReports;
 import apimodels.FiltersForCustomLeadReports;
+import apimodels.UserSnapshotReport;
 import extras.AppUtils;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,5 +54,16 @@ public class API
 
         call.enqueue(callback);
     }
+
+
+    public void getUserSnapshotReport(String sessionId, String fromDate, String toDate,
+                                    Callback<List<UserSnapshotReport>> callback)
+    {
+        Call<List<UserSnapshotReport>> call = apiService.getUserSnapshotReport("user_snapshot_report", sessionId,
+                fromDate, toDate);
+
+        call.enqueue(callback);
+    }
+
 
 }

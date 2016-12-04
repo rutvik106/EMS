@@ -6,10 +6,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
-import adapters.ReportViewAdapter;
+import java.util.List;
+
+import adapters.CustomLeadReportViewAdapter;
+import adapters.UserSnapshotReportViewAdapter;
 import api.API;
 import apimodels.CustomLeadReports;
+import apimodels.UserSnapshotReport;
 import extras.AppUtils;
 import extras.Log;
 import retrofit2.Call;
@@ -25,15 +30,19 @@ public class ActivityShowReport extends AppCompatActivity
 
     RecyclerView rvReportView;
 
-    ReportViewAdapter adapter;
+    RecyclerView.Adapter adapter;
 
     String fromDate, toDate, userId, product, status;
+
+    int reportType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_report);
+
+        reportType = getIntent().getIntExtra(Constants.REPORT_TYPE, 0);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -53,20 +62,74 @@ public class ActivityShowReport extends AppCompatActivity
 
         rvReportView.setHasFixedSize(true);
 
-        adapter = new ReportViewAdapter(this);
-
-        rvReportView.setAdapter(adapter);
-
         fromDate = getIntent().getStringExtra(Constants.REPORT_FROM_DATE);
         product = getIntent().getStringExtra(Constants.REPORT_PRODUCT);
         status = getIntent().getStringExtra(Constants.REPORT_LEAD_STATUS);
         toDate = getIntent().getStringExtra(Constants.REPORT_TO_DATE);
 
-        generateReport();
+        if (reportType == Constants.CUSTOM_LEAD_REPORT)
+        {
+            setActionBarTitle("Lead Report");
+            adapter = new CustomLeadReportViewAdapter(this);
+            rvReportView.setAdapter(adapter);
+            generateCustomLeadReport();
+        } else if (reportType == Constants.USER_SNAPSHOT_REPORT)
+        {
+            setActionBarTitle("User Snapshot Report");
+            adapter = new UserSnapshotReportViewAdapter(this);
+            rvReportView.setAdapter(adapter);
+            generateUserSnapshotReport();
+        } else if (reportType == Constants.EFFICIENCY_REPORT)
+        {
+            generateEfficiencyReport();
+        } else if (reportType == Constants.CUSTOM_FOLLOWUP_REPORT)
+        {
+            generateCustomFollowupReport();
+        }
+
 
     }
 
-    private void generateReport()
+    private void generateCustomFollowupReport()
+    {
+
+    }
+
+    private void generateEfficiencyReport()
+    {
+
+    }
+
+    private void generateUserSnapshotReport()
+    {
+        final String sessionId = ((App) getApplication()).getUser().getSession_id();
+
+        API.getInstance().getUserSnapshotReport(sessionId, fromDate, toDate, new Callback<List<UserSnapshotReport>>()
+        {
+            @Override
+            public void onResponse(Call<List<UserSnapshotReport>> call, Response<List<UserSnapshotReport>> response)
+            {
+                Log.i(TAG, "RESPONSE CODE: " + response.code());
+
+                if (response.isSuccessful())
+                {
+                    for (UserSnapshotReport report : response.body())
+                    {
+                        ((UserSnapshotReportViewAdapter) adapter).addUserSnapshot(report);
+                    }
+                    findViewById(R.id.ll_loadingReport).setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<UserSnapshotReport>> call, Throwable t)
+            {
+                System.out.println(t.getMessage());
+            }
+        });
+    }
+
+    private void generateCustomLeadReport()
     {
 
         final String sessionId = ((App) getApplication()).getUser().getSession_id();
@@ -82,8 +145,9 @@ public class ActivityShowReport extends AppCompatActivity
                 {
                     for (CustomLeadReports.CustomLeadReportsBean reportsBean : response.body().getCustomLeadReports())
                     {
-                        adapter.addReportListItem(reportsBean);
+                        ((CustomLeadReportViewAdapter) adapter).addReportListItem(reportsBean);
                     }
+                    findViewById(R.id.ll_loadingReport).setVisibility(View.GONE);
                 }
             }
 
@@ -106,4 +170,13 @@ public class ActivityShowReport extends AppCompatActivity
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void setActionBarTitle(final String title)
+    {
+        if (getSupportActionBar() != null)
+        {
+            getSupportActionBar().setTitle(title);
+        }
+    }
+
 }

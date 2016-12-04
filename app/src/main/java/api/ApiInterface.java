@@ -1,7 +1,12 @@
 package api;
 
+import java.util.List;
+
 import apimodels.CustomLeadReports;
+import apimodels.EfficiencyReport;
 import apimodels.FiltersForCustomLeadReports;
+import apimodels.UserSnapshotReport;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -29,5 +34,28 @@ public interface ApiInterface
                                                 //@Field("customer_type_id") String customerTypeId,
                                                 @Field("leadStatus") String leadStatus,
                                                 @Field("product") String product);
+
+    @FormUrlEncoded
+    @POST("webservice.php")
+    Call<List<UserSnapshotReport>> getUserSnapshotReport(@Field("method") String method,
+                                                         @Field("session_id") String sessionId,
+                                                         @Field("from_date") String fromDate,
+                                                         @Field("to_date") String toDate);
+
+    @FormUrlEncoded
+    @POST("webservice.php")
+    Call<ResponseBody> getCustomFollowUpReports(@Field("method") String method,
+                                                @Field("session_id") String sessionId,
+                                                @Field("from_date") String fromDate,
+                                                @Field("to_date") String toDate);
+
+    @FormUrlEncoded
+    @POST("webservice.php")
+    Call<EfficiencyReport> getEfficiencyReport(@Field("method") String method,
+                                               @Field("session_id") String sessionId,
+                                               @Field("from_date") String fromDate,
+                                               @Field("product") String product,
+                                               @Field("user_id") String userId,
+                                               @Field("to_date") String toDate);
 
 }

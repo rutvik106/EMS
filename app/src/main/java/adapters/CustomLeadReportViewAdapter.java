@@ -14,14 +14,14 @@ import viewholders.SingleReportItemVH;
  * Created by rutvik on 12/3/2016 at 6:32 PM.
  */
 
-public class ReportViewAdapter extends RecyclerView.Adapter
+public class CustomLeadReportViewAdapter extends RecyclerView.Adapter
 {
 
     final Context context;
 
     final List<CustomLeadReports.CustomLeadReportsBean> reportsBeanList;
 
-    public ReportViewAdapter(final Context context)
+    public CustomLeadReportViewAdapter(final Context context)
     {
         this.context = context;
         reportsBeanList = new LinkedList<>();

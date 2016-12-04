@@ -2,10 +2,17 @@ package api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tapandtype.rutvik.ems.App;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Cache;
+import okhttp3.CacheControl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -26,7 +33,9 @@ public class ApiClient
                 .setLenient()
                 .create();
 
-        final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .cache(new Cache(App.dir, 10 * 1024 * 1024)) // 10 MB
+                .addInterceptor(provideOfflineCacheInterceptor())
                 .readTimeout(60, TimeUnit.SECONDS)
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .build();
@@ -42,5 +51,31 @@ public class ApiClient
         return retrofit;
     }
 
+    public static Interceptor provideOfflineCacheInterceptor()
+    {
+
+        return new Interceptor()
+        {
+            @Override
+            public Response intercept(Chain chain) throws IOException
+            {
+                Request request = chain.request();
+
+                //int maxStale = 60 * 60 * 24 * 28; // tolerate 4-weeks stale
+
+                CacheControl cacheControl = new CacheControl.Builder()
+                        .maxStale(7, TimeUnit.DAYS)
+                        .build();
+
+                request = request.newBuilder()
+                        .cacheControl(cacheControl)
+                        .build();
+
+                return chain.proceed(request);
+
+            }
+        };
+
+    }
 
 }

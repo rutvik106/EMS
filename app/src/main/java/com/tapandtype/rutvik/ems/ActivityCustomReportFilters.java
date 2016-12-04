@@ -39,32 +39,27 @@ public class ActivityCustomReportFilters extends AppCompatActivity
 
     final Map postData = new HashMap<>();
 
+    int reportType;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_report_filters);
 
+        reportType = getIntent().getIntExtra(Constants.REPORT_TYPE, 0);
+
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
         if (mToolbar != null)
         {
-            mToolbar.setTitle("Custom Report");
+            mToolbar.setTitle("Report Filters");
             setSupportActionBar(mToolbar);
             if (getSupportActionBar() != null)
             {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
         }
-
-        findViewById(R.id.btn_generateCustomLeadReports).setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                getFormData();
-            }
-        });
 
         rvCustomReportFilters = (RecyclerView) findViewById(R.id.rv_customReportFilters);
 
@@ -75,6 +70,15 @@ public class ActivityCustomReportFilters extends AppCompatActivity
         adapter = new SimpleFormAdapter(this);
 
         rvCustomReportFilters.setAdapter(adapter);
+
+        findViewById(R.id.btn_generateCustomLeadReports).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                collectFormData();
+            }
+        });
 
         getFilters();
 
@@ -130,6 +134,8 @@ public class ActivityCustomReportFilters extends AppCompatActivity
 
                     dataMap.put("status", status);
 
+                    findViewById(R.id.ll_loadingFilters).setVisibility(View.GONE);
+
                     setupFilters();
                 }
             }
@@ -152,7 +158,15 @@ public class ActivityCustomReportFilters extends AppCompatActivity
 
         adapter.addDatePicker("To Date", "to", ++count, "Select To Date");
 
-        adapter.addCheckListSpinner("Select Enquiry Status", "status", dataMap.get("status"), ++count);
+        if (reportType == Constants.USER_SNAPSHOT_REPORT || reportType == Constants.CUSTOM_FOLLOWUP_REPORT)
+        {
+            return;
+        }
+
+        if (reportType == Constants.CUSTOM_LEAD_REPORT)
+        {
+            adapter.addCheckListSpinner("Select Enquiry Status", "status", dataMap.get("status"), ++count);
+        }
 
         adapter.addCheckListSpinner("Select User", "user", dataMap.get("users"), ++count);
 
@@ -162,7 +176,7 @@ public class ActivityCustomReportFilters extends AppCompatActivity
     }
 
 
-    private void getFormData()
+    private void collectFormData()
     {
 
         for (long i = 0; i < adapter.getItemCount(); i++)
@@ -177,11 +191,22 @@ public class ActivityCustomReportFilters extends AppCompatActivity
 
         Intent i = new Intent(this, ActivityShowReport.class);
 
-        i.putExtra(Constants.REPORT_FROM_DATE, postData.get("from").toString());
-        i.putExtra(Constants.REPORT_TO_DATE, postData.get("to").toString());
-        i.putExtra(Constants.REPORT_USER_ID, postData.get("user").toString());
-        i.putExtra(Constants.REPORT_LEAD_STATUS, postData.get("status").toString());
-        i.putExtra(Constants.REPORT_PRODUCT, postData.get("product").toString());
+        i.putExtra(Constants.REPORT_TYPE, reportType);
+
+        i.putExtra(Constants.REPORT_FROM_DATE,
+                postData.get("from") != null ? postData.get("from").toString() : "");
+
+        i.putExtra(Constants.REPORT_TO_DATE,
+                postData.get("to") != null ? postData.get("to").toString() : "");
+
+        i.putExtra(Constants.REPORT_USER_ID,
+                postData.get("user") != null ? postData.get("user").toString() : "");
+
+        i.putExtra(Constants.REPORT_LEAD_STATUS,
+                postData.get("status") != null ? postData.get("status").toString() : "");
+
+        i.putExtra(Constants.REPORT_PRODUCT,
+                postData.get("product") != null ? postData.get("product").toString() : "");
 
         startActivity(i);
 

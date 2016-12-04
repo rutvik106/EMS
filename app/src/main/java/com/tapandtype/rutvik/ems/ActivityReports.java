@@ -12,11 +12,15 @@ public class ActivityReports extends AppCompatActivity
 
     Toolbar mToolbar;
 
+    Intent i;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reports);
+
+        i = new Intent(ActivityReports.this, ActivityCustomReportFilters.class);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -35,7 +39,42 @@ public class ActivityReports extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                startActivity(new Intent(ActivityReports.this, ActivityCustomReportFilters.class));
+
+                i.putExtra(Constants.REPORT_TYPE, Constants.CUSTOM_LEAD_REPORT);
+                startActivity(i);
+            }
+        });
+
+        findViewById(R.id.cv_efficiencyReport).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+
+                i.putExtra(Constants.REPORT_TYPE, Constants.EFFICIENCY_REPORT);
+                startActivity(i);
+            }
+        });
+
+        findViewById(R.id.cv_userSnapshotReport).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+
+                i.putExtra(Constants.REPORT_TYPE, Constants.USER_SNAPSHOT_REPORT);
+                startActivity(i);
+            }
+        });
+
+        findViewById(R.id.cv_followUpReport).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+
+                i.putExtra(Constants.REPORT_TYPE, Constants.CUSTOM_FOLLOWUP_REPORT);
+                startActivity(i);
             }
         });
 

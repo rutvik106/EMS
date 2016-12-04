@@ -12,6 +12,28 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar"/>
 
+
+    <LinearLayout
+        android:id="@+id/ll_loadingReport"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Generating Report..."/>
+
+    </LinearLayout>
+
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_reportView"
         android:layout_width="match_parent"

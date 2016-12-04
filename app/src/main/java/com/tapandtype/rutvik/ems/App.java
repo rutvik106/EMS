@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 
+import java.io.File;
+
 import extras.AppUtils;
 import extras.Log;
 import jsonobject.User;
@@ -26,13 +28,16 @@ public class App extends Application
 
     private String host;
 
+    public static File dir;
+
     @Override
     public void onCreate()
     {
         super.onCreate();
 
-        Log.i(TAG, "APPLICATION CREATED!!!");
+        dir = getCacheDir();
 
+        Log.i(TAG, "APPLICATION CREATED!!!");
     }
 
     @Override
