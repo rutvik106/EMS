@@ -7,6 +7,7 @@ import apimodels.CustomLeadReports;
 import apimodels.EfficiencyReport;
 import apimodels.FiltersForCustomLeadReports;
 import apimodels.UserSnapshotReport;
+import extras.AppUtils;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -20,12 +21,12 @@ public interface ApiInterface
 {
 
     @FormUrlEncoded
-    @POST("webservice.php")
+    @POST(AppUtils.URL_WEBSERVICE_RETRO)
     Call<FiltersForCustomLeadReports> getFiltersForCustomLeadReport(@Field("method") String method,
                                                                     @Field("session_id") String sessionId);
 
     @FormUrlEncoded
-    @POST("webservice.php")
+    @POST(AppUtils.URL_WEBSERVICE_RETRO)
     Call<CustomLeadReports> getCustomLeadReport(@Field("method") String method,
                                                 @Field("session_id") String sessionId,
                                                 @Field("from_date") String fromDate,
@@ -36,21 +37,21 @@ public interface ApiInterface
                                                 @Field("product") String product);
 
     @FormUrlEncoded
-    @POST("webservice.php")
+    @POST(AppUtils.URL_WEBSERVICE_RETRO)
     Call<List<UserSnapshotReport>> getUserSnapshotReport(@Field("method") String method,
                                                          @Field("session_id") String sessionId,
                                                          @Field("from_date") String fromDate,
                                                          @Field("to_date") String toDate);
 
     @FormUrlEncoded
-    @POST("webservice.php")
+    @POST(AppUtils.URL_WEBSERVICE_RETRO)
     Call<CustomFollowUpReport> getCustomFollowUpReports(@Field("method") String method,
                                                         @Field("session_id") String sessionId,
                                                         @Field("from_date") String fromDate,
                                                         @Field("to_date") String toDate);
 
     @FormUrlEncoded
-    @POST("webservice.php")
+    @POST(AppUtils.URL_WEBSERVICE_RETRO)
     Call<EfficiencyReport> getEfficiencyReport(@Field("method") String method,
                                                @Field("session_id") String sessionId,
                                                @Field("from_date") String fromDate,

@@ -102,7 +102,7 @@ public class ActivityShowReport extends AppCompatActivity
     {
         final String sessionId = ((App) getApplication()).getUser().getSession_id();
 
-        API.getInstance().getCustomFollowUpReports(sessionId, fromDate, toDate, new Callback<CustomFollowUpReport>()
+        new API(this).getCustomFollowUpReports(sessionId, fromDate, toDate, new Callback<CustomFollowUpReport>()
         {
             @Override
             public void onResponse(Call<CustomFollowUpReport> call, Response<CustomFollowUpReport> response)
@@ -131,7 +131,7 @@ public class ActivityShowReport extends AppCompatActivity
     {
         final String sessionId = ((App) getApplication()).getUser().getSession_id();
 
-        API.getInstance().getEfficiencyReport(sessionId, fromDate, toDate, userId, product,
+        new API(this).getEfficiencyReport(sessionId, fromDate, toDate, userId, product,
                 new Callback<EfficiencyReport>()
                 {
                     @Override
@@ -175,7 +175,7 @@ public class ActivityShowReport extends AppCompatActivity
     {
         final String sessionId = ((App) getApplication()).getUser().getSession_id();
 
-        API.getInstance().getUserSnapshotReport(sessionId, fromDate, toDate, new Callback<List<UserSnapshotReport>>()
+        new API(this).getUserSnapshotReport(sessionId, fromDate, toDate, new Callback<List<UserSnapshotReport>>()
         {
             @Override
             public void onResponse(Call<List<UserSnapshotReport>> call, Response<List<UserSnapshotReport>> response)
@@ -205,7 +205,7 @@ public class ActivityShowReport extends AppCompatActivity
 
         final String sessionId = ((App) getApplication()).getUser().getSession_id();
 
-        API.getInstance().getCustomLeadReport(sessionId, fromDate, toDate, userId, status, product, new Callback<CustomLeadReports>()
+        new API(this).getCustomLeadReport(sessionId, fromDate, toDate, userId, status, product, new Callback<CustomLeadReports>()
         {
             @Override
             public void onResponse(Call<CustomLeadReports> call, Response<CustomLeadReports> response)

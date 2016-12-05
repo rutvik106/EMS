@@ -1,5 +1,8 @@
 package api;
 
+import android.content.Context;
+import android.preference.PreferenceManager;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tapandtype.rutvik.ems.App;
@@ -22,11 +25,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient
 {
-    private static final String API_BASE_URL = "http://saisamarthholidays.in/webservice/"; //"http://192.168.0.7/ems/webservice/";
+    //private static final String API_BASE_URL = "http://saisamarthholidays.in/webservice/"; //"http://192.168.0.7/ems/webservice/";
 
     private static Retrofit retrofit = null;
 
-    public static Retrofit getClient()
+    public static Retrofit getClient(final Context context)
     {
 
         Gson gson = new GsonBuilder()
@@ -42,8 +45,11 @@ public class ApiClient
 
         if (retrofit == null)
         {
+            final String baseUrl = PreferenceManager.getDefaultSharedPreferences(context)
+                    .getString("host", "http://127.0.0.1/");
+
             retrofit = new Retrofit.Builder()
-                    .baseUrl(API_BASE_URL)
+                    .baseUrl(baseUrl)
                     .client(okHttpClient)
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();

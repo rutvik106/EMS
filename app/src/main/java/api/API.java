@@ -1,5 +1,7 @@
 package api;
 
+import android.content.Context;
+
 import java.util.List;
 
 import apimodels.CustomFollowUpReport;
@@ -20,20 +22,17 @@ public class API
 
     private ApiInterface apiService;
 
-    //create an object of SingleObject
-    private static API instance = new API();
-
     private static final String TAG = AppUtils.APP_TAG + API.class.getSimpleName();
 
-    private API()
+    public API(Context context)
     {
-        apiService = ApiClient.getClient().create(ApiInterface.class);
+        apiService = ApiClient.getClient(context).create(ApiInterface.class);
     }
 
     //Get the only object available
-    public static API getInstance()
+    public API getInstance(Context context)
     {
-        return instance;
+        return new API(context);
     }
 
 

@@ -101,7 +101,7 @@ public class ActivityCustomReportFilters extends AppCompatActivity
 
         final String sessionId = ((App) getApplication()).getUser().getSession_id();
 
-        API.getInstance().getFilterForCustomEnquiryReport(sessionId, new Callback<FiltersForCustomLeadReports>()
+        new API(this).getFilterForCustomEnquiryReport(sessionId, new Callback<FiltersForCustomLeadReports>()
         {
             @Override
             public void onResponse(Call<FiltersForCustomLeadReports> call, Response<FiltersForCustomLeadReports> response)

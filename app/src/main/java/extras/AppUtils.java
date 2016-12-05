@@ -17,6 +17,8 @@ public final class AppUtils
 
     public static final String URL_WEBSERVICE = "/webservice/webservice.php";
 
+    public static final String URL_WEBSERVICE_RETRO = "webservice/webservice.php";
+
     public static final String URL_EXACT_CONTACT_NO = "/json/exact_mobile_no.php";
 
     public static final String URL_GET_CUSTOMER_NAME = "/json/customer_name.php";
