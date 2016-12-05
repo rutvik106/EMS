@@ -40,4 +40,144 @@
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"/>
 
+
+    <LinearLayout
+        android:id="@+id/ll_efficReportResultContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
+        android:layout_margin="5dp"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:padding="5dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="Total Enquiry: "
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textSize="14sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tv_effiTotalEnquiry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="20-4-2016"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textSize="14sp"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Successful Enquiries: "
+
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tv_effiSuccessfulEnq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rutvik Mehta"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Unsuccessful Enquiries: "
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tv_effiUnsuccessfulEnq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+91-9824143009"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ongoing Enquiries: "
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tv_efficOngoingEnq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sanket Jasani"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Enquiries: "
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tv_efficNewEnq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sanket Jasani"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
 </RelativeLayout>

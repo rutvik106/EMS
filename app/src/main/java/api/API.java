@@ -2,7 +2,9 @@ package api;
 
 import java.util.List;
 
+import apimodels.CustomFollowUpReport;
 import apimodels.CustomLeadReports;
+import apimodels.EfficiencyReport;
 import apimodels.FiltersForCustomLeadReports;
 import apimodels.UserSnapshotReport;
 import extras.AppUtils;
@@ -57,10 +59,29 @@ public class API
 
 
     public void getUserSnapshotReport(String sessionId, String fromDate, String toDate,
-                                    Callback<List<UserSnapshotReport>> callback)
+                                      Callback<List<UserSnapshotReport>> callback)
     {
         Call<List<UserSnapshotReport>> call = apiService.getUserSnapshotReport("user_snapshot_report", sessionId,
                 fromDate, toDate);
+
+        call.enqueue(callback);
+    }
+
+    public void getCustomFollowUpReports(String sessionId, String fromDate, String toDate,
+                                         Callback<CustomFollowUpReport> callback)
+    {
+        Call<CustomFollowUpReport> call = apiService.getCustomFollowUpReports("custom_follow_up_reports", sessionId,
+                fromDate, toDate);
+
+        call.enqueue(callback);
+    }
+
+    public void getEfficiencyReport(String sessionId, String fromDate, String toDate, String userId,
+                                    String product,
+                                    Callback<EfficiencyReport> callback)
+    {
+        Call<EfficiencyReport> call = apiService.getEfficiencyReport("effeciency_report", sessionId,
+                fromDate, toDate, userId, product);
 
         call.enqueue(callback);
     }

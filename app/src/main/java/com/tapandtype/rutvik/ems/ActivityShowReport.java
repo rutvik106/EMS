@@ -7,13 +7,17 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import java.util.List;
 
+import adapters.CustomFollowUpViewAdapter;
 import adapters.CustomLeadReportViewAdapter;
 import adapters.UserSnapshotReportViewAdapter;
 import api.API;
+import apimodels.CustomFollowUpReport;
 import apimodels.CustomLeadReports;
+import apimodels.EfficiencyReport;
 import apimodels.UserSnapshotReport;
 import extras.AppUtils;
 import extras.Log;
@@ -81,9 +85,13 @@ public class ActivityShowReport extends AppCompatActivity
             generateUserSnapshotReport();
         } else if (reportType == Constants.EFFICIENCY_REPORT)
         {
+            setActionBarTitle("Efficiency Report");
             generateEfficiencyReport();
         } else if (reportType == Constants.CUSTOM_FOLLOWUP_REPORT)
         {
+            setActionBarTitle("Follow Up Report");
+            adapter = new CustomFollowUpViewAdapter(this);
+            rvReportView.setAdapter(adapter);
             generateCustomFollowupReport();
         }
 
@@ -92,12 +100,75 @@ public class ActivityShowReport extends AppCompatActivity
 
     private void generateCustomFollowupReport()
     {
+        final String sessionId = ((App) getApplication()).getUser().getSession_id();
 
+        API.getInstance().getCustomFollowUpReports(sessionId, fromDate, toDate, new Callback<CustomFollowUpReport>()
+        {
+            @Override
+            public void onResponse(Call<CustomFollowUpReport> call, Response<CustomFollowUpReport> response)
+            {
+                Log.i(TAG, "RESPONSE CODE: " + response.code());
+
+                if (response.isSuccessful())
+                {
+                    for (CustomFollowUpReport.CustomFollowUpReportsBean report : response.body().getCustomFollowUpReports())
+                    {
+                        ((CustomFollowUpViewAdapter) adapter).addNewModel(report);
+                    }
+                    findViewById(R.id.ll_loadingReport).setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CustomFollowUpReport> call, Throwable t)
+            {
+                System.out.println(t.getMessage());
+            }
+        });
     }
 
     private void generateEfficiencyReport()
     {
+        final String sessionId = ((App) getApplication()).getUser().getSession_id();
 
+        API.getInstance().getEfficiencyReport(sessionId, fromDate, toDate, userId, product,
+                new Callback<EfficiencyReport>()
+                {
+                    @Override
+                    public void onResponse(Call<EfficiencyReport> call, Response<EfficiencyReport> response)
+                    {
+                        Log.i(TAG, "RESPONSE CODE: " + response.code());
+
+                        if (response.isSuccessful())
+                        {
+
+                            findViewById(R.id.ll_loadingReport).setVisibility(View.GONE);
+
+                            ((TextView) findViewById(R.id.tv_efficNewEnq))
+                                    .setText(response.body().getNewEnquiries());
+
+                            ((TextView) findViewById(R.id.tv_efficOngoingEnq))
+                                    .setText(response.body().getOngoingEnquiries());
+
+                            ((TextView) findViewById(R.id.tv_effiSuccessfulEnq))
+                                    .setText(response.body().getSuccessfulEnquiries());
+
+                            ((TextView) findViewById(R.id.tv_effiUnsuccessfulEnq))
+                                    .setText(response.body().getUnsuccessfulEnquiries());
+
+                            ((TextView) findViewById(R.id.tv_effiTotalEnquiry))
+                                    .setText(response.body().getTotalEnquiry());
+
+                            findViewById(R.id.ll_efficReportResultContainer).setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<EfficiencyReport> call, Throwable t)
+                    {
+                        System.out.println(t.getMessage());
+                    }
+                });
     }
 
     private void generateUserSnapshotReport()
