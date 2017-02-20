@@ -1,12 +1,15 @@
 package com.tapandtype.rutvik.ems;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,9 +18,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
+
 import org.json.JSONException;
 
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +33,7 @@ import extras.PostServiceHandler;
 import jsonobject.Error;
 import jsonobject.User;
 
-public class InitialActivity extends AppCompatActivity implements View.OnClickListener
+public class InitialActivity extends AppCompatActivity implements View.OnClickListener, PermissionListener
 {
 
     //Toolbar toolbar;
@@ -49,6 +56,8 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_initial);
+
+        checkForPermissions();
 
         //toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -94,6 +103,15 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
+    private void checkForPermissions()
+    {
+        new TedPermission(this)
+                .setPermissionListener(this)
+                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
+                .setPermissions(Manifest.permission.CALL_PHONE)
+                .check();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -133,6 +151,70 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
             tryLogin.execute();
         }
 
+
+    }
+
+    @Override
+    public void onPermissionGranted()
+    {
+        return;
+    }
+
+    @Override
+    public void onPermissionDenied(ArrayList<String> deniedPermissions)
+    {
+        new AlertDialog.Builder(this)
+                .setTitle("Call permission rejected")
+                .setMessage("You maynot be able to call customers from the app")
+                .setPositiveButton("GRANT PERMISSION", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        checkForPermissions();
+                    }
+                })
+                .setNegativeButton("GOT IT", null)
+                .show();
+    }
+
+    private boolean isFieldsValid(String host, String username, String password)
+    {
+
+        boolean isValid = true;
+
+        if (host.isEmpty())
+        {
+            isValid = false;
+            //tilHost.setErrorEnabled(true);
+            etHost.setError("Enter valid host");
+        } else
+        {
+            //tilHost.setErrorEnabled(false);
+            etHost.setError(null);
+        }
+        if (username.isEmpty())
+        {
+            isValid = false;
+            //tilUsername.setErrorEnabled(true);
+            etUsername.setError("Enter username");
+        } else
+        {
+            //tilUsername.setErrorEnabled(false);
+            etUsername.setError(null);
+        }
+        if (password.isEmpty())
+        {
+            isValid = false;
+            //tilPassword.setErrorEnabled(true);
+            etPassword.setError("Enter password");
+        } else
+        {
+            //tilPassword.setErrorEnabled(false);
+            etPassword.setError(null);
+        }
+
+        return isValid;
 
     }
 
@@ -180,8 +262,8 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
                         try
                         {
                             user = new User(response);
-                            SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(InitialActivity.this);
-                            sp.edit().putString("session_id",user.getSession_id()).apply();
+                            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(InitialActivity.this);
+                            sp.edit().putString("session_id", user.getSession_id()).apply();
                             success = true;
                         } catch (JSONException e)
                         {
@@ -235,46 +317,6 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
                 Toast.makeText(InitialActivity.this, "Login failed, Please check host/network", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    private boolean isFieldsValid(String host, String username, String password)
-    {
-
-        boolean isValid = true;
-
-        if (host.isEmpty())
-        {
-            isValid = false;
-            //tilHost.setErrorEnabled(true);
-            etHost.setError("Enter valid host");
-        } else
-        {
-            //tilHost.setErrorEnabled(false);
-            etHost.setError(null);
-        }
-        if (username.isEmpty())
-        {
-            isValid = false;
-            //tilUsername.setErrorEnabled(true);
-            etUsername.setError("Enter username");
-        } else
-        {
-            //tilUsername.setErrorEnabled(false);
-            etUsername.setError(null);
-        }
-        if (password.isEmpty())
-        {
-            isValid = false;
-            //tilPassword.setErrorEnabled(true);
-            etPassword.setError("Enter password");
-        } else
-        {
-            //tilPassword.setErrorEnabled(false);
-            etPassword.setError(null);
-        }
-
-        return isValid;
-
     }
 
 }

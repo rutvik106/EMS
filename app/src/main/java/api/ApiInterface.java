@@ -2,6 +2,7 @@ package api;
 
 import java.util.List;
 
+import apimodels.AssignUser;
 import apimodels.CustomFollowUpReport;
 import apimodels.CustomLeadReports;
 import apimodels.EfficiencyReport;
@@ -58,5 +59,9 @@ public interface ApiInterface
                                                @Field("to_date") String toDate,
                                                @Field("user_id") String userId,
                                                @Field("product") String product);
+
+    @FormUrlEncoded
+    @POST(AppUtils.URL_WEBSERVICE_RETRO)
+    Call<List<AssignUser>> getListUsersForAssignLead(@Field("method") String method);
 
 }

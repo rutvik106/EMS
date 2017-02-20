@@ -1,7 +1,6 @@
 package viewholders;
 
 import android.content.Context;
-import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 import com.tapandtype.rutvik.ems.R;
 
 import models.NotificationHeader;
@@ -20,20 +19,16 @@ import models.NotificationHeader;
 public class NotificationListHeaderVH extends RecyclerView.ViewHolder
 {
 
-    TextView tvHeaderTitle, tvChildCount;
-
     final ImageButton ibExpand;
-
     final NotificationHeader.HeaderExpandCollapseListener listener;
-
+    final Context context;
+    TextView tvHeaderTitle, tvChildCount;
     NotificationHeader header;
 
-    final Context context;
-
-    public NotificationListHeaderVH(final Context context,View itemView, NotificationHeader.HeaderExpandCollapseListener listener)
+    public NotificationListHeaderVH(final Context context, View itemView, NotificationHeader.HeaderExpandCollapseListener listener)
     {
         super(itemView);
-        this.context=context;
+        this.context = context;
         tvHeaderTitle = (TextView) itemView.findViewById(R.id.tv_elvTitle);
         tvChildCount = (TextView) itemView.findViewById(R.id.tv_elvGroupCount);
         ibExpand = (ImageButton) itemView.findViewById(R.id.ib_expand);
@@ -46,13 +41,13 @@ public class NotificationListHeaderVH extends RecyclerView.ViewHolder
                 if (header.isExpand())
                 {
 
-                    Picasso.with(context).load(R.mipmap.ic_chevron_right_white_48dp)
+                    Glide.with(context).load(R.mipmap.ic_chevron_right_white_48dp)
                             .into(ibExpand);
 
                 } else
                 {
 
-                    Picasso.with(context).load(R.mipmap.ic_expand_more_white_48dp)
+                    Glide.with(context).load(R.mipmap.ic_expand_more_white_48dp)
                             .into(ibExpand);
 
                 }
@@ -77,14 +72,14 @@ public class NotificationListHeaderVH extends RecyclerView.ViewHolder
         if (header.isExpand())
         {
 
-                    Picasso.with(viewHolder.context).load(R.mipmap.ic_chevron_right_white_48dp)
-                            .into(viewHolder.ibExpand);
+            Glide.with(viewHolder.context).load(R.mipmap.ic_chevron_right_white_48dp)
+                    .into(viewHolder.ibExpand);
 
         } else
         {
 
-                    Picasso.with(viewHolder.context).load(R.mipmap.ic_expand_more_white_48dp)
-                            .into(viewHolder.ibExpand);
+            Glide.with(viewHolder.context).load(R.mipmap.ic_expand_more_white_48dp)
+                    .into(viewHolder.ibExpand);
 
         }
     }

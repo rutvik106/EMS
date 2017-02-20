@@ -6,10 +6,10 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.MenuItem;
@@ -49,29 +49,19 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 {
 
     public final static String TAG = AppUtils.APP_TAG + ActivityAddNewInquiry.class.getSimpleName();
-
-    private Toolbar mToolbar;
-
     SimpleFormAdapter simpleFormAdapter;
     SimpleFormFragment simpleFormFragment;
-
     SimpleFormAdapter interestedProductDetailsAdapter;
     SimpleFormFragment interestedProductDetailsFragment;
-
     SimpleFormAdapter leadInquiryDetailsAdapter;
     SimpleFormFragment leadInquiryDetailsFragment;
-
     LinearLayout fragSimpleForm;
-
     FrameLayout flLoadingForm;
-
     Map<String, Map<String, String>> newEnquiryExtraDataMap = new HashMap<>();
-
     App app;
-
     Button addEnquiry;
-
     ProgressBar pbProcessing;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -94,8 +84,7 @@ public class ActivityAddNewInquiry extends AppCompatActivity
             getSupportActionBar().setTitle("Add New Inquiry");
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-            upArrow.setColorFilter(getResources().getColor(R.color.mdtp_white), PorterDuff.Mode.SRC_ATOP);
+            final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
 
@@ -175,16 +164,170 @@ public class ActivityAddNewInquiry extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    private void populateAddNewInquiryForm()
+    {
+        int i = -1;
+
+        simpleFormAdapter = new SimpleFormAdapter(this);
+
+        int dayOfMonth = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int monthOfYear = Calendar.getInstance().get(Calendar.MONTH);
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+
+        String month = String.valueOf(monthOfYear + 1);
+        if (month.length() == 1)
+        {
+            month = "0" + month;
+        }
+
+        String day = String.valueOf(dayOfMonth);
+        if (day.length() == 1)
+        {
+            day = "0" + day;
+        }
+
+        String date = day + "/" + month + "/" + year;
+
+
+        simpleFormAdapter.addTextBox("Enquiry Date*", "enquiry_date", ++i, InputType.TYPE_CLASS_TEXT, false, date, true);
+
+        simpleFormAdapter.addSpinner("Customer Prefix", "prefix_id", newEnquiryExtraDataMap.get("prefix"), ++i);
+
+        simpleFormAdapter.addTextBox("Customer Name*", "customer_name", ++i, InputType.TYPE_CLASS_TEXT, true, "", true);
+
+        simpleFormAdapter.addAppendableTextBox("Contact No*", "mobile_no", ++i,
+                app.getHost() + AppUtils.URL_EXACT_CONTACT_NO,
+                new AppendableTextBoxUrlListener(), InputType.TYPE_CLASS_NUMBER);
+
+        simpleFormAdapter.addTextBox("Email Address", "email_id", ++i, InputType.TYPE_CLASS_TEXT, true, "", false);
+
+        if (simpleFormFragment == null)
+        {
+            simpleFormFragment = new SimpleFormFragment();
+        }
+
+        simpleFormFragment.setData(simpleFormAdapter, "Customer Details");
+
+        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.frag_simpleForm, simpleFormFragment, "ADD_NEW_INQUIRY")
+                .commitAllowingStateLoss();
+
+        simpleFormAdapter.notifyDataSetChanged();
+
+    }
+
+    private void populateInterestedProductDetails()
+    {
+        int i = -1;
+
+        interestedProductDetailsAdapter = new SimpleFormAdapter(this);
+
+        //product_id[]
+        //mrp[]
+        //unit_id[]
+        //quantity_id[]
+        interestedProductDetailsAdapter.addInquiryProduct(++i, newEnquiryExtraDataMap.get("units"));
+
+        if (interestedProductDetailsFragment == null)
+        {
+            interestedProductDetailsFragment = new SimpleFormFragment();
+        }
+
+        interestedProductDetailsFragment.setData(interestedProductDetailsAdapter, "Interested Product Details");
+
+        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.frag_simpleForm, interestedProductDetailsFragment, "INTERESTED_PRODUCT_DETAILS")
+                .commit();
+
+        interestedProductDetailsAdapter.notifyDataSetChanged();
+
+
+    }
+
+    public void populateLeadInquiryDetails()
+    {
+        int i = -1;
+
+        leadInquiryDetailsAdapter = new SimpleFormAdapter(this);
+
+        leadInquiryDetailsAdapter.addCheckListSpinner("Add To Enquiry Group*", "enquiry_group_id", newEnquiryExtraDataMap.get("enquiry_group"), ++i);
+
+        leadInquiryDetailsAdapter.addTextBox("Customer Budget*", "budget", ++i, InputType.TYPE_CLASS_TEXT, true, "", false);
+
+        leadInquiryDetailsAdapter.addSpinner("Enquiry Type", "customer_type_id", newEnquiryExtraDataMap.get("enquiry_type"), ++i);
+
+        leadInquiryDetailsAdapter.addTextBox("Discussion", "discussion", ++i, InputType.TYPE_CLASS_TEXT, true, "", false);
+
+        leadInquiryDetailsAdapter.addDatePicker("Follow Up Date*", "reminder_date", ++i, "Pick Follow Up Date");
+
+        final Map<String, String> smsOptions = new LinkedHashMap<>();
+        smsOptions.put("1", "Yes");
+        smsOptions.put("0", "No");
+        leadInquiryDetailsAdapter.addSpinner("Send SMS", "sms_status", smsOptions, ++i);
+
+        if (leadInquiryDetailsFragment == null)
+        {
+            leadInquiryDetailsFragment = new SimpleFormFragment();
+        }
+
+        leadInquiryDetailsFragment.setData(leadInquiryDetailsAdapter, "Lead Inquiry Details");
+
+        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.frag_simpleForm, leadInquiryDetailsFragment, "LEAD_ENQUIRY_DETAILS")
+                .commit();
+
+        leadInquiryDetailsAdapter.notifyDataSetChanged();
+
+        new Handler().postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                setAddEnquiryButton();
+            }
+        }, 10);
+
+
+    }
+
+    private boolean isMandatoryFieldsEmpty(final Map postParams)
+    {
+        Set<Map.Entry<String, String>> entrySet = postParams.entrySet();
+
+        Iterator<Map.Entry<String, String>> entryIterator = entrySet.iterator();
+
+        String mandatoryFields = "";
+
+        while (entryIterator.hasNext())
+        {
+            Map.Entry<String, String> entry = entryIterator.next();
+
+            if (entry.getValue().equals(MANDATORY_FIELD))
+            {
+                mandatoryFields = mandatoryFields + entry.getKey() + ", ";
+            }
+
+        }
+
+        if (!mandatoryFields.isEmpty())
+        {
+            fragSimpleForm.removeViewAt(3);
+            fragSimpleForm.addView(addEnquiry, 3);
+            mandatoryFields = mandatoryFields.substring(0, mandatoryFields.length() - 2);
+            Toast.makeText(ActivityAddNewInquiry.this,
+                    mandatoryFields + " cannot be empty", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return false;
+    }
+
     private static class GetEnquiryExtraData extends AsyncTask<Void, Void, String>
     {
-        private final String TAG = AppUtils.APP_TAG + GetEnquiryExtraData.class.getSimpleName();
-
         final Context context;
-
         final CompletionCallback completionCallback;
-
         final Map<String, Map<String, String>> newEnquiryExtraDataMap;
-
+        private final String TAG = AppUtils.APP_TAG + GetEnquiryExtraData.class.getSimpleName();
         private final String host;
 
         private final String sessionId;
@@ -201,13 +344,6 @@ public class ActivityAddNewInquiry extends AppCompatActivity
             this.host = PreferenceManager.getDefaultSharedPreferences(context).getString("host", "");
             this.sessionId = PreferenceManager.getDefaultSharedPreferences(context).getString("session_id", "");
 
-        }
-
-        interface CompletionCallback
-        {
-            void onSuccess();
-
-            void onFailure(JSONException e, String response);
         }
 
         @Override
@@ -285,137 +421,14 @@ public class ActivityAddNewInquiry extends AppCompatActivity
                 completionCallback.onFailure(e, resp);
             }
         }
+
+        interface CompletionCallback
+        {
+            void onSuccess();
+
+            void onFailure(JSONException e, String response);
+        }
     }
-
-
-    private void populateAddNewInquiryForm()
-    {
-        int i = -1;
-
-        simpleFormAdapter = new SimpleFormAdapter(this);
-
-        int dayOfMonth = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-        int monthOfYear = Calendar.getInstance().get(Calendar.MONTH);
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-
-        String month = String.valueOf(monthOfYear + 1);
-        if (month.length() == 1)
-        {
-            month = "0" + month;
-        }
-
-        String day = String.valueOf(dayOfMonth);
-        if (day.length() == 1)
-        {
-            day = "0" + day;
-        }
-
-        String date = day + "/" + month + "/" + year;
-
-
-        simpleFormAdapter.addTextBox("Enquiry Date*", "enquiry_date", ++i, InputType.TYPE_CLASS_TEXT, false, date, true);
-
-        simpleFormAdapter.addSpinner("Customer Prefix", "prefix_id", newEnquiryExtraDataMap.get("prefix"), ++i);
-
-        simpleFormAdapter.addTextBox("Customer Name*", "customer_name", ++i, InputType.TYPE_CLASS_TEXT, true, "", true);
-
-        simpleFormAdapter.addAppendableTextBox("Contact No*", "mobile_no", ++i,
-                app.getHost() + AppUtils.URL_EXACT_CONTACT_NO,
-                new AppendableTextBoxUrlListener(), InputType.TYPE_CLASS_NUMBER);
-
-        simpleFormAdapter.addTextBox("Email Address", "email_id", ++i, InputType.TYPE_CLASS_TEXT, true, "", false);
-
-        if (simpleFormFragment == null)
-        {
-            simpleFormFragment = new SimpleFormFragment();
-        }
-
-        simpleFormFragment.setData(simpleFormAdapter, "Customer Details");
-
-        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.frag_simpleForm, simpleFormFragment, "ADD_NEW_INQUIRY")
-                .commitAllowingStateLoss();
-
-        simpleFormAdapter.notifyDataSetChanged();
-
-    }
-
-
-    private void populateInterestedProductDetails()
-    {
-        int i = -1;
-
-        interestedProductDetailsAdapter = new SimpleFormAdapter(this);
-
-        //product_id[]
-        //mrp[]
-        //unit_id[]
-        //quantity_id[]
-        interestedProductDetailsAdapter.addInquiryProduct(++i, newEnquiryExtraDataMap.get("units"));
-
-        if (interestedProductDetailsFragment == null)
-        {
-            interestedProductDetailsFragment = new SimpleFormFragment();
-        }
-
-        interestedProductDetailsFragment.setData(interestedProductDetailsAdapter, "Interested Product Details");
-
-        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.frag_simpleForm, interestedProductDetailsFragment, "INTERESTED_PRODUCT_DETAILS")
-                .commit();
-
-        interestedProductDetailsAdapter.notifyDataSetChanged();
-
-
-    }
-
-
-    public void populateLeadInquiryDetails()
-    {
-        int i = -1;
-
-        leadInquiryDetailsAdapter = new SimpleFormAdapter(this);
-
-        leadInquiryDetailsAdapter.addCheckListSpinner("Add To Enquiry Group*", "enquiry_group_id", newEnquiryExtraDataMap.get("enquiry_group"), ++i);
-
-        leadInquiryDetailsAdapter.addTextBox("Customer Budget*", "budget", ++i, InputType.TYPE_CLASS_TEXT, true, "", false);
-
-        leadInquiryDetailsAdapter.addSpinner("Enquiry Type", "customer_type_id", newEnquiryExtraDataMap.get("enquiry_type"), ++i);
-
-        leadInquiryDetailsAdapter.addTextBox("Discussion", "discussion", ++i, InputType.TYPE_CLASS_TEXT, true, "", false);
-
-        leadInquiryDetailsAdapter.addDatePicker("Follow Up Date*", "reminder_date", ++i, "Pick Follow Up Date");
-
-        final Map<String, String> smsOptions = new LinkedHashMap<>();
-        smsOptions.put("1", "Yes");
-        smsOptions.put("0", "No");
-        leadInquiryDetailsAdapter.addSpinner("Send SMS", "sms_status", smsOptions, ++i);
-
-        if (leadInquiryDetailsFragment == null)
-        {
-            leadInquiryDetailsFragment = new SimpleFormFragment();
-        }
-
-        leadInquiryDetailsFragment.setData(leadInquiryDetailsAdapter, "Lead Inquiry Details");
-
-        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.frag_simpleForm, leadInquiryDetailsFragment, "LEAD_ENQUIRY_DETAILS")
-                .commit();
-
-        leadInquiryDetailsAdapter.notifyDataSetChanged();
-
-        new Handler().postDelayed(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                setAddEnquiryButton();
-            }
-        }, 10);
-
-
-    }
-
 
     class OnAddEnquiry implements View.OnClickListener
     {
@@ -551,40 +564,6 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 
         }
     }
-
-
-    private boolean isMandatoryFieldsEmpty(final Map postParams)
-    {
-        Set<Map.Entry<String, String>> entrySet = postParams.entrySet();
-
-        Iterator<Map.Entry<String, String>> entryIterator = entrySet.iterator();
-
-        String mandatoryFields = "";
-
-        while (entryIterator.hasNext())
-        {
-            Map.Entry<String, String> entry = entryIterator.next();
-
-            if (entry.getValue().equals(MANDATORY_FIELD))
-            {
-                mandatoryFields = mandatoryFields + entry.getKey() + ", ";
-            }
-
-        }
-
-        if (!mandatoryFields.isEmpty())
-        {
-            fragSimpleForm.removeViewAt(3);
-            fragSimpleForm.addView(addEnquiry, 3);
-            mandatoryFields = mandatoryFields.substring(0, mandatoryFields.length() - 2);
-            Toast.makeText(ActivityAddNewInquiry.this,
-                    mandatoryFields + " cannot be empty", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-        return false;
-    }
-
 
     class AppendableTextBoxUrlListener implements AppendableTextBox.OnUrlTriggered
     {

@@ -32,7 +32,7 @@ public class MyTextBox extends TextInputLayout
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.my_text_box, this, true);
 
-        editText = (EditText) getChildAt(0);
+        editText = (EditText) findViewById(R.id.et_myEditTextBox);
 
     }
 

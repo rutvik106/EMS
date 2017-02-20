@@ -2,16 +2,19 @@ package com.tapandtype.rutvik.ems;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,6 +26,7 @@ import java.util.Map;
 
 import adapters.SimpleFormAdapter;
 import extras.AppUtils;
+import extras.CommonUtils;
 import extras.Log;
 import extras.PostServiceHandler;
 import fragments.SimpleFormFragment;
@@ -190,61 +194,6 @@ public class ActivityView extends AppCompatActivity
         }
     }
 
-    final class GetViewDetailAsync extends AsyncTask<Void, Void, Void>
-    {
-
-        String response = "";
-
-        final Context context;
-
-        final String enquiryId;
-
-        public GetViewDetailAsync(final String enquiryId, final Context context)
-        {
-            this.enquiryId = enquiryId;
-            this.context = context;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids)
-        {
-
-            final String host = PreferenceManager.getDefaultSharedPreferences(context).getString("host", "");
-            if (host != null)
-            {
-                final Map postParam = new HashMap();
-                postParam.put("method", "get_follow_up_view");
-                postParam.put("enquiry_id", enquiryId);
-
-                new PostServiceHandler(TAG, 2, 2000).doPostRequest(host + AppUtils.URL_WEBSERVICE, postParam, new PostServiceHandler.ResponseCallback()
-                {
-                    @Override
-                    public void response(int status, String resp)
-                    {
-                        if (status == HttpURLConnection.HTTP_OK)
-                        {
-                            response = resp;
-                        }
-                    }
-                });
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid)
-        {
-            if (!response.isEmpty())
-            {
-
-                parseResponse(response);
-
-            }
-        }
-    }
-
-
     private void parseResponse(String response)
     {
         try
@@ -275,7 +224,6 @@ public class ActivityView extends AppCompatActivity
         populateEnquiryDetails();
         populateFollowUpDetail();
     }
-
 
     private void populateEnquiryStatus()
     {
@@ -369,11 +317,21 @@ public class ActivityView extends AppCompatActivity
                     @Override
                     public void onClick(View view)
                     {
-                        if (contact != null && contact != "")
+                        if (contact != null)
                         {
-                            Intent supportIntent = new Intent(Intent.ACTION_DIAL);
-                            supportIntent.setData(Uri.parse("tel:" + contact));
-                            startActivity(supportIntent);
+                            if (!contact.isEmpty())
+                            {
+                                Intent intent = new Intent(Intent.ACTION_CALL,
+                                        Uri.parse("tel:" + contact));
+                                if (ActivityCompat.checkSelfPermission(ActivityView.this,
+                                        android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
+                                {
+                                    Toast.makeText(ActivityView.this,
+                                            "Call permission not granted", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                CommonUtils.promptForMakingCall(ActivityView.this, intent);
+                            }
                         }
                     }
                 });
@@ -396,7 +354,6 @@ public class ActivityView extends AppCompatActivity
                 .commit();
         adapterCustomerDetail.notifyDataSetChanged();
     }
-
 
     private void populateFollowUpDetail()
     {
@@ -503,7 +460,6 @@ public class ActivityView extends AppCompatActivity
 
     }
 
-
     private void populateEnquiryDetails()
     {
         int i = -1;
@@ -554,6 +510,58 @@ public class ActivityView extends AppCompatActivity
                 .commit();
         adapterEnquiryDetails.notifyDataSetChanged();
 
+    }
+
+    final class GetViewDetailAsync extends AsyncTask<Void, Void, Void>
+    {
+
+        final Context context;
+        final String enquiryId;
+        String response = "";
+
+        public GetViewDetailAsync(final String enquiryId, final Context context)
+        {
+            this.enquiryId = enquiryId;
+            this.context = context;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids)
+        {
+
+            final String host = PreferenceManager.getDefaultSharedPreferences(context).getString("host", "");
+            if (host != null)
+            {
+                final Map postParam = new HashMap();
+                postParam.put("method", "get_follow_up_view");
+                postParam.put("enquiry_id", enquiryId);
+
+                new PostServiceHandler(TAG, 2, 2000).doPostRequest(host + AppUtils.URL_WEBSERVICE, postParam, new PostServiceHandler.ResponseCallback()
+                {
+                    @Override
+                    public void response(int status, String resp)
+                    {
+                        if (status == HttpURLConnection.HTTP_OK)
+                        {
+                            response = resp;
+                        }
+                    }
+                });
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid)
+        {
+            if (!response.isEmpty())
+            {
+
+                parseResponse(response);
+
+            }
+        }
     }
 
 

@@ -1,15 +1,17 @@
 package com.tapandtype.rutvik.ems;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +23,7 @@ import java.util.Map;
 
 import adapters.SimpleFormAdapter;
 import extras.AppUtils;
+import extras.CommonUtils;
 import extras.PostServiceHandler;
 import fragments.SimpleFormFragment;
 import models.FollowUpSeparator;
@@ -80,11 +83,9 @@ public class ActivityCustomerDetails extends AppCompatActivity
     public class GetCustomerDetailsAsync extends AsyncTask<Void, Void, Void>
     {
 
-        String response = "";
-
         final String url;
-
         final String customerId;
+        String response = "";
 
         public GetCustomerDetailsAsync(String customerId)
         {
@@ -187,11 +188,21 @@ public class ActivityCustomerDetails extends AppCompatActivity
                     @Override
                     public void onClick(View view)
                     {
-                        if (contactNo != null && contactNo != "")
+                        if (contactNo != null)
                         {
-                            Intent supportIntent = new Intent(Intent.ACTION_DIAL);
-                            supportIntent.setData(Uri.parse("tel:" + contactNo));
-                            startActivity(supportIntent);
+                            if (!contactNo.isEmpty())
+                            {
+                                Intent intent = new Intent(Intent.ACTION_CALL,
+                                        Uri.parse("tel:" + contactNo));
+                                if (ActivityCompat.checkSelfPermission(ActivityCustomerDetails.this,
+                                        android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
+                                {
+                                    Toast.makeText(ActivityCustomerDetails.this,
+                                            "Call permission not granted", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                CommonUtils.promptForMakingCall(ActivityCustomerDetails.this, intent);
+                            }
                         }
                     }
                 });

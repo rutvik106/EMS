@@ -4,6 +4,7 @@ import android.content.Context;
 
 import java.util.List;
 
+import apimodels.AssignUser;
 import apimodels.CustomFollowUpReport;
 import apimodels.CustomLeadReports;
 import apimodels.EfficiencyReport;
@@ -20,9 +21,8 @@ import retrofit2.Callback;
 public class API
 {
 
-    private ApiInterface apiService;
-
     private static final String TAG = AppUtils.APP_TAG + API.class.getSimpleName();
+    private ApiInterface apiService;
 
     public API(Context context)
     {
@@ -81,6 +81,13 @@ public class API
     {
         Call<EfficiencyReport> call = apiService.getEfficiencyReport("effeciency_report", sessionId,
                 fromDate, toDate, userId, product);
+
+        call.enqueue(callback);
+    }
+
+    public void getListUsersForAssignLead(Callback<List<AssignUser>> callback)
+    {
+        Call<List<AssignUser>> call = apiService.getListUsersForAssignLead("list_users_for_assign_lead");
 
         call.enqueue(callback);
     }
