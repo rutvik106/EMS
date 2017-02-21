@@ -16,6 +16,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -31,6 +32,8 @@ public class ApiClient
 
     public static Retrofit getClient(final Context context)
     {
+        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -39,6 +42,7 @@ public class ApiClient
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .cache(new Cache(App.dir, 10 * 1024 * 1024)) // 10 MB
                 .addInterceptor(provideOfflineCacheInterceptor())
+                .addInterceptor(httpLoggingInterceptor)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .build();

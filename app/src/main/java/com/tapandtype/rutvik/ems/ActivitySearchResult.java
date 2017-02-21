@@ -1,7 +1,8 @@
 package com.tapandtype.rutvik.ems;
 
-import android.support.v7.app.AppCompatActivity;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -35,6 +36,8 @@ public class ActivitySearchResult extends AppCompatActivity
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Search Result");
+        final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
 
         rvSearchResults = (RecyclerView) findViewById(R.id.rv_searchResults);
         rvSearchResults.setHasFixedSize(true);

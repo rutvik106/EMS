@@ -3,7 +3,6 @@
           package="com.tapandtype.rutvik.ems">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-
     <uses-permission android:name="android.permission.CALL_PHONE"/>
 
     <application
@@ -13,77 +12,73 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".InitialActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
         <activity
             android:name=".SettingsActivity"
             android:parentActivityName=".InitialActivity"
             android:screenOrientation="portrait"/>
-
         <activity
             android:name=".HomeActivity"
             android:screenOrientation="portrait"/>
-
         <activity
             android:name=".TakeFollowUp"
             android:noHistory="true"
             android:screenOrientation="portrait"/>
-
         <activity
             android:name=".ActivityAddNewInquiry"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
         </activity>
-
         <activity
             android:name=".ActivityAddNewCustomer"
             android:noHistory="true"
             android:screenOrientation="portrait">
         </activity>
-
         <activity
             android:name=".ActivityView"
             android:screenOrientation="portrait">
         </activity>
-
         <activity
             android:name=".ActivitySearchCustomer"
             android:screenOrientation="portrait">
         </activity>
-
         <activity
             android:name=".ActivitySearchResult"
             android:screenOrientation="portrait">
         </activity>
-
         <activity
             android:name=".ActivityCustomerDetails"
             android:screenOrientation="portrait">
         </activity>
-
         <activity
             android:name=".ActivityCloseLead"
             android:screenOrientation="portrait">
         </activity>
-
-        <activity android:name=".ActivityReports">
+        <activity
+            android:name=".ActivityReports"
+            android:screenOrientation="portrait">
         </activity>
-
-        <activity android:name=".ActivityCustomReportFilters">
+        <activity
+            android:name=".ActivityCustomReportFilters"
+            android:screenOrientation="portrait">
         </activity>
-
-        <activity android:name=".ActivityShowReport">
+        <activity
+            android:name=".ActivityShowReport"
+            android:screenOrientation="portrait">
         </activity>
-
+        <activity
+            android:name=".ActivityAssingLead"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

@@ -2,11 +2,13 @@ package com.tapandtype.rutvik.ems;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -33,6 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import extras.AppUtils;
+import extras.CommonUtils;
 import extras.PostServiceHandler;
 import jsonobject.Response;
 
@@ -100,11 +103,21 @@ public class TakeFollowUp extends AppCompatActivity implements DatePickerDialog.
             public void onClick(View view)
             {
                 String contactNo = tvFollowUpCustomerContact.getText().toString();
-                if (contactNo != null && contactNo != "")
+                if (contactNo != null)
                 {
-                    Intent supportIntent = new Intent(Intent.ACTION_DIAL);
-                    supportIntent.setData(Uri.parse("tel:" + contactNo));
-                    startActivity(supportIntent);
+                    if (!contactNo.isEmpty())
+                    {
+                        Intent intent = new Intent(Intent.ACTION_CALL,
+                                Uri.parse("tel:" + contactNo));
+                        if (ActivityCompat.checkSelfPermission(TakeFollowUp.this,
+                                android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
+                        {
+                            Toast.makeText(TakeFollowUp.this,
+                                    "Call permission not granted", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        CommonUtils.promptForMakingCall(TakeFollowUp.this, intent);
+                    }
                 }
             }
         });

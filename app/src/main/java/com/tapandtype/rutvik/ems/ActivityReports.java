@@ -1,6 +1,7 @@
 package com.tapandtype.rutvik.ems;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -31,6 +32,8 @@ public class ActivityReports extends AppCompatActivity
             if (getSupportActionBar() != null)
             {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp);
+                getSupportActionBar().setHomeAsUpIndicator(upArrow);
             }
         }
 

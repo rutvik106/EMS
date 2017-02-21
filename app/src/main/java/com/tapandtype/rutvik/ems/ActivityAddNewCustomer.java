@@ -2,10 +2,11 @@ package com.tapandtype.rutvik.ems;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.MenuItem;
@@ -38,15 +39,11 @@ public class ActivityAddNewCustomer extends AppCompatActivity
 {
 
     public final static String TAG = AppUtils.APP_TAG + ActivityAddNewCustomer.class.getSimpleName();
-
-    private Toolbar mToolbar;
-
     SimpleFormAdapter customerDetailsAdapter;
     SimpleFormFragment customerDetailsFragment;
-
     LinearLayout fragSimpleForm;
-
     App app;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -64,6 +61,8 @@ public class ActivityAddNewCustomer extends AppCompatActivity
             getSupportActionBar().setTitle("Add New Customer");
             //getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp);
+            getSupportActionBar().setHomeAsUpIndicator(upArrow);
             /** final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
              upArrow.setColorFilter(getResources().getColor(R.color.mdtp_white), PorterDuff.Mode.SRC_ATOP);
              getSupportActionBar().setHomeAsUpIndicator(upArrow);*/
@@ -165,6 +164,36 @@ public class ActivityAddNewCustomer extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    private boolean isMandatoryFieldsEmpty(final Map postParams)
+    {
+        Set<Map.Entry<String, String>> entrySet = postParams.entrySet();
+
+        Iterator<Map.Entry<String, String>> entryIterator = entrySet.iterator();
+
+        String mandatoryFields = "";
+
+        while (entryIterator.hasNext())
+        {
+            Map.Entry<String, String> entry = entryIterator.next();
+
+            if (entry.getValue().equals(MANDATORY_FIELD))
+            {
+                mandatoryFields = mandatoryFields + entry.getKey() + ", ";
+            }
+
+        }
+
+        if (!mandatoryFields.isEmpty())
+        {
+            mandatoryFields = mandatoryFields.substring(0, mandatoryFields.length() - 2);
+            Toast.makeText(ActivityAddNewCustomer.this,
+                    mandatoryFields + " cannot be empty", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return false;
+    }
+
     class OnAddCustomer implements View.OnClickListener
     {
         @Override
@@ -250,36 +279,6 @@ public class ActivityAddNewCustomer extends AppCompatActivity
             }.execute();
 
         }
-    }
-
-    private boolean isMandatoryFieldsEmpty(final Map postParams)
-    {
-        Set<Map.Entry<String, String>> entrySet = postParams.entrySet();
-
-        Iterator<Map.Entry<String, String>> entryIterator = entrySet.iterator();
-
-        String mandatoryFields = "";
-
-        while (entryIterator.hasNext())
-        {
-            Map.Entry<String, String> entry = entryIterator.next();
-
-            if (entry.getValue().equals(MANDATORY_FIELD))
-            {
-                mandatoryFields = mandatoryFields + entry.getKey() + ", ";
-            }
-
-        }
-
-        if (!mandatoryFields.isEmpty())
-        {
-            mandatoryFields = mandatoryFields.substring(0, mandatoryFields.length() - 2);
-            Toast.makeText(ActivityAddNewCustomer.this,
-                    mandatoryFields + " cannot be empty", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-        return false;
     }
 
     class AppendableTextBoxUrlListener implements AppendableTextBox.OnUrlTriggered

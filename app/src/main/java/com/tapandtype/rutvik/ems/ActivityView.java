@@ -3,6 +3,7 @@ package com.tapandtype.rutvik.ems;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -64,6 +65,8 @@ public class ActivityView extends AppCompatActivity
 
     GetViewDetailAsync getViewDetailAsync;
 
+    String enquiryId, customerName, customerContact;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -79,6 +82,8 @@ public class ActivityView extends AppCompatActivity
             toolbar.setTitle("Enquiry View");
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp);
+            getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
 
 
@@ -104,9 +109,9 @@ public class ActivityView extends AppCompatActivity
 
         flLoadingView = (FrameLayout) findViewById(R.id.fl_loadingView);
 
-        final String enquiryId = getIntent().getStringExtra("enquiry_id");
-        final String customerName = getIntent().getStringExtra("follow_up_customer_name");
-        final String customerContact = getIntent().getStringExtra("follow_up_customer_contact");
+        enquiryId = getIntent().getStringExtra("enquiry_id");
+        customerName = getIntent().getStringExtra("follow_up_customer_name");
+        customerContact = getIntent().getStringExtra("follow_up_customer_contact");
         if (enquiryId != null)
         {
 
@@ -121,6 +126,7 @@ public class ActivityView extends AppCompatActivity
                     i.putExtra("enquiry_id", enquiryId);
 
                     i.putExtra("follow_up_customer_name", customerName);
+                    customerContact = customerContact.substring(0, customerContact.length() - 2);
                     i.putExtra("follow_up_customer_contact", customerContact);
                     i.putExtra("enquiry_id", enquiryId);
 
@@ -135,6 +141,20 @@ public class ActivityView extends AppCompatActivity
                 {
                     final Intent i = new Intent(ActivityView.this,
                             ActivityCloseLead.class);
+                    i.putExtra("enquiry_id", enquiryId);
+
+                    startActivity(i);
+                }
+            });
+
+
+            findViewById(R.id.btn_assignLead).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    final Intent i = new Intent(ActivityView.this,
+                            ActivityAssingLead.class);
                     i.putExtra("enquiry_id", enquiryId);
 
                     startActivity(i);
@@ -308,9 +328,13 @@ public class ActivityView extends AppCompatActivity
 
             final JSONArray arr = (JSONArray) responseJson.get("contact");
 
+            customerContact = "";
+
             for (int j = 0; j < arr.length(); j++)
             {
                 final String contact = arr.getJSONObject(j).getString("customer_contact_no");
+
+                customerContact = customerContact + contact + ", ";
 
                 adapterCustomerDetail.addSimpleTextView(++i, "Contact No: " + (j + 1), contact, new View.OnClickListener()
                 {

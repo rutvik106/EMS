@@ -1,6 +1,7 @@
 package com.tapandtype.rutvik.ems;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,19 +27,12 @@ public class ActivityCustomReportFilters extends AppCompatActivity
 {
 
     private static final String TAG = AppUtils.APP_TAG + ActivityCustomReportFilters.class.getSimpleName();
-
-    RecyclerView rvCustomReportFilters;
-
-    SimpleFormAdapter adapter;
-
-    long count = -1;
-
-    Toolbar mToolbar;
-
     final Map<String, Map<String, String>> dataMap = new HashMap<>();
-
     final Map postData = new HashMap<>();
-
+    RecyclerView rvCustomReportFilters;
+    SimpleFormAdapter adapter;
+    long count = -1;
+    Toolbar mToolbar;
     int reportType;
 
     @Override
@@ -58,6 +52,8 @@ public class ActivityCustomReportFilters extends AppCompatActivity
             if (getSupportActionBar() != null)
             {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp);
+                getSupportActionBar().setHomeAsUpIndicator(upArrow);
             }
         }
 

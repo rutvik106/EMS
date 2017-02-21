@@ -1,9 +1,10 @@
 package com.tapandtype.rutvik.ems;
 
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,36 +36,22 @@ import viewholders.SpinnerVH;
 public class ActivityCloseLead extends AppCompatActivity implements AdapterView.OnItemSelectedListener
 {
 
-    Spinner spinSmsOption, spinReasonsToDecline;
-
-    RadioGroup rgStatus;
-
-    EditText etPurchaseDate, etInstallationDate, etDescription;
-
-    FrameLayout flPurchased, flNotPurchased;
-
-    GetDeclineReasonsAsync getDeclineReasonsAsync;
-
     public static final String TAG = AppUtils.APP_TAG + ActivityCloseLead.class.getSimpleName();
-
-    private String enquiryId;
-
-    private SpinnerVH.MySpinnerBaseAdapter spinnerBaseAdapter;
-
-    private SpinnerVH.MySpinnerBaseAdapter spinnerDeclineReasonAdapter;
-
+    Spinner spinSmsOption, spinReasonsToDecline;
+    RadioGroup rgStatus;
+    EditText etPurchaseDate, etInstallationDate, etDescription;
+    FrameLayout flPurchased, flNotPurchased;
+    GetDeclineReasonsAsync getDeclineReasonsAsync;
     ArrayList<SpinnerVH.SpinnerData> spinnerDeclineReasonData = new ArrayList<>();
-
+    ProgressBar pbProcessing;
+    Button btnCloseLead;
+    private String enquiryId;
+    private SpinnerVH.MySpinnerBaseAdapter spinnerBaseAdapter;
+    private SpinnerVH.MySpinnerBaseAdapter spinnerDeclineReasonAdapter;
     private boolean isPositive = true;
-
     private String declineReasonId, smsOption;
-
     private DatePickerDialog dpd1;
     private DatePickerDialog dpd2;
-
-    ProgressBar pbProcessing;
-
-    Button btnCloseLead;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -86,6 +73,8 @@ public class ActivityCloseLead extends AppCompatActivity implements AdapterView.
         {
             getSupportActionBar().setTitle("Close Lead");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp);
+            getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
 
         flPurchased = (FrameLayout) findViewById(R.id.fl_purchased);
@@ -236,15 +225,38 @@ public class ActivityCloseLead extends AppCompatActivity implements AdapterView.
 
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        close();
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        if (item.getItemId() == android.R.id.home)
+        {
+            close();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void close()
+    {
+        if (getDeclineReasonsAsync != null)
+        {
+            getDeclineReasonsAsync.cancel(true);
+        }
+        finish();
+    }
 
     class GetDeclineReasonsAsync extends AsyncTask<Void, Void, Void>
     {
 
-        String response = "";
-
         final String sessionId;
-
         final String host;
+        String response = "";
 
         public GetDeclineReasonsAsync()
         {
@@ -313,19 +325,14 @@ public class ActivityCloseLead extends AppCompatActivity implements AdapterView.
         }
     }
 
-
     class CloseLeadAsync extends AsyncTask<Void, Void, Void>
     {
 
-        String response = "";
-
         final String sessionId;
-
         final String host;
-
         final String description;
-
         final String date1, date2;
+        String response = "";
 
         public CloseLeadAsync()
         {
@@ -398,31 +405,5 @@ public class ActivityCloseLead extends AppCompatActivity implements AdapterView.
                 }
             }
         }
-    }
-
-    @Override
-    public void onBackPressed()
-    {
-        close();
-        super.onBackPressed();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        if (item.getItemId() == android.R.id.home)
-        {
-            close();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void close()
-    {
-        if (getDeclineReasonsAsync != null)
-        {
-            getDeclineReasonsAsync.cancel(true);
-        }
-        finish();
     }
 }

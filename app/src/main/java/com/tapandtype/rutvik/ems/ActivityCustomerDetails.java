@@ -2,6 +2,7 @@ package com.tapandtype.rutvik.ems;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -50,6 +51,8 @@ public class ActivityCustomerDetails extends AppCompatActivity
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setTitle("Customer Details");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
 
         findViewById(R.id.btn_addEnquiry).setOnClickListener(new View.OnClickListener()
         {

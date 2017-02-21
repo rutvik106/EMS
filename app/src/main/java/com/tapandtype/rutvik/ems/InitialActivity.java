@@ -141,6 +141,11 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
             tmpHost = "http://" + tmpHost;
         }
 
+        if (!tmpHost.substring(tmpHost.length() - 1).contains("/"))
+        {
+            tmpHost = tmpHost + "/";
+        }
+
         final String host = tmpHost;
         final String username = etUsername.getText().toString();
         final String password = etPassword.getText().toString();

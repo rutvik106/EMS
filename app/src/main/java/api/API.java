@@ -92,5 +92,15 @@ public class API
         call.enqueue(callback);
     }
 
+    public Call<String> assignLeadTo(String sessionId, String enquiryId, String assigneeId,
+                                     Callback<String> callback)
+    {
+        Call<String> call = apiService.assignLeadTo("assign_to", sessionId, enquiryId, assigneeId);
+
+        call.enqueue(callback);
+
+        return call;
+    }
+
 
 }

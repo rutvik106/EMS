@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -47,34 +48,22 @@ public class HomeActivity extends AppCompatActivity
 {
 
 
+    public static final String TAG = AppUtils.APP_TAG + HomeActivity.class.getSimpleName();
     private static final String EXTRA_IMAGE = "com.antonioleiva.materializeyourapp.extraImage";
     private static final String EXTRA_TITLE = "com.antonioleiva.materializeyourapp.extraTitle";
-
-    private CollapsingToolbarLayout collapsingToolbarLayout;
-
-    private GridLayoutManager gridLayoutManager;
-
-    private Toolbar toolbar;
-
+    final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
     boolean isShow = false;
     int scrollRange = -1;
-
-
-    public static final String TAG = AppUtils.APP_TAG + HomeActivity.class.getSimpleName();
-
-
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-
-    final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
     NotificationFragment upcoming;
     NotificationFragment expired;
-
-
+    boolean doubleBackToExitPressedOnce = false;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
+    private GridLayoutManager gridLayoutManager;
+    private Toolbar toolbar;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
     private LinkedList<FollowUp> upcomingFollowUpArray = new LinkedList<>();
     private LinkedList<FollowUp> expiredFollowUpArray = new LinkedList<>();
-
 
     @SuppressWarnings("ConstantConditions")
     @Override
@@ -443,5 +432,24 @@ public class HomeActivity extends AppCompatActivity
         }.execute();
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        if (doubleBackToExitPressedOnce)
+        {
+            super.onBackPressed();
+        }
 
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Press BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
+    }
 }

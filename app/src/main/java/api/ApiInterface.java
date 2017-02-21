@@ -64,4 +64,11 @@ public interface ApiInterface
     @POST(AppUtils.URL_WEBSERVICE_RETRO)
     Call<List<AssignUser>> getListUsersForAssignLead(@Field("method") String method);
 
+    @FormUrlEncoded
+    @POST(AppUtils.URL_WEBSERVICE_RETRO)
+    Call<String> assignLeadTo(@Field("method") String method,
+                              @Field("session_id") String sessionId,
+                              @Field("enquiry_id") String enquiryId,
+                              @Field("assignee_id") String assigneeId);
+
 }

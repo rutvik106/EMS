@@ -1,19 +1,21 @@
 package com.tapandtype.rutvik.ems;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -27,20 +29,17 @@ import java.util.Map;
 
 import adapters.DropdownProductAdapter;
 import extras.AppUtils;
+import extras.CommonUtils;
 import extras.PostServiceHandler;
 
-public class ActivitySearchCustomer extends AppCompatActivity
+public class ActivitySearchCustomer extends AppCompatActivity implements AdapterView.OnItemClickListener
 {
     private static final String TAG = AppUtils.APP_TAG + ActivitySearchCustomer.class.getSimpleName();
-
+    private final Handler mHandler = new Handler();
     private AutoCompleteTextView actEnquiryId, actContact, actName, actEmail;
-
     private DropdownProductAdapter adapterName, adapterContact, adapterEmail, adapterEnquiry;
-
     private GetSearchData getSearchDataName, getSearchDataContact, getSearchDataEmail, getSearchDataEnquiry;
-
     private Button btnSearchCustomer;
-
     private ProgressBar pbSearchInProgress;
 
     @Override
@@ -54,6 +53,9 @@ public class ActivitySearchCustomer extends AppCompatActivity
         getSupportActionBar().setTitle("Search Customer");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
 
         final String host = PreferenceManager.getDefaultSharedPreferences(ActivitySearchCustomer.this).getString("host", "");
 
@@ -79,6 +81,7 @@ public class ActivitySearchCustomer extends AppCompatActivity
                         } else
                         {
                             getSearchDataEmail.cancel(true);
+                            getSearchDataEmail = null;
                             getSearchDataEmail = new GetSearchData(constraint.toString(), urlEmail, adapterEmail);
                         }
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
@@ -115,6 +118,7 @@ public class ActivitySearchCustomer extends AppCompatActivity
                         } else
                         {
                             getSearchDataEnquiry.cancel(true);
+                            getSearchDataEnquiry = null;
                             getSearchDataEnquiry = new GetSearchData(constraint.toString(), urlEnquiry, adapterEnquiry);
                         }
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
@@ -151,6 +155,7 @@ public class ActivitySearchCustomer extends AppCompatActivity
                         } else
                         {
                             getSearchDataContact.cancel(true);
+                            getSearchDataContact = null;
                             getSearchDataContact = new GetSearchData(constraint.toString(), urlContact, adapterContact);
                         }
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
@@ -188,6 +193,7 @@ public class ActivitySearchCustomer extends AppCompatActivity
                         } else
                         {
                             getSearchDataName.cancel(true);
+                            getSearchDataName = null;
                             getSearchDataName = new GetSearchData(constraint.toString(), urlName, adapterName);
                         }
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
@@ -220,6 +226,11 @@ public class ActivitySearchCustomer extends AppCompatActivity
             }
         });
 
+        actContact.setOnItemClickListener(this);
+        actEmail.setOnItemClickListener(this);
+        actEnquiryId.setOnItemClickListener(this);
+        actName.setOnItemClickListener(this);
+
         pbSearchInProgress = (ProgressBar) findViewById(R.id.pb_searchInProgress);
 
     }
@@ -235,41 +246,48 @@ public class ActivitySearchCustomer extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+    {
+        CommonUtils.hideSoftKeyboard(this);
+    }
+
+    @Override
+    public void finish()
+    {
+        if (getSearchDataContact != null)
+        {
+            getSearchDataContact.cancel(true);
+            getSearchDataContact = null;
+        }
+
+        if (getSearchDataEmail != null)
+        {
+            getSearchDataEmail.cancel(true);
+            getSearchDataEmail = null;
+        }
+
+        if (getSearchDataEnquiry != null)
+        {
+            getSearchDataEnquiry.cancel(true);
+            getSearchDataEnquiry = null;
+        }
+
+        if (getSearchDataName != null)
+        {
+            getSearchDataName.cancel(true);
+            getSearchDataName = null;
+        }
+        super.finish();
+    }
 
     class GetSearchData extends AsyncTask<Void, Void, String>
     {
 
         final String url;
-
-        String resp = "";
-
         final String term;
-
         final DropdownProductAdapter adapter;
-
-        class Label implements DropdownProductAdapter.AutoCompleteDropDownItem
-        {
-            String term;
-            int id;
-
-            public Label(String term, int id)
-            {
-                this.term = term;
-                this.id = id;
-            }
-
-            @Override
-            public String getValue()
-            {
-                return term;
-            }
-
-            @Override
-            public int getKey()
-            {
-                return id;
-            }
-        }
+        String resp = "";
 
         public GetSearchData(final String term, final String url, final DropdownProductAdapter adapter)
         {
@@ -314,7 +332,14 @@ public class ActivitySearchCustomer extends AppCompatActivity
                         JSONObject obj = arr.getJSONObject(i);
                         adapter.addDropdownListProduct(new Label(obj.getString("label"), i));
                     }
-                    adapter.notifyDataSetChanged();
+                    mHandler.post(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
                     if (!actContact.getText().toString().isEmpty())
                     {
                         actContact.showDropDown();
@@ -345,18 +370,39 @@ public class ActivitySearchCustomer extends AppCompatActivity
             }
         }
 
-    }
+        class Label implements DropdownProductAdapter.AutoCompleteDropDownItem
+        {
+            String term;
+            int id;
 
+            public Label(String term, int id)
+            {
+                this.term = term;
+                this.id = id;
+            }
+
+            @Override
+            public String getValue()
+            {
+                return term;
+            }
+
+            @Override
+            public int getKey()
+            {
+                return id;
+            }
+        }
+
+    }
 
     public class SearchCustomerAsync extends AsyncTask<Void, Void, Void>
     {
 
         final String url = PreferenceManager.getDefaultSharedPreferences(ActivitySearchCustomer.this)
                 .getString("host", "") + AppUtils.URL_WEBSERVICE;
-
-        String response = "";
-
         final String name, contact, email, enquiryId;
+        String response = "";
 
         public SearchCustomerAsync(final String name, final String email,
                                    final String contact, final String enquiryId)
@@ -443,34 +489,5 @@ public class ActivitySearchCustomer extends AppCompatActivity
                 pbSearchInProgress.setVisibility(View.GONE);
             }
         }
-    }
-
-    @Override
-    public void finish()
-    {
-        if (getSearchDataContact != null)
-        {
-            getSearchDataContact.cancel(true);
-            getSearchDataContact = null;
-        }
-
-        if (getSearchDataEmail != null)
-        {
-            getSearchDataEmail.cancel(true);
-            getSearchDataEmail = null;
-        }
-
-        if (getSearchDataEnquiry != null)
-        {
-            getSearchDataEnquiry.cancel(true);
-            getSearchDataEnquiry = null;
-        }
-
-        if (getSearchDataName != null)
-        {
-            getSearchDataName.cancel(true);
-            getSearchDataName = null;
-        }
-        super.finish();
     }
 }
