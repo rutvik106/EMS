@@ -5,6 +5,7 @@ import java.util.List;
 import apimodels.AssignUser;
 import apimodels.CustomFollowUpReport;
 import apimodels.CustomLeadReports;
+import apimodels.CustomerSearchResult;
 import apimodels.EfficiencyReport;
 import apimodels.FiltersForCustomLeadReports;
 import apimodels.UserSnapshotReport;
@@ -13,6 +14,8 @@ import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Created by rutvik on 12/3/2016 at 12:03 PM.
@@ -70,5 +73,9 @@ public interface ApiInterface
                               @Field("session_id") String sessionId,
                               @Field("enquiry_id") String enquiryId,
                               @Field("assignee_id") String assigneeId);
+
+    @POST("json/{file}")
+    Call<List<CustomerSearchResult>> searchCustomer(@Path("file") String file,
+                                                    @Query("term") String term);
 
 }

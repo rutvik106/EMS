@@ -1,11 +1,9 @@
 package com.tapandtype.rutvik.ems;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.multidex.MultiDex;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -23,12 +21,9 @@ public class App extends Application
 {
 
     private static final String TAG = AppUtils.APP_TAG + App.class.getSimpleName();
-
-    private User user;
-
-    private String host;
-
     public static File dir;
+    private User user;
+    private String host;
 
     @Override
     public void onCreate()
@@ -38,20 +33,6 @@ public class App extends Application
         dir = getCacheDir();
 
         Log.i(TAG, "APPLICATION CREATED!!!");
-    }
-
-    @Override
-    protected void attachBaseContext(Context base)
-    {
-        super.attachBaseContext(base);
-        MultiDex.install(this);
-    }
-
-    public void setUser(User user)
-    {
-        PreferenceManager.getDefaultSharedPreferences(this)
-                .edit().putString("user", user.getResponseString()).apply();
-        this.user = user;
     }
 
     public User getUser()
@@ -82,6 +63,21 @@ public class App extends Application
             return null;
         }
         return user;
+    }
+
+    /**
+     * @Override protected void attachBaseContext(Context base)
+     * {
+     * super.attachBaseContext(base);
+     * MultiDex.install(this);
+     * }
+     */
+
+    public void setUser(User user)
+    {
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .edit().putString("user", user.getResponseString()).apply();
+        this.user = user;
     }
 
     public String getHost()

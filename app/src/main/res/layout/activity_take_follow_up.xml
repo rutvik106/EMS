@@ -131,8 +131,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:ems="10"
-                        android:hint="Follow Up Date"
-                        android:inputType="textPersonName"/>
+                        android:hint="Follow Up Date"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -151,7 +150,6 @@
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:hint="Time"
-                        android:inputType="textPersonName"
                         />
                 </android.support.design.widget.TextInputLayout>
 
@@ -184,7 +182,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:ems="10"
-                        android:hint="Discussion"/>
+                        android:hint="Discussion"
+                        android:inputType="textCapSentences"/>
 
                 </android.support.design.widget.TextInputLayout>
 

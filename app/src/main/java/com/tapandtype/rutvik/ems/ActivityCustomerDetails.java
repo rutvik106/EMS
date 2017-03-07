@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -42,6 +43,8 @@ public class ActivityCustomerDetails extends AppCompatActivity
 
     String customerName, customerContact;
 
+    LinearLayout llLoadingCustomerDetails;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -53,6 +56,8 @@ public class ActivityCustomerDetails extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp);
         getSupportActionBar().setHomeAsUpIndicator(upArrow);
+
+        llLoadingCustomerDetails = (LinearLayout) findViewById(R.id.ll_loadingCustomerDetails);
 
         findViewById(R.id.btn_addEnquiry).setOnClickListener(new View.OnClickListener()
         {
@@ -138,6 +143,7 @@ public class ActivityCustomerDetails extends AppCompatActivity
                     JSONObject customerDetails = root.getJSONObject("customer_details");
                     JSONArray customerEnquiries = root.getJSONArray("customer_enquiry_details");
                     setupAdapter(customerDetails, customerEnquiries);
+                    llLoadingCustomerDetails.setVisibility(View.GONE);
                 } catch (JSONException e)
                 {
                     e.printStackTrace();

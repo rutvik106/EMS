@@ -7,6 +7,7 @@ import java.util.List;
 import apimodels.AssignUser;
 import apimodels.CustomFollowUpReport;
 import apimodels.CustomLeadReports;
+import apimodels.CustomerSearchResult;
 import apimodels.EfficiencyReport;
 import apimodels.FiltersForCustomLeadReports;
 import apimodels.UserSnapshotReport;
@@ -96,6 +97,16 @@ public class API
                                      Callback<String> callback)
     {
         Call<String> call = apiService.assignLeadTo("assign_to", sessionId, enquiryId, assigneeId);
+
+        call.enqueue(callback);
+
+        return call;
+    }
+
+    public Call<List<CustomerSearchResult>> searchCustomer(String file, String term,
+                                                           Callback<List<CustomerSearchResult>> callback)
+    {
+        Call<List<CustomerSearchResult>> call = apiService.searchCustomer(file, term);
 
         call.enqueue(callback);
 

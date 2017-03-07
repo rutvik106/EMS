@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:id="@+id/ll_inquiryProductDetailsRoot"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_inquiryProductDetailsRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -19,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Product"
-            android:inputType="textNoSuggestions"
+            android:inputType="textNoSuggestions|textCapSentences"
             android:textSize="16sp" />
 
     </android.support.design.widget.TextInputLayout>
@@ -27,10 +28,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="3"
-        android:padding="3dp"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="3dp"
+        android:weightSum="3">
 
         <TextView
             android:layout_width="match_parent"
@@ -43,6 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:inputType="number"
             android:text="0"/>
 
         <Spinner
@@ -71,10 +73,11 @@
 
     <LinearLayout
         android:id="@+id/ll_productAttributes"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
 
 
 
@@ -82,10 +85,10 @@
 
 
     <View
+        android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/primary"
         android:layout_marginBottom="4dp"
-        android:layout_width="match_parent" />
+        android:background="@color/primary"/>
 
     <!--<Button
         android:id="@+id/btn_addAnotherProduct"

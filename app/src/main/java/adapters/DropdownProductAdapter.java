@@ -27,15 +27,11 @@ import extras.Log;
 public class DropdownProductAdapter extends BaseAdapter implements Filterable
 {
 
-    Context context;
-
-    private Map<String, AutoCompleteDropDownItem> dropdownItemMap = new HashMap<>();
-
-    private List<String> suggestions = new ArrayList<>();
-
-    private Filter filter;
-
     private static final String TAG = AppUtils.APP_TAG + DropdownProductAdapter.class.getSimpleName();
+    Context context;
+    private Map<String, AutoCompleteDropDownItem> dropdownItemMap = new HashMap<>();
+    private List<String> suggestions = new ArrayList<>();
+    private Filter filter;
 
     public DropdownProductAdapter(Context context)
     {
@@ -46,7 +42,6 @@ public class DropdownProductAdapter extends BaseAdapter implements Filterable
     {
         dropdownItemMap.put(dp.getValue(), dp);
     }
-
 
 
     @Override
@@ -104,6 +99,25 @@ public class DropdownProductAdapter extends BaseAdapter implements Filterable
         return filter;
     }
 
+    public void clear()
+    {
+        dropdownItemMap.clear();
+        suggestions.clear();
+        notifyDataSetChanged();
+    }
+
+    public interface AutoCompleteDropDownItem
+    {
+        String getValue();
+
+        int getKey();
+    }
+
+    private static class ViewHolder
+    {
+        TextView autoText;
+    }
+
     public class CustomFilter extends Filter
     {
         @Override
@@ -123,7 +137,8 @@ public class DropdownProductAdapter extends BaseAdapter implements Filterable
                 while (dpIterator.hasNext())
                 {
                     AutoCompleteDropDownItem dp = dpIterator.next();
-                    if (dropdownItemMap.get(dp.getValue()).getValue().toLowerCase().contains(constraint))
+                    if (dropdownItemMap.get(dp.getValue()).getValue().toLowerCase()
+                            .contains(constraint.toString().toLowerCase()))
                     { // Compare item in original list if it contains constraints.
                         suggestions.add(dp.getValue()); // If TRUE add item in Suggestions.
                     }
@@ -147,18 +162,6 @@ public class DropdownProductAdapter extends BaseAdapter implements Filterable
                 notifyDataSetInvalidated();
             }
         }
-    }
-
-    private static class ViewHolder
-    {
-        TextView autoText;
-    }
-
-    public interface AutoCompleteDropDownItem
-    {
-        String getValue();
-
-        int getKey();
     }
 
 }

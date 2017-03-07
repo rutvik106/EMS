@@ -93,7 +93,7 @@ public class ActivityCloseLead extends AppCompatActivity implements AdapterView.
 
         spinnerBaseAdapter.setData(spinnerData);
         spinSmsOption.setAdapter(spinnerBaseAdapter);
-        spinnerBaseAdapter.setSelection(1);
+        spinSmsOption.setSelection(1);
 
         spinSmsOption.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
@@ -157,7 +157,16 @@ public class ActivityCloseLead extends AppCompatActivity implements AdapterView.
                     @Override
                     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth)
                     {
-                        etPurchaseDate.setText(dayOfMonth + "/" + monthOfYear + "/" + year);
+                        final int month = monthOfYear + 1;
+                        final String stringMonth;
+                        if (month < 10)
+                        {
+                            stringMonth = "0" + month;
+                        } else
+                        {
+                            stringMonth = month + "";
+                        }
+                        etPurchaseDate.setText(dayOfMonth + "/" + stringMonth + "/" + year);
                     }
                 }, Calendar.getInstance().get(Calendar.YEAR),
                 Calendar.getInstance().get(Calendar.MONTH),
@@ -172,7 +181,16 @@ public class ActivityCloseLead extends AppCompatActivity implements AdapterView.
                     @Override
                     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth)
                     {
-                        etInstallationDate.setText(dayOfMonth + "/" + monthOfYear + "/" + year);
+                        final int month = monthOfYear + 1;
+                        final String stringMonth;
+                        if (month < 10)
+                        {
+                            stringMonth = "0" + month;
+                        } else
+                        {
+                            stringMonth = month + "";
+                        }
+                        etInstallationDate.setText(dayOfMonth + "/" + stringMonth + "/" + year);
                     }
                 }, Calendar.getInstance().get(Calendar.YEAR),
                 Calendar.getInstance().get(Calendar.MONTH),

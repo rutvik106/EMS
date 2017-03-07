@@ -8,18 +8,17 @@ android {
         applicationId "com.tapandtype.rutvik.ems"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 11
-        versionName "2.0"
-        multiDexEnabled true
-    }
-
-    dexOptions {
-        javaMaxHeapSize "2g"
+        versionCode 12
+        versionName "2.1"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

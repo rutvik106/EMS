@@ -280,38 +280,15 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
     @Override
     public void onClick(View view)
     {
-        /**        if (anotherProductDetailsArrayList.size() == 0)
-         {
-         llAnotherProduct.setVisibility(VISIBLE);
-         }*/
+        if (actProduct.getText().toString().isEmpty() || onProductSelectedListener.selectedSubCatId == null)
+        {
+            Toast.makeText(context, "Please select this product before adding new one", Toast.LENGTH_SHORT).show();
+            return;
+        }
         AnotherProductDetails ap = new AnotherProductDetails(context, unitSpinnerData);
         anotherProductDetailsArrayList.add(ap);
         this.addView(ap, this.getChildCount() - 1);
     }
-
-    class AnotherProductDetails extends InquiryProductDetails
-    {
-
-        public AnotherProductDetails(Context context, Map<String, String> unitSpinnerData)
-        {
-            super(context);
-            btnAddAnotherProduct.setText("- Remove This Product");
-            btnAddAnotherProduct.getBackground().setColorFilter(0xFFFF9800, PorterDuff.Mode.MULTIPLY);
-            setSpinnerAdapter(unitSpinnerData);
-        }
-
-        @Override
-        public void onClick(View view)
-        {
-            /**if(anotherProductDetailsArrayList.size()==1){
-             llAnotherProduct.setVisibility(GONE);
-             }*/
-            Log.i(TAG, "REMOVING PRODUCT DETAILS");
-            InquiryProductDetails.this.removeView(AnotherProductDetails.this);
-            anotherProductDetailsArrayList.remove(AnotherProductDetails.this);
-        }
-    }
-
 
     static class OnProductSelected implements AdapterView.OnItemClickListener
     {
@@ -341,7 +318,6 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
             new GetAttributeAsync(String.valueOf(dp.getItemId(i)), context, populateAttributeView).execute();
         }
     }
-
 
     static class GetAttributeAsync extends AsyncTask<Void, Void, String>
     {
@@ -624,6 +600,29 @@ public class InquiryProductDetails extends LinearLayout implements View.OnClickL
 
                 }
             }
+        }
+    }
+
+    class AnotherProductDetails extends InquiryProductDetails
+    {
+
+        public AnotherProductDetails(Context context, Map<String, String> unitSpinnerData)
+        {
+            super(context);
+            btnAddAnotherProduct.setText("- Remove This Product");
+            btnAddAnotherProduct.getBackground().setColorFilter(0xFFFF9800, PorterDuff.Mode.MULTIPLY);
+            setSpinnerAdapter(unitSpinnerData);
+        }
+
+        @Override
+        public void onClick(View view)
+        {
+            /**if(anotherProductDetailsArrayList.size()==1){
+             llAnotherProduct.setVisibility(GONE);
+             }*/
+            Log.i(TAG, "REMOVING PRODUCT DETAILS");
+            InquiryProductDetails.this.removeView(AnotherProductDetails.this);
+            anotherProductDetailsArrayList.remove(AnotherProductDetails.this);
         }
     }
 

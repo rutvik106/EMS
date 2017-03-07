@@ -250,9 +250,9 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 
         leadInquiryDetailsAdapter = new SimpleFormAdapter(this);
 
-        leadInquiryDetailsAdapter.addCheckListSpinner("Add To Enquiry Group*", "enquiry_group_id", newEnquiryExtraDataMap.get("enquiry_group"), ++i);
+        leadInquiryDetailsAdapter.addCheckListSpinner("Add To Enquiry Group", "enquiry_group_id", newEnquiryExtraDataMap.get("enquiry_group"), ++i);
 
-        leadInquiryDetailsAdapter.addTextBox("Customer Budget*", "budget", ++i, InputType.TYPE_CLASS_TEXT, true, "", false);
+        leadInquiryDetailsAdapter.addTextBox("Customer Budget", "budget", ++i, InputType.TYPE_CLASS_TEXT, true, "", false);
 
         leadInquiryDetailsAdapter.addSpinner("Enquiry Type", "customer_type_id", newEnquiryExtraDataMap.get("enquiry_type"), ++i);
 
@@ -385,6 +385,7 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 
                 JSONArray enquiryType = obj.getJSONArray("enquiry_type");
                 Map<String, String> enquiryTypeMap = new HashMap<>();
+                enquiryTypeMap.put("-1", "Please select");
                 for (int i = 0; i < enquiryType.length(); i++)
                 {
                     JSONObject o = enquiryType.getJSONObject(i);

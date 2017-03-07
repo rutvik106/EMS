@@ -41,13 +41,13 @@ public class NotificationListHeaderVH extends RecyclerView.ViewHolder
                 if (header.isExpand())
                 {
 
-                    Glide.with(context).load(R.mipmap.ic_chevron_right_white_48dp)
+                    Glide.with(context).load(R.mipmap.ic_expand_more_white_48dp)
                             .into(ibExpand);
 
                 } else
                 {
 
-                    Glide.with(context).load(R.mipmap.ic_expand_more_white_48dp)
+                    Glide.with(context).load(R.mipmap.ic_chevron_right_white_48dp)
                             .into(ibExpand);
 
                 }
@@ -72,13 +72,13 @@ public class NotificationListHeaderVH extends RecyclerView.ViewHolder
         if (header.isExpand())
         {
 
-            Glide.with(viewHolder.context).load(R.mipmap.ic_chevron_right_white_48dp)
+            Glide.with(viewHolder.context).load(R.mipmap.ic_expand_more_white_48dp)
                     .into(viewHolder.ibExpand);
 
         } else
         {
 
-            Glide.with(viewHolder.context).load(R.mipmap.ic_expand_more_white_48dp)
+            Glide.with(viewHolder.context).load(R.mipmap.ic_chevron_right_white_48dp)
                     .into(viewHolder.ibExpand);
 
         }

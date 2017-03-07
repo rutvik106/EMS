@@ -112,55 +112,9 @@ public class ActivityView extends AppCompatActivity
         enquiryId = getIntent().getStringExtra("enquiry_id");
         customerName = getIntent().getStringExtra("follow_up_customer_name");
         customerContact = getIntent().getStringExtra("follow_up_customer_contact");
+
         if (enquiryId != null)
         {
-
-            findViewById(R.id.btn_takeFollowUp).setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-
-                    final Intent i = new Intent(ActivityView.this,
-                            TakeFollowUp.class);
-                    i.putExtra("enquiry_id", enquiryId);
-
-                    i.putExtra("follow_up_customer_name", customerName);
-                    customerContact = customerContact.substring(0, customerContact.length() - 2);
-                    i.putExtra("follow_up_customer_contact", customerContact);
-                    i.putExtra("enquiry_id", enquiryId);
-
-                    startActivity(i);
-                }
-            });
-
-            findViewById(R.id.btn_closeLead).setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    final Intent i = new Intent(ActivityView.this,
-                            ActivityCloseLead.class);
-                    i.putExtra("enquiry_id", enquiryId);
-
-                    startActivity(i);
-                }
-            });
-
-
-            findViewById(R.id.btn_assignLead).setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    final Intent i = new Intent(ActivityView.this,
-                            ActivityAssingLead.class);
-                    i.putExtra("enquiry_id", enquiryId);
-
-                    startActivity(i);
-                }
-            });
-
             new GetViewDetailAsync(enquiryId, this).execute();
         }
 
@@ -237,12 +191,68 @@ public class ActivityView extends AppCompatActivity
 
     private void populateView()
     {
+
+        addButtonListeners();
+
         flLoadingView.setVisibility(View.GONE);
         populateEnquiryStatus();
         populateCustomerDetail();
         populateProductDetails();
         populateEnquiryDetails();
         populateFollowUpDetail();
+    }
+
+    private void addButtonListeners()
+    {
+
+
+        findViewById(R.id.btn_takeFollowUp).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+
+                final Intent i = new Intent(ActivityView.this,
+                        TakeFollowUp.class);
+                i.putExtra("enquiry_id", enquiryId);
+
+                i.putExtra("follow_up_customer_name", customerName);
+                customerContact = customerContact.substring(0, customerContact.length() - 2);
+                i.putExtra("follow_up_customer_contact", customerContact);
+                i.putExtra("enquiry_id", enquiryId);
+
+                startActivity(i);
+            }
+        });
+
+        findViewById(R.id.btn_closeLead).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                final Intent i = new Intent(ActivityView.this,
+                        ActivityCloseLead.class);
+                i.putExtra("enquiry_id", enquiryId);
+
+                startActivity(i);
+            }
+        });
+
+
+        findViewById(R.id.btn_assignLead).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                final Intent i = new Intent(ActivityView.this,
+                        ActivityAssingLead.class);
+                i.putExtra("enquiry_id", enquiryId);
+
+                startActivity(i);
+            }
+        });
+
+
     }
 
     private void populateEnquiryStatus()
