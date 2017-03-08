@@ -1,6 +1,7 @@
 package com.tapandtype.rutvik.ems;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
@@ -9,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -105,18 +107,12 @@ public class TakeFollowUp extends AppCompatActivity implements DatePickerDialog.
                 String contactNo = tvFollowUpCustomerContact.getText().toString();
                 if (contactNo != null)
                 {
-                    if (!contactNo.isEmpty())
+                    if (!contactNo.isEmpty() && !contactNo.contains(","))
                     {
-                        Intent intent = new Intent(Intent.ACTION_CALL,
-                                Uri.parse("tel:" + contactNo));
-                        if (ActivityCompat.checkSelfPermission(TakeFollowUp.this,
-                                android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
-                        {
-                            Toast.makeText(TakeFollowUp.this,
-                                    "Call permission not granted", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        CommonUtils.promptForMakingCall(TakeFollowUp.this, intent);
+                        promptForPhoneCall(contactNo);
+                    } else
+                    {
+                        promptForSelectingNumber(contactNo);
                     }
                 }
             }
@@ -249,6 +245,39 @@ public class TakeFollowUp extends AppCompatActivity implements DatePickerDialog.
         }
 
 
+    }
+
+    private void promptForSelectingNumber(String contactNo)
+    {
+
+        final String[] multipleContact = contactNo.split(",");
+
+        new AlertDialog.Builder(this)
+                .setTitle("Select contact number")
+                .setItems(multipleContact, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        promptForPhoneCall(multipleContact[i]);
+                        dialogInterface.dismiss();
+                    }
+                }).show();
+
+    }
+
+    private void promptForPhoneCall(String contactNo)
+    {
+        Intent intent = new Intent(Intent.ACTION_CALL,
+                Uri.parse("tel:" + contactNo));
+        if (ActivityCompat.checkSelfPermission(TakeFollowUp.this,
+                android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
+        {
+            Toast.makeText(TakeFollowUp.this,
+                    "Call permission not granted", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        CommonUtils.promptForMakingCall(TakeFollowUp.this, intent);
     }
 
     private void showDatePickerDialog()

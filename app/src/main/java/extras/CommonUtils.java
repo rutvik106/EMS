@@ -28,6 +28,7 @@ public final class CommonUtils
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
                         context.startActivity(intent);
+                        dialogInterface.dismiss();
                     }
                 })
                 .setNegativeButton("CANCEL", null)
