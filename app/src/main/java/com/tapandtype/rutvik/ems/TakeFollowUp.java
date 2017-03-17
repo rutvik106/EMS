@@ -107,12 +107,15 @@ public class TakeFollowUp extends AppCompatActivity implements DatePickerDialog.
                 String contactNo = tvFollowUpCustomerContact.getText().toString();
                 if (contactNo != null)
                 {
-                    if (!contactNo.isEmpty() && !contactNo.contains(","))
+                    if (!contactNo.isEmpty())
                     {
-                        promptForPhoneCall(contactNo);
-                    } else
-                    {
-                        promptForSelectingNumber(contactNo);
+                        if (!contactNo.contains(",") && !contactNo.contains("<br>"))
+                        {
+                            promptForPhoneCall(contactNo);
+                        } else
+                        {
+                            promptForSelectingNumber(contactNo);
+                        }
                     }
                 }
             }
@@ -250,7 +253,16 @@ public class TakeFollowUp extends AppCompatActivity implements DatePickerDialog.
     private void promptForSelectingNumber(String contactNo)
     {
 
-        final String[] multipleContact = contactNo.split(",");
+        String[] multipleContact = new String[]{};
+        if (contactNo.contains(","))
+        {
+            multipleContact = contactNo.split(",");
+        } else if (contactNo.contains("<br>"))
+        {
+            multipleContact = contactNo.split("<br>");
+        }
+
+        final String[] newMultipleContact = multipleContact;
 
         new AlertDialog.Builder(this)
                 .setTitle("Select contact number")
@@ -259,7 +271,7 @@ public class TakeFollowUp extends AppCompatActivity implements DatePickerDialog.
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
-                        promptForPhoneCall(multipleContact[i]);
+                        promptForPhoneCall(newMultipleContact[i]);
                         dialogInterface.dismiss();
                     }
                 }).show();

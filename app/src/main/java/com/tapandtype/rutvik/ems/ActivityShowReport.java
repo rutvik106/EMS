@@ -73,6 +73,7 @@ public class ActivityShowReport extends AppCompatActivity
         product = getIntent().getStringExtra(Constants.REPORT_PRODUCT);
         status = getIntent().getStringExtra(Constants.REPORT_LEAD_STATUS);
         toDate = getIntent().getStringExtra(Constants.REPORT_TO_DATE);
+        userId = getIntent().getStringExtra(Constants.REPORT_USER_ID);
 
         if (reportType == Constants.CUSTOM_LEAD_REPORT)
         {
