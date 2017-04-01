@@ -55,6 +55,9 @@ public class ActivityView extends AppCompatActivity
     SimpleFormAdapter adapterEnquiryDetails;
     SimpleFormFragment fragmentEnquiryDetails;
 
+    SimpleFormAdapter adapterUnsuccessfullyClosedLeadDeails;
+    SimpleFormFragment fragmentUnsuccessfullyClosedLeadDeails;
+
     LinearLayout fragSimpleForm;
 
     FrameLayout flLoadingView;
@@ -66,6 +69,8 @@ public class ActivityView extends AppCompatActivity
     GetViewDetailAsync getViewDetailAsync;
 
     String enquiryId, customerName, customerContact;
+
+    String is_bought;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -102,6 +107,9 @@ public class ActivityView extends AppCompatActivity
 
             fragmentProductDetails = (SimpleFormFragment) getSupportFragmentManager().getFragment(savedInstanceState, "PRODUCT_DETAILS");
 
+            fragmentUnsuccessfullyClosedLeadDeails = (SimpleFormFragment) getSupportFragmentManager()
+                    .getFragment(savedInstanceState, "UNSUCCESSFULLY_CLOSED_LEAD_DETAILS");
+
         }
 
 
@@ -136,6 +144,9 @@ public class ActivityView extends AppCompatActivity
             getSupportFragmentManager().putFragment(outState, "FOLLOW_UP_DETAILS", fragmentFollowUpDetail);
 
             getSupportFragmentManager().putFragment(outState, "PRODUCT_DETAILS", fragmentProductDetails);
+
+            getSupportFragmentManager()
+                    .putFragment(outState, "UNSUCCESSFULLY_CLOSED_LEAD_DETAILS", fragmentUnsuccessfullyClosedLeadDeails);
 
         } catch (NullPointerException e)
         {
@@ -179,6 +190,8 @@ public class ActivityView extends AppCompatActivity
             responseJson.put("follow_up_details", obj.getJSONArray("follow_up_details"));
             responseJson.put("product_details", obj.getJSONArray("product_details"));
             responseJson.put("enquiry_details", obj.getJSONObject("enquiry_details"));
+            responseJson.put("unsuccessfully_closed_lead_details",
+                    obj.getJSONArray("unsuccessfully_closed_lead_details"));
 
             populateView();
 
@@ -200,6 +213,111 @@ public class ActivityView extends AppCompatActivity
         populateProductDetails();
         populateEnquiryDetails();
         populateFollowUpDetail();
+        populateUnsuccessfullyClosedLeadDetails();
+    }
+
+    private void populateUnsuccessfullyClosedLeadDetails()
+    {
+        int i = -1;
+        adapterUnsuccessfullyClosedLeadDeails = new SimpleFormAdapter(this);
+
+        try
+        {
+
+            if (is_bought.equals("2"))
+            {
+                JSONArray arr = (JSONArray) responseJson.get("unsuccessfully_closed_lead_details");
+
+                //UNSUCCESSFULLY CLOSED LEAD
+                for (int j = 0; j < arr.length(); j++)
+                {
+                /*adapterUnsuccessfullyClosedLeadDeails
+                        .addFollowUpSeparator(++i,
+                                new FollowUpSeparator("", "", "", "Follow Up " + (j + 1)));*/
+
+                    //STATUS
+                    final String is_bought = arr.getJSONObject(j).getString("is_bought");
+
+                    adapterUnsuccessfullyClosedLeadDeails.addSimpleTextView(++i, "Status: ",
+                            getStatusByBoughtId(is_bought), null);
+
+                    //ENQUIRY CLOSING DATE
+
+                    final String handled_by = arr.getJSONObject(j).getString("enquiry_close_date");
+                    adapterUnsuccessfullyClosedLeadDeails.addSimpleTextView(++i, "Enquiry Closing Date: ",
+                            handled_by, null);
+
+                    //ENQUIRY CLOSED BY
+
+                    final String closed_by = arr.getJSONObject(j).getString("admin_name");
+                    adapterUnsuccessfullyClosedLeadDeails.addSimpleTextView(++i, "Closed By: ", closed_by, null);
+
+
+                    //REASON TO DECLINE
+
+                    final String declineReason = arr.getJSONObject(j).getString("decline_reason");
+                    adapterUnsuccessfullyClosedLeadDeails.addSimpleTextView(++i, "Decline Reason: ", declineReason, null);
+
+                    //DESCRIPTION
+                    final String discussion = arr.getJSONObject(j).getString("discussion");
+                    adapterUnsuccessfullyClosedLeadDeails.addSimpleTextView(++i, "Discussion: ", discussion, null);
+                }
+
+            } else if (is_bought.equals("1"))
+            {
+                Toast.makeText(this, "I AM HERE", Toast.LENGTH_SHORT).show();
+                //SUCCESSFULLY CLODED LEAD
+
+                JSONObject obj = (JSONObject) responseJson.get("enquiry");
+
+                //STATUS
+                final String is_bought = obj.getString("is_bought");
+
+                adapterUnsuccessfullyClosedLeadDeails.addSimpleTextView(++i, "Status: ",
+                        getStatusByBoughtId(is_bought), null);
+
+                //ENQUIRY CLOSING DATE
+
+                final String handled_by = obj.getString("enquiry_close_date");
+                adapterUnsuccessfullyClosedLeadDeails.addSimpleTextView(++i, "Enquiry Closing Date: ",
+                        handled_by, null);
+
+                //ENQUIRY CLOSED BY
+
+                final String closed_by = obj.getString("admin_name");
+                adapterUnsuccessfullyClosedLeadDeails.addSimpleTextView(++i, "Closed By: ", closed_by, null);
+
+
+                //REGISTRATION DATE
+                final String purchaseDate = obj.getString("purchase_date");
+                adapterUnsuccessfullyClosedLeadDeails.addSimpleTextView(++i, "Registration Date: ",
+                        purchaseDate.contains("1970") ? "N/A" : purchaseDate, null);
+
+
+                //ENDING DATE
+                final String endingDate = obj.getString("tour_ending_date");
+                adapterUnsuccessfullyClosedLeadDeails.addSimpleTextView(++i, "Ending Date: ",
+                        endingDate.contains("1970") ? "N/A" : endingDate, null);
+
+
+            }
+
+
+        } catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+
+        if (fragmentUnsuccessfullyClosedLeadDeails == null)
+        {
+            fragmentUnsuccessfullyClosedLeadDeails = new SimpleFormFragment();
+        }
+        fragmentUnsuccessfullyClosedLeadDeails.setData(adapterUnsuccessfullyClosedLeadDeails,
+                "Enquiry Closing Details");
+        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.frag_simpleForm, fragmentUnsuccessfullyClosedLeadDeails, "CLOSED_LEAD_DETAILS")
+                .commit();
+        adapterUnsuccessfullyClosedLeadDeails.notifyDataSetChanged();
     }
 
     private void addButtonListeners()
@@ -267,22 +385,16 @@ public class ActivityView extends AppCompatActivity
             final String unique_enquiry_id = obj.getString("unique_enquiry_id");
             adapterEnquiryStatus.addSimpleTextView(++i, "Enquiry ID: ", unique_enquiry_id, null);
 
-            final String is_bought = obj.getString("is_bought");
+            is_bought = obj.getString("is_bought");
+
             String current_lead_status = "";
+
             if (is_bought != null)
             {
-                if (is_bought.equals("0"))
+                current_lead_status = getStatusByBoughtId(is_bought);
+                if (is_bought.equals("1") || is_bought.equals("2"))
                 {
-                    current_lead_status = "New Enquiry";
-                } else if (is_bought.equals("1"))
-                {
-                    current_lead_status = "Successfully Closed Enquiry";
-                } else if (is_bought.equals("2"))
-                {
-                    current_lead_status = "Unsuccessfully Closed Enquiry";
-                } else if (is_bought.equals("3"))
-                {
-                    current_lead_status = "Ongoing Enquiry";
+                    findViewById(R.id.ll_enquiryOptionsButtonContainer).setVisibility(View.GONE);
                 }
             }
             adapterEnquiryStatus.addSimpleTextView(++i, "Current Lead Status: ", current_lead_status, null);
@@ -317,6 +429,24 @@ public class ActivityView extends AppCompatActivity
         ft.add(R.id.frag_simpleForm, fragmentEnquiryStatus, "ENQUIRY_STATUS")
                 .commitAllowingStateLoss();
         adapterEnquiryStatus.notifyDataSetChanged();
+    }
+
+    private String getStatusByBoughtId(String is_bought)
+    {
+        if (is_bought.equals("0"))
+        {
+            return "New Enquiry";
+        } else if (is_bought.equals("1"))
+        {
+            return "Successfully Closed Enquiry";
+        } else if (is_bought.equals("2"))
+        {
+            return "Unsuccessfully Closed Enquiry";
+        } else if (is_bought.equals("3"))
+        {
+            return "Ongoing Enquiry";
+        }
+        return "";
     }
 
     private void populateCustomerDetail()
