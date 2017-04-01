@@ -4,23 +4,15 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
-import android.view.TextureView;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.CheckBox;
-
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import adapters.MyCheckListAdapter;
-import adapters.SimpleFormAdapter;
 import ComponentFactory.CheckListDialog;
 import ComponentFactory.Component;
-import ComponentFactory.MyCheckListSpinner;
 import ComponentFactory.MyTextBox;
 import ComponentFactory.RowItem;
 import extras.AppUtils;
@@ -178,6 +170,7 @@ public class CheckListSpinnerVH extends RecyclerView.ViewHolder implements RowIt
     public void onNothingSelected()
     {
         myCheckListSpinner.editText.setText("NONE");
+        map.put("value", "");
     }
 
 }
