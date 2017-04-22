@@ -1,5 +1,6 @@
 package com.tapandtype.rutvik.ems;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -11,6 +12,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +25,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.crash.FirebaseCrash;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,7 +48,7 @@ import fragments.NotificationFragment;
 import models.FollowUp;
 import models.GridItem;
 
-public class HomeActivity extends AppCompatActivity
+public class HomeActivity extends AppCompatActivity implements PermissionListener
 {
 
 
@@ -73,6 +77,12 @@ public class HomeActivity extends AppCompatActivity
         initActivityTransitions();
         setContentView(R.layout.activity_home);
 
+        checkForPermissions();
+
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .edit()
+                .putBoolean(Constants.SHOW_WELCOME_SCREEN, false)
+                .apply();
 
         ViewCompat.setTransitionName(findViewById(R.id.app_bar_layout), EXTRA_IMAGE);
         supportPostponeEnterTransition();
@@ -430,6 +440,39 @@ public class HomeActivity extends AppCompatActivity
 
             }
         }.execute();
+    }
+
+    private void checkForPermissions()
+    {
+        new TedPermission(this)
+                .setPermissionListener(this)
+                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
+                .setPermissions(android.Manifest.permission.CALL_PHONE)
+                .check();
+    }
+
+    @Override
+    public void onPermissionGranted()
+    {
+        return;
+    }
+
+    @Override
+    public void onPermissionDenied(ArrayList<String> deniedPermissions)
+    {
+        new AlertDialog.Builder(this)
+                .setTitle("Call permission rejected")
+                .setMessage("You maynot be able to call customers from the app")
+                .setPositiveButton("GRANT PERMISSION", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        checkForPermissions();
+                    }
+                })
+                .setNegativeButton("GOT IT", null)
+                .show();
     }
 
     @Override

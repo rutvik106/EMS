@@ -71,3 +71,10 @@
 -keep class * implements com.google.gson.JsonDeserializer
 
 ##---------------End: proguard configuration for Gson  ----------
+
+
+#stephentuso/welcome-android
+-keepclassmembers class * extends com.stephentuso.welcome.WelcomeActivity {
+    public static java.lang.String welcomeKey();
+}
+#---------------End: proguard configuration welcome-android ----------

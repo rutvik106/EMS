@@ -21,4 +21,9 @@ public class Constants
     public static final int CUSTOM_LEAD_REPORT = 33;
 
 
+    public static final String CUSTOMER_NAME = "CUSTOMER_NAME";
+    public static final String CUSTOMER_CONTACT = "CUSTOMER_CONTACT";
+    public static final String CUSTOMER_EMAIL = "CUSTOMER_EMAIL";
+    public static final String CUSTOMER_ID = "CUSTOMER_ID";
+    public static final String SHOW_WELCOME_SCREEN = "SHOW_WELCOME_SCREEN";
 }

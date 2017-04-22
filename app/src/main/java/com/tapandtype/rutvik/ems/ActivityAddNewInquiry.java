@@ -61,6 +61,7 @@ public class ActivityAddNewInquiry extends AppCompatActivity
     App app;
     Button addEnquiry;
     ProgressBar pbProcessing;
+    String customerName, customerContact, customerEmail, customerId;
     private Toolbar mToolbar;
 
     @Override
@@ -87,6 +88,11 @@ public class ActivityAddNewInquiry extends AppCompatActivity
             final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
+
+        customerName = getIntent().getStringExtra(Constants.CUSTOMER_NAME);
+        customerContact = getIntent().getStringExtra(Constants.CUSTOMER_CONTACT);
+        customerEmail = getIntent().getStringExtra(Constants.CUSTOMER_EMAIL);
+        customerId = getIntent().getStringExtra(Constants.CUSTOMER_ID);
 
         fragSimpleForm = (LinearLayout) findViewById(R.id.frag_simpleForm);
 
@@ -193,13 +199,19 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 
         simpleFormAdapter.addSpinner("Customer Prefix", "prefix_id", newEnquiryExtraDataMap.get("prefix"), ++i);
 
-        simpleFormAdapter.addTextBox("Customer Name*", "customer_name", ++i, InputType.TYPE_CLASS_TEXT, true, "", true);
+        simpleFormAdapter.addTextBox("Customer Name*", "customer_name", ++i, InputType.TYPE_CLASS_TEXT,
+                customerName == null,
+                customerName != null ? customerName.substring(customerName.indexOf(".") + 1) : "", true);
 
         simpleFormAdapter.addAppendableTextBox("Contact No*", "mobile_no", ++i,
                 app.getHost() + AppUtils.URL_EXACT_CONTACT_NO,
-                new AppendableTextBoxUrlListener(), InputType.TYPE_CLASS_NUMBER);
+                customerContact != null ? customerContact : "",
+                customerContact == null,
+                customerContact == null ? new AppendableTextBoxUrlListener() : null,
+                InputType.TYPE_CLASS_NUMBER);
 
-        simpleFormAdapter.addTextBox("Email Address", "email_id", ++i, InputType.TYPE_CLASS_TEXT, true, "", false);
+        simpleFormAdapter.addTextBox("Email Address", "email_id", ++i, InputType.TYPE_CLASS_TEXT,
+                customerEmail == null, customerEmail != null ? customerEmail : "", false);
 
         if (simpleFormFragment == null)
         {
@@ -263,6 +275,7 @@ public class ActivityAddNewInquiry extends AppCompatActivity
         final Map<String, String> smsOptions = new LinkedHashMap<>();
         smsOptions.put("1", "Yes");
         smsOptions.put("0", "No");
+
         leadInquiryDetailsAdapter.addSpinner("Send SMS", "sms_status", smsOptions, ++i);
 
         if (leadInquiryDetailsFragment == null)
@@ -445,6 +458,11 @@ public class ActivityAddNewInquiry extends AppCompatActivity
 
             postParams.put("session_id", app.getUser().getSession_id());
 
+            if (customerId != null)
+            {
+                postParams.put("customer_id", customerId);
+            }
+
             for (int i = 0; i < simpleFormAdapter.getItemCount(); i++)
             {
                 Log.i(TAG, "DATA: " + simpleFormAdapter.getComponentListMap().get(Long.valueOf(i)).getRowItem().getValue());
@@ -533,7 +551,7 @@ public class ActivityAddNewInquiry extends AppCompatActivity
                                     .show();
 
                             Intent i = new Intent(ActivityAddNewInquiry.this, ActivityView.class);
-                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             i.putExtra("enquiry_id", jsonResponse.getMessage());
                             startActivity(i);
 

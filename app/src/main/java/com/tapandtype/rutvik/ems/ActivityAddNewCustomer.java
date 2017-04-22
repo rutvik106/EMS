@@ -112,6 +112,7 @@ public class ActivityAddNewCustomer extends AppCompatActivity
 
         customerDetailsAdapter.addAppendableTextBox("Contact No*", "mobile_no", ++i,
                 app.getHost() + AppUtils.URL_EXACT_CONTACT_NO,
+                "", true,
                 new ActivityAddNewCustomer.AppendableTextBoxUrlListener(),
                 InputType.TYPE_CLASS_NUMBER);
 

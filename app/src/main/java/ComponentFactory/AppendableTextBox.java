@@ -34,15 +34,10 @@ import extras.PostServiceHandler;
 public class AppendableTextBox extends LinearLayout
 {
     public static final String TAG = AppUtils.APP_TAG + AppendableTextBox.class.getSimpleName();
-
-    Context context;
-
-    ArrayList<AppendedTextBox> appendedTextBoxList = new ArrayList<>();
-
-    LinearLayout llRootLayout;
-
     public EditText etRootTextView;
-
+    Context context;
+    ArrayList<AppendedTextBox> appendedTextBoxList = new ArrayList<>();
+    LinearLayout llRootLayout;
     FrameLayout flDuplicateError;
 
     TextView tvDuplicateErrorMsg;
@@ -85,11 +80,14 @@ public class AppendableTextBox extends LinearLayout
 
         triggerUrl = url;
 
-        myTextWatcher = new MyTextWatcher(url,
-                flDuplicateError, tvDuplicateErrorMsg,
-                etRootTextView, urlTriggeredListener);
+        if (urlTriggeredListener != null)
+        {
+            myTextWatcher = new MyTextWatcher(url,
+                    flDuplicateError, tvDuplicateErrorMsg,
+                    etRootTextView, urlTriggeredListener);
 
-        etRootTextView.addTextChangedListener(myTextWatcher);
+            etRootTextView.addTextChangedListener(myTextWatcher);
+        }
 
         btnRootButton = (Button) v.findViewById(R.id.btn_appendTextView);
 
@@ -129,82 +127,10 @@ public class AppendableTextBox extends LinearLayout
 
     }
 
-    class AppendedTextBox
+    public static interface OnUrlTriggered
     {
-        LinearLayout ll;
 
-        FrameLayout fl;
-
-        TextView tvErrorMsg;
-
-        MyTextBox tv;
-
-        Button b;
-
-        MyTextWatcher myTextWatcher;
-
-        public String getText()
-        {
-            return tv.editText.getText().toString();
-        }
-
-        public AppendedTextBox()
-        {
-            ll = new LinearLayout(context);
-
-            ll.setOrientation(HORIZONTAL);
-
-            ll.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT));
-
-            ll.setWeightSum(6);
-
-
-            tv = new MyTextBox(context);
-            tv.setHint(etRootTextView.getHint());
-            tv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-
-
-            b = new Button(context);
-            b.setText("-");
-            b.getBackground().setColorFilter(0xFFFF9800, PorterDuff.Mode.MULTIPLY);
-            b.setTextSize(18);
-            b.setTextColor(Color.parseColor("#ffffff"));
-            b.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, 5f));
-            b.setOnClickListener(new OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    llRootLayout.removeView(ll);
-                    llRootLayout.removeView(fl);
-                }
-            });
-
-            ll.addView(tv);
-            ll.addView(b);
-
-            llRootLayout.addView(ll);
-
-            fl = new FrameLayout(context);
-            fl.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT));
-
-            tvErrorMsg = new TextView(context);
-            tvErrorMsg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT));
-            tvErrorMsg.setTextColor(getResources().getColor(R.color.accent));
-            fl.addView(tvErrorMsg);
-            fl.setVisibility(GONE);
-
-            llRootLayout.addView(fl);
-
-            myTextWatcher = new MyTextWatcher(triggerUrl, fl, tvErrorMsg, tv.editText, urlTriggeredListener);
-
-            tv.editText.addTextChangedListener(myTextWatcher);
-
-        }
+        void urlTriggered(EditText etContact, TextView tvDuplicateErrorMsg, String response);
 
     }
 
@@ -313,10 +239,82 @@ public class AppendableTextBox extends LinearLayout
 
     }
 
-    public static interface OnUrlTriggered
+    class AppendedTextBox
     {
+        LinearLayout ll;
 
-        void urlTriggered(EditText etContact, TextView tvDuplicateErrorMsg, String response);
+        FrameLayout fl;
+
+        TextView tvErrorMsg;
+
+        MyTextBox tv;
+
+        Button b;
+
+        MyTextWatcher myTextWatcher;
+
+        public AppendedTextBox()
+        {
+            ll = new LinearLayout(context);
+
+            ll.setOrientation(HORIZONTAL);
+
+            ll.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            ll.setWeightSum(6);
+
+
+            tv = new MyTextBox(context);
+            tv.setHint(etRootTextView.getHint());
+            tv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+
+
+            b = new Button(context);
+            b.setText("-");
+            b.getBackground().setColorFilter(0xFFFF9800, PorterDuff.Mode.MULTIPLY);
+            b.setTextSize(18);
+            b.setTextColor(Color.parseColor("#ffffff"));
+            b.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, 5f));
+            b.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    llRootLayout.removeView(ll);
+                    llRootLayout.removeView(fl);
+                }
+            });
+
+            ll.addView(tv);
+            ll.addView(b);
+
+            llRootLayout.addView(ll);
+
+            fl = new FrameLayout(context);
+            fl.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            tvErrorMsg = new TextView(context);
+            tvErrorMsg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
+            tvErrorMsg.setTextColor(getResources().getColor(R.color.accent));
+            fl.addView(tvErrorMsg);
+            fl.setVisibility(GONE);
+
+            llRootLayout.addView(fl);
+
+            myTextWatcher = new MyTextWatcher(triggerUrl, fl, tvErrorMsg, tv.editText, urlTriggeredListener);
+
+            tv.editText.addTextChangedListener(myTextWatcher);
+
+        }
+
+        public String getText()
+        {
+            return tv.editText.getText().toString();
+        }
 
     }
 

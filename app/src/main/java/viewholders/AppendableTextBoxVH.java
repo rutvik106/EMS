@@ -2,12 +2,7 @@ package viewholders;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import ComponentFactory.AppendableTextBox;
@@ -45,6 +40,12 @@ public class AppendableTextBoxVH extends RecyclerView.ViewHolder implements RowI
         vh.map = map;
         vh.appendableTextBox.etRootTextView.setHint(map.get("label").toString());
         vh.appendableTextBox.etRootTextView.setInputType(Integer.valueOf(map.get("input_type").toString()));
+        final String defaultValue = map.get("default_value").toString();
+        if (!defaultValue.isEmpty())
+        {
+            vh.appendableTextBox.etRootTextView.setText(defaultValue);
+        }
+        vh.appendableTextBox.etRootTextView.setEnabled(Boolean.valueOf(map.get("enabled").toString()));
         //vh.appendableTextBox.setTriggerUrl(map.get("trigger_url").toString());
         component.setRowItem(vh);
     }

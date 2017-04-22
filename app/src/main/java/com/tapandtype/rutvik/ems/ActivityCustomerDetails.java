@@ -41,7 +41,7 @@ public class ActivityCustomerDetails extends AppCompatActivity
     SimpleFormAdapter adapterEnquiryDetails;
     SimpleFormFragment fragmentEnquiryDetails;
 
-    String customerName, customerContact;
+    String customerName, customerContact, customerEmail, customerContactPrimary;
 
     LinearLayout llLoadingCustomerDetails;
 
@@ -59,17 +59,22 @@ public class ActivityCustomerDetails extends AppCompatActivity
 
         llLoadingCustomerDetails = (LinearLayout) findViewById(R.id.ll_loadingCustomerDetails);
 
+        final String customerId = getIntent().getStringExtra("customer_id");
+
         findViewById(R.id.btn_addEnquiry).setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                startActivity(new Intent(ActivityCustomerDetails.this, ActivityAddNewInquiry.class));
+                Intent i = new Intent(ActivityCustomerDetails.this, ActivityAddNewInquiry.class);
+                i.putExtra(Constants.CUSTOMER_NAME, customerName);
+                i.putExtra(Constants.CUSTOMER_ID, customerId);
+                i.putExtra(Constants.CUSTOMER_CONTACT, customerContactPrimary);
+                i.putExtra(Constants.CUSTOMER_EMAIL,
+                        customerEmail.equalsIgnoreCase("na") ? null : customerEmail);
+                startActivity(i);
             }
         });
-
-
-        final String customerId = getIntent().getStringExtra("customer_id");
 
         if (!customerId.isEmpty())
         {
@@ -186,12 +191,18 @@ public class ActivityCustomerDetails extends AppCompatActivity
 
             simpleFormAdapter.addSimpleTextView(++i, "Email: ", customerDetails.getString("customer_email"), null);
 
+            customerEmail = customerDetails.getString("customer_email");
+
             JSONArray contact = customerDetails.getJSONArray("customer_contact");
 
             for (int j = 0; j < contact.length(); j++)
             {
                 final String contactNo = contact.getJSONObject(j).getString("customer_contact_no");
-                customerContact = customerContact + ", " + contact;
+                if (customerContactPrimary == null)
+                {
+                    customerContactPrimary = contactNo;
+                }
+                customerContact = customerContact + ", " + contactNo;
                 simpleFormAdapter.addSimpleTextView(++i, "Contact No: ", contactNo, new View.OnClickListener()
                 {
                     @Override

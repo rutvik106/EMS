@@ -131,7 +131,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:ems="10"
-                        android:hint="Follow Up Date"/>
+                        android:hint="Next Follow Up Date"/>
 
                 </android.support.design.widget.TextInputLayout>
 

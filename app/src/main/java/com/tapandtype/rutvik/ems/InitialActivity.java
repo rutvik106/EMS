@@ -1,14 +1,11 @@
 package com.tapandtype.rutvik.ems;
 
-import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,13 +15,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
+import com.stephentuso.welcome.WelcomeHelper;
 
 import org.json.JSONException;
 
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +28,7 @@ import extras.PostServiceHandler;
 import jsonobject.Error;
 import jsonobject.User;
 
-public class InitialActivity extends AppCompatActivity implements View.OnClickListener, PermissionListener
+public class InitialActivity extends AppCompatActivity implements View.OnClickListener
 {
 
     //Toolbar toolbar;
@@ -50,14 +45,22 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
 
     TryLogin tryLogin;
 
+    WelcomeHelper welcomeScreen;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_initial);
+        welcomeScreen = new WelcomeHelper(this, ActivityWelcome.class);
 
-        checkForPermissions();
+        if (PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(Constants.SHOW_WELCOME_SCREEN, true))
+        {
+            welcomeScreen.forceShow();
+        }
+
+        setContentView(R.layout.activity_initial);
 
         //toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -103,13 +106,11 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
-    private void checkForPermissions()
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
     {
-        new TedPermission(this)
-                .setPermissionListener(this)
-                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
-                .setPermissions(Manifest.permission.CALL_PHONE)
-                .check();
+        super.onSaveInstanceState(outState);
+        welcomeScreen.onSaveInstanceState(outState);
     }
 
     @Override
@@ -157,30 +158,6 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
         }
 
 
-    }
-
-    @Override
-    public void onPermissionGranted()
-    {
-        return;
-    }
-
-    @Override
-    public void onPermissionDenied(ArrayList<String> deniedPermissions)
-    {
-        new AlertDialog.Builder(this)
-                .setTitle("Call permission rejected")
-                .setMessage("You maynot be able to call customers from the app")
-                .setPositiveButton("GRANT PERMISSION", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        checkForPermissions();
-                    }
-                })
-                .setNegativeButton("GOT IT", null)
-                .show();
     }
 
     private boolean isFieldsValid(String host, String username, String password)

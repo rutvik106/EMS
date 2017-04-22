@@ -3,7 +3,6 @@ package adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -34,28 +33,23 @@ import viewholders.TextBoxVH;
 public class SimpleFormAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
 
-    final Context context;
-
-    public Map<Long, Component> getComponentListMap()
-    {
-        return componentListMap;
-    }
-
-    Map<Long, Component> componentListMap;
-
-    Map<Long, Long> dependentOnList = new HashMap<>();
-
-    final Activity activity;
-
-    AppendableTextBox.OnUrlTriggered urlListener;
-
     public static final String TAG = AppUtils.APP_TAG + SimpleFormAdapter.class.getSimpleName();
+    final Context context;
+    final Activity activity;
+    Map<Long, Component> componentListMap;
+    Map<Long, Long> dependentOnList = new HashMap<>();
+    AppendableTextBox.OnUrlTriggered urlListener;
 
     public SimpleFormAdapter(Activity activity)
     {
         this.context = activity;
         this.activity = activity;
         componentListMap = new HashMap<>();
+    }
+
+    public Map<Long, Component> getComponentListMap()
+    {
+        return componentListMap;
     }
 
     public void addSimpleTextView(long id, String label, String value, View.OnClickListener onClickListener)
@@ -144,6 +138,8 @@ public class SimpleFormAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public void addAppendableTextBox(String label, String name, long id,
                                      String triggerUrl,
+                                     String defaultValue,
+                                     boolean enabled,
                                      AppendableTextBox.OnUrlTriggered urlListener,
                                      int inputType)
     {
@@ -153,6 +149,8 @@ public class SimpleFormAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         map.put("name", name);
         map.put("trigger_url", triggerUrl);
         map.put("input_type", inputType);
+        map.put("default_value", defaultValue);
+        map.put("enabled", enabled);
         componentListMap.put(id, new Component(map, Component.APPENDABLE_TEXT_BOX, id));
         notifyItemInserted(componentListMap.size());
     }

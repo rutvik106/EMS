@@ -227,7 +227,10 @@ public class ActivityView extends AppCompatActivity
             if (is_bought.equals("2"))
             {
                 JSONArray arr = (JSONArray) responseJson.get("unsuccessfully_closed_lead_details");
-
+                if (arr.length() == 0)
+                {
+                    return;
+                }
                 //UNSUCCESSFULLY CLOSED LEAD
                 for (int j = 0; j < arr.length(); j++)
                 {
@@ -265,7 +268,7 @@ public class ActivityView extends AppCompatActivity
 
             } else if (is_bought.equals("1"))
             {
-                Toast.makeText(this, "I AM HERE", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "I AM HERE", Toast.LENGTH_SHORT).show();
                 //SUCCESSFULLY CLODED LEAD
 
                 JSONObject obj = (JSONObject) responseJson.get("enquiry");
@@ -300,6 +303,9 @@ public class ActivityView extends AppCompatActivity
                         endingDate.contains("1970") ? "N/A" : endingDate, null);
 
 
+            } else
+            {
+                return;
             }
 
 
