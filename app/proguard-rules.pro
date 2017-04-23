@@ -16,6 +16,9 @@
 #   public *;
 #}
 
+-dontobfuscate
+-optimizations !code/allocation/variable
+
 -keep class okhttp3.** { *; }
 
 -keep interface okhttp3.** { *; }

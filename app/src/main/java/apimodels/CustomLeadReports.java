@@ -2,6 +2,7 @@ package apimodels;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -53,7 +54,7 @@ public class CustomLeadReports
         @SerializedName("date_added")
         private String dateAdded;
         @SerializedName("enquiry_date")
-        private String enquiryDate;
+        private Date enquiryDate;
         @SerializedName("created_by")
         private String createdBy;
         @SerializedName("current_lead_holder")
@@ -81,7 +82,7 @@ public class CustomLeadReports
         @SerializedName("attribute_types_sub_cat_wise")
         private String attributeTypesSubCatWise;
         @SerializedName("next_follow_up_date")
-        private String nextFollowUpDate;
+        private Date nextFollowUpDate;
         @SerializedName("is_imp")
         private String isImp;
 
@@ -105,12 +106,12 @@ public class CustomLeadReports
             this.dateAdded = dateAdded;
         }
 
-        public String getEnquiryDate()
+        public Date getEnquiryDate()
         {
             return enquiryDate;
         }
 
-        public void setEnquiryDate(String enquiryDate)
+        public void setEnquiryDate(Date enquiryDate)
         {
             this.enquiryDate = enquiryDate;
         }
@@ -245,12 +246,12 @@ public class CustomLeadReports
             this.attributeTypesSubCatWise = attributeTypesSubCatWise;
         }
 
-        public String getNextFollowUpDate()
+        public Date getNextFollowUpDate()
         {
             return nextFollowUpDate;
         }
 
-        public void setNextFollowUpDate(String nextFollowUpDate)
+        public void setNextFollowUpDate(Date nextFollowUpDate)
         {
             this.nextFollowUpDate = nextFollowUpDate;
         }

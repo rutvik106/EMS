@@ -7,6 +7,11 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.view.inputmethod.InputMethodManager;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /**
@@ -42,6 +47,26 @@ public final class CommonUtils
             InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
         }
+    }
+
+    public static String convertDateToDDMMYYYY(String followUpDate)
+    {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+        try
+        {
+            final Date d = sdf.parse(followUpDate);
+            return sdf2.format(d);
+        } catch (ParseException e)
+        {
+            return followUpDate;
+        }
+    }
+
+    public static String convertDateToDDMMYYYY(Date followUpDate)
+    {
+        SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+        return sdf2.format(followUpDate);
     }
 
 }

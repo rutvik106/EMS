@@ -14,6 +14,7 @@ import com.tapandtype.rutvik.ems.ActivityView;
 import com.tapandtype.rutvik.ems.R;
 import com.tapandtype.rutvik.ems.TakeFollowUp;
 
+import extras.CommonUtils;
 import models.FollowUp;
 
 /**
@@ -63,7 +64,7 @@ public class NotificationListChildVH extends RecyclerView.ViewHolder implements 
     public static void bind(NotificationListChildVH viewHolder, FollowUp followUp)
     {
         viewHolder.followUp = followUp;
-        viewHolder.tvTitle.setText(followUp.getFollowUpDate().toString());
+        viewHolder.tvTitle.setText(CommonUtils.convertDateToDDMMYYYY(followUp.getFollowUpDate()));
         viewHolder.tvName.setText(followUp.getName());
         viewHolder.tvDiscussionsContent.setText(followUp.getDiscussion());
 

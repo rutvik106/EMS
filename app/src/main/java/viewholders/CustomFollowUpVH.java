@@ -10,6 +10,7 @@ import com.tapandtype.rutvik.ems.R;
 import com.tapandtype.rutvik.ems.TakeFollowUp;
 
 import apimodels.CustomFollowUpReport;
+import extras.CommonUtils;
 
 /**
  * Created by rutvik on 12/5/2016 at 9:05 AM.
@@ -19,8 +20,6 @@ public class CustomFollowUpVH
         extends GenericViewHolder<CustomFollowUpReport.CustomFollowUpReportsBean>
         implements View.OnClickListener
 {
-
-    CustomFollowUpReport.CustomFollowUpReportsBean model;
 
     public TextView
             tv_followUpRepDateAdded,
@@ -32,6 +31,7 @@ public class CustomFollowUpVH
             tv_followUpRepNextFollowUp,
             tv_followUpRepProduct,
             tv_followUpRepTotalMrp;
+    CustomFollowUpReport.CustomFollowUpReportsBean model;
 
 
     public CustomFollowUpVH(Context context, View itemView)
@@ -61,10 +61,10 @@ public class CustomFollowUpVH
         _vh.tv_followUpRepDateAdded.setText(model.getDateAdded());
         _vh.tv_followUpRepContact.setText(model.getContactNo());
         _vh.tv_followUpRepCustomerPrice.setText(model.getCustomerPrice());
-        _vh.tv_followUpRepEnqDate.setText(model.getEnquiryDate());
+        _vh.tv_followUpRepEnqDate.setText(CommonUtils.convertDateToDDMMYYYY(model.getEnquiryDate()));
         _vh.tv_followUpRepIsBought.setText(model.getIsBought());
         _vh.tv_followUpRepName.setText(model.getCustomerName());
-        _vh.tv_followUpRepNextFollowUp.setText(model.getNextFollowUpDate());
+        _vh.tv_followUpRepNextFollowUp.setText(CommonUtils.convertDateToDDMMYYYY(model.getNextFollowUpDate()));
         _vh.tv_followUpRepProduct.setText(model.getSubCatName());
         _vh.tv_followUpRepTotalMrp.setText(model.getTotalMrp());
     }

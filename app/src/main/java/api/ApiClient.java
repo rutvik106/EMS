@@ -36,6 +36,7 @@ public class ApiClient
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .setLenient()
                 .create();
 

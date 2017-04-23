@@ -13,6 +13,7 @@ import com.tapandtype.rutvik.ems.R;
 import com.tapandtype.rutvik.ems.TakeFollowUp;
 
 import apimodels.CustomLeadReports;
+import extras.CommonUtils;
 
 /**
  * Created by rutvik on 12/3/2016 at 6:37 PM.
@@ -22,12 +23,10 @@ public class SingleReportItemVH extends RecyclerView.ViewHolder implements View.
 {
 
     final Context context;
-
+    CustomLeadReports.CustomLeadReportsBean customLeadReportsBean;
     private TextView tvReportEnquiryDate, tvReportFollowUpDate, tvReportCustomerName,
             tvReportCustomerContact, tvReportEnquiryStatus, tvReportProductName,
             tvReportExtraDetails, tvReportHandledBy;
-
-    CustomLeadReports.CustomLeadReportsBean customLeadReportsBean;
 
     private SingleReportItemVH(Context context, View itemView)
     {
@@ -58,10 +57,10 @@ public class SingleReportItemVH extends RecyclerView.ViewHolder implements View.
         vh.customLeadReportsBean = model;
         vh.tvReportCustomerContact.setText(model.getContactNo());
         vh.tvReportCustomerName.setText(model.getCustomerName());
-        vh.tvReportEnquiryDate.setText(model.getEnquiryDate());
+        vh.tvReportEnquiryDate.setText(CommonUtils.convertDateToDDMMYYYY(model.getEnquiryDate()));
         vh.tvReportEnquiryStatus.setText(model.getIsBought());
         vh.tvReportExtraDetails.setText(model.getAttributeTypesSubCatWise());
-        vh.tvReportFollowUpDate.setText(model.getNextFollowUpDate());
+        vh.tvReportFollowUpDate.setText(CommonUtils.convertDateToDDMMYYYY(model.getNextFollowUpDate()));
         vh.tvReportProductName.setText(model.getSubCatName());
         vh.tvReportHandledBy.setText(model.getAdminName());
     }
