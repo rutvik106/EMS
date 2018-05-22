@@ -24,7 +24,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.firebase.crash.FirebaseCrash;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
@@ -394,7 +393,6 @@ public class HomeActivity extends AppCompatActivity implements PermissionListene
                             upcoming.setupAdapter(upcomingFollowUpArray);
                         } else
                         {
-                            FirebaseCrash.report(new Exception("Upcoming NotificationFragment was NULL"));
                         }
 
                         //Toast.makeText(HomeActivity.this, "Model Size: " + modelList.size(), Toast.LENGTH_SHORT).show();
@@ -444,11 +442,11 @@ public class HomeActivity extends AppCompatActivity implements PermissionListene
 
     private void checkForPermissions()
     {
-        new TedPermission(this)
+        /*new TedPermission(this)
                 .setPermissionListener(this)
                 .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
                 .setPermissions(android.Manifest.permission.CALL_PHONE)
-                .check();
+                .check();*/
     }
 
     @Override
