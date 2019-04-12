@@ -28,8 +28,7 @@ import extras.PostServiceHandler;
 import jsonobject.Error;
 import jsonobject.User;
 
-public class InitialActivity extends AppCompatActivity implements View.OnClickListener
-{
+public class InitialActivity extends AppCompatActivity implements View.OnClickListener {
 
     //Toolbar toolbar;
 
@@ -48,15 +47,13 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
     WelcomeHelper welcomeScreen;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         welcomeScreen = new WelcomeHelper(this, ActivityWelcome.class);
 
         if (PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(Constants.SHOW_WELCOME_SCREEN, true))
-        {
+                .getBoolean(Constants.SHOW_WELCOME_SCREEN, true)) {
             welcomeScreen.forceShow();
         }
 
@@ -97,8 +94,7 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
         String username = sp.getString("username", "");
         String password = sp.getString("password", "");
 
-        if (!host.isEmpty() && !username.isEmpty() && !password.isEmpty())
-        {
+        if (!host.isEmpty() && !username.isEmpty() && !password.isEmpty()) {
             etHost.setText(host);
             etUsername.setText(username);
             etPassword.setText(password);
@@ -107,24 +103,20 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState)
-    {
+    protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         welcomeScreen.onSaveInstanceState(outState);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_initial, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
 
@@ -134,16 +126,13 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @Override
-    public void onClick(View v)
-    {
+    public void onClick(View v) {
         String tmpHost = etHost.getText().toString();
-        if (!tmpHost.contains("http://"))
-        {
+        if (!tmpHost.contains("http://") && !tmpHost.contains("https://")) {
             tmpHost = "http://" + tmpHost;
         }
 
-        if (!tmpHost.substring(tmpHost.length() - 1).contains("/"))
-        {
+        if (!tmpHost.substring(tmpHost.length() - 1).contains("/")) {
             tmpHost = tmpHost + "/";
         }
 
@@ -151,8 +140,7 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
         final String username = etUsername.getText().toString();
         final String password = etPassword.getText().toString();
 
-        if (isFieldsValid(host, username, password))
-        {
+        if (isFieldsValid(host, username, password)) {
             tryLogin = new TryLogin(host, username, password);
             tryLogin.execute();
         }
@@ -160,38 +148,31 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
-    private boolean isFieldsValid(String host, String username, String password)
-    {
+    private boolean isFieldsValid(String host, String username, String password) {
 
         boolean isValid = true;
 
-        if (host.isEmpty())
-        {
+        if (host.isEmpty()) {
             isValid = false;
             //tilHost.setErrorEnabled(true);
             etHost.setError("Enter valid host");
-        } else
-        {
+        } else {
             //tilHost.setErrorEnabled(false);
             etHost.setError(null);
         }
-        if (username.isEmpty())
-        {
+        if (username.isEmpty()) {
             isValid = false;
             //tilUsername.setErrorEnabled(true);
             etUsername.setError("Enter username");
-        } else
-        {
+        } else {
             //tilUsername.setErrorEnabled(false);
             etUsername.setError(null);
         }
-        if (password.isEmpty())
-        {
+        if (password.isEmpty()) {
             isValid = false;
             //tilPassword.setErrorEnabled(true);
             etPassword.setError("Enter password");
-        } else
-        {
+        } else {
             //tilPassword.setErrorEnabled(false);
             etPassword.setError(null);
         }
@@ -200,8 +181,7 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
-    class TryLogin extends AsyncTask<Void, Void, Void>
-    {
+    class TryLogin extends AsyncTask<Void, Void, Void> {
 
         String host, username, password;
 
@@ -211,50 +191,40 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
 
         User user;
 
-        public TryLogin(String host, String username, String password)
-        {
+        public TryLogin(String host, String username, String password) {
             this.host = host;
             this.username = username;
             this.password = password;
         }
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             llLoggingIn.setVisibility(View.VISIBLE);
             btnLogin.setVisibility(View.GONE);
         }
 
         @Override
-        protected Void doInBackground(Void... voids)
-        {
+        protected Void doInBackground(Void... voids) {
             Map<String, String> postParams = new HashMap<>();
             postParams.put("method", "try_login");
             postParams.put("username", username);
             postParams.put("password", password);
 
-            new PostServiceHandler(TAG, 2, 4000).doPostRequest(host + AppUtils.URL_WEBSERVICE, postParams, new PostServiceHandler.ResponseCallback()
-            {
+            new PostServiceHandler(TAG, 2, 4000).doPostRequest(host + AppUtils.URL_WEBSERVICE, postParams, new PostServiceHandler.ResponseCallback() {
                 @Override
-                public void response(int status, String response)
-                {
-                    if (status == HttpURLConnection.HTTP_OK)
-                    {
+                public void response(int status, String response) {
+                    if (status == HttpURLConnection.HTTP_OK) {
 
-                        try
-                        {
+                        try {
                             user = new User(response);
                             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(InitialActivity.this);
                             sp.edit().putString("session_id", user.getSession_id()).apply();
                             success = true;
-                        } catch (JSONException e)
-                        {
+                        } catch (JSONException e) {
                             e.printStackTrace();
-                            try
-                            {
+                            try {
                                 error = new Error(response);
-                            } catch (JSONException ee)
-                            {
+                            } catch (JSONException ee) {
                                 ee.printStackTrace();
                             }
                         }
@@ -266,12 +236,9 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         @Override
-        protected void onPostExecute(Void aVoid)
-        {
-            if (success)
-            {
-                if (user != null)
-                {
+        protected void onPostExecute(Void aVoid) {
+            if (success) {
+                if (user != null) {
 
                     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(InitialActivity.this);
 
@@ -286,10 +253,8 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(i);
                 }
-            } else
-            {
-                if (error != null)
-                {
+            } else {
+                if (error != null) {
                     Toast.makeText(InitialActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 

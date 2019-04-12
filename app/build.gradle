@@ -9,8 +9,8 @@ android {
         applicationId "com.tapandtype.rutvik.ems"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 18
-        versionName "2.7"
+        versionCode 19
+        versionName "2.8"
     }
 
     buildTypes {
